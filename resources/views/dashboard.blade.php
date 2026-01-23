@@ -1,17 +1,205 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Dashboard') }}
-        </h2>
-    </x-slot>
+    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900">
-                    {{ __("You're logged in!") }}
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <div class="navbar-logo">
+                <img src="{{ asset('images/proyinstal-logo.png') }}" alt="PROYINSTAL">
+            </div>
+            
+            <ul class="navbar-menu">
+                <li><a href="{{ route('dashboard') }}" class="navbar-link active">Dashboard</a></li>
+                <li><a href="#" class="navbar-link">Proyectos</a></li>
+                @if(auth()->user()->isAdmin())
+                    <li><a href="#" class="navbar-link">Usuarios</a></li>
+                @endif
+                <li><a href="{{ route('profile.edit') }}" class="navbar-link">Mi Perfil</a></li>
+                <li>
+                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
+                        @csrf
+                        <button type="submit" class="navbar-link" style="background: none; border: none; cursor: pointer;">
+                            Cerrar Sesión
+                        </button>
+                    </form>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Dashboard Content -->
+    <div class="dashboard-container">
+        <!-- Header -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                Hola, {{ auth()->user()->nombre }} 👋
+            </h1>
+            <p class="dashboard-subtitle">
+                Aquí tienes un resumen de tus proyectos y actividad reciente
+            </p>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="stats-grid">
+            <!-- Total Proyectos -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">Total Proyectos</h3>
+                        <p class="stat-value">12</p>
+                        <p class="stat-change">+2 este mes</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                            <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                        </svg>
+                    </div>
                 </div>
             </div>
+
+            <!-- En Proceso -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">En Proceso</h3>
+                        <p class="stat-value">5</p>
+                        <p class="stat-change">Activos actualmente</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Completados -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">Completados</h3>
+                        <p class="stat-value">7</p>
+                        <p class="stat-change">58% tasa de éxito</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                            <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pendientes -->
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div>
+                        <h3 class="stat-title">Pendientes</h3>
+                        <p class="stat-value">3</p>
+                        <p class="stat-change">Por iniciar</p>
+                    </div>
+                    <div class="stat-icon">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Proyectos Recientes -->
+        <div class="table-container">
+            <div class="table-header">
+                <h2 class="table-title">Proyectos Recientes</h2>
+            </div>
+            
+            <table>
+                <thead>
+                    <tr>
+                        <th>Proyecto</th>
+                        <th>Cliente</th>
+                        <th>Estado</th>
+                        <th>Tipo</th>
+                        <th>Última Actualización</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Ejemplo de fila -->
+                    <tr>
+                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            Vivienda Unifamiliar Pamplona
+                        </td>
+                        <td>Juan García López</td>
+                        <td>
+                            <span class="badge badge-in-progress">En Proceso</span>
+                        </td>
+                        <td>Vivienda</td>
+                        <td>Hace 2 días</td>
+                        <td>
+                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            Reforma Local Comercial
+                        </td>
+                        <td>María Sánchez</td>
+                        <td>
+                            <span class="badge badge-completed">Completado</span>
+                        </td>
+                        <td>Reforma</td>
+                        <td>Hace 5 días</td>
+                        <td>
+                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            Edificio Residencial
+                        </td>
+                        <td>Pedro Martínez</td>
+                        <td>
+                            <span class="badge badge-pending">Pendiente</span>
+                        </td>
+                        <td>Edificio</td>
+                        <td>Hace 1 semana</td>
+                        <td>
+                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            Topografía Terreno Industrial
+                        </td>
+                        <td>Construcciones García S.L.</td>
+                        <td>
+                            <span class="badge badge-in-progress">En Proceso</span>
+                        </td>
+                        <td>Topografía</td>
+                        <td>Hace 3 días</td>
+                        <td>
+                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            Instalaciones Eléctricas
+                        </td>
+                        <td>Ana López</td>
+                        <td>
+                            <span class="badge badge-paused">Pausado</span>
+                        </td>
+                        <td>Instalaciones</td>
+                        <td>Hace 2 semanas</td>
+                        <td>
+                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </x-app-layout>

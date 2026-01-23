@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
@@ -29,16 +30,23 @@ class PasswordResetLinkController extends Controller
             'email' => ['required', 'email'],
         ]);
 
-        // We will send the password reset link to this user. Once we have attempted
-        // to send the link, we will examine the response then see the message we
-        // need to show to the user. Finally, we'll send out a proper response.
+        // Verificar si el email existe en la base de datos
+        $user = User::where('email', $request->email)->first();
+
+        if (!$user) {
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors(['email' => 'No existe ninguna cuenta registrada con este correo electrónico.']);
+        }
+
+        // Si el usuario existe, enviar el enlace de recuperación
         $status = Password::sendResetLink(
             $request->only('email')
         );
 
         return $status == Password::RESET_LINK_SENT
-                    ? back()->with('status', __($status))
+                    ? back()->with('status', 'Te hemos enviado un enlace de recuperación a tu correo electrónico.')
                     : back()->withInput($request->only('email'))
-                        ->withErrors(['email' => __($status)]);
+                        ->withErrors(['email' => 'Ha ocurrido un error al enviar el correo. Por favor, inténtalo de nuevo.']);
     }
 }
