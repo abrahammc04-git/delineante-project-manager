@@ -10,7 +10,7 @@
             
             <ul class="navbar-menu">
                 <li><a href="{{ route('dashboard') }}" class="navbar-link active">Dashboard</a></li>
-                <li><a href="#" class="navbar-link">Proyectos</a></li>
+                <li><a href="{{ route('proyectos.index') }}" class="navbar-link">Proyectos</a></li>
                 @if(auth()->user()->isAdmin())
                     <li><a href="#" class="navbar-link">Usuarios</a></li>
                 @endif
