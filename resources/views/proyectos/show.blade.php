@@ -77,16 +77,29 @@
                     </div>
 
                     {{-- Botones de Acción (Solo Admin) --}}
-                    @if(auth()->user()->isAdmin())
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <h4 class="text-lg font-bold text-gray-700 mb-4">Acciones</h4>
-                        <div class="flex flex-col gap-3">
-                            <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" class="w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow">
-                                Editar Proyecto
-                            </a>
-                        </div>
-                    </div>
-                    @endif
+                        @if(auth()->user()->isAdmin())
+                            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
+                                <h4 class="text-lg font-bold text-gray-700 mb-4">Acciones</h4>
+                                <div class="flex flex-col gap-3">
+                                    
+                                    {{-- 1. Editar: Es un enlace porque nos lleva a otra vista --}}
+                                    <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" class="w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow transition duration-150 ease-in-out">
+                                        Editar Proyecto
+                                    </a>
+
+                                    {{-- 2. Eliminar: Es un formulario porque ejecuta una acción destructiva --}}
+                                    <form action="{{ route('proyectos.destroy', $proyecto->id_proyecto) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este proyecto definitivamente?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        
+                                        <button type="submit" class="w-full text-center bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded shadow transition duration-150 ease-in-out">
+                                            Eliminar Proyecto
+                                        </button>
+                                    </form>
+
+                                </div>
+                            </div>
+                        @endif
                 </div>
             </div>
         </div>
