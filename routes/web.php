@@ -30,5 +30,10 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('proyectos', ProyectoController::class);
 });
 
+Route::middleware(['auth'])->group(function () {
+    // Esto genera automáticamente las 7 rutas (index, create, store, show, edit, update, destroy)
+    Route::resource('proyectos', ProyectoController::class);
+});
+
 // Incluir rutas de autenticación
 require __DIR__.'/auth.php';
