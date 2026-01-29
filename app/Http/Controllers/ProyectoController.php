@@ -6,6 +6,8 @@ use App\Models\Proyecto;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProyectoController extends Controller
 
@@ -129,18 +131,36 @@ class ProyectoController extends Controller
      */
     public function show($id)
     {
-        // Buscamos manualmente porque la PK es id_proyecto
         $proyecto = Proyecto::with('usuario')->where('id_proyecto', $id)->firstOrFail();
-
-        // Verificación de seguridad:
-        // Si NO es admin Y el proyecto NO es suyo -> Prohibido
+        
+        // Seguridad...
         $user = Auth::user();
         /** @var \App\Models\User $user */
-        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) { // Ajusta user->id_usuario según tu modelo User
-            abort(403, 'No tienes permiso para ver este proyecto.');
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) {
+            abort(403, 'No tienes permiso.');
         }
 
-        return view('proyectos.show', compact('proyecto'));
+        $archivos = [];
+        
+        // CAMBIO 1: Nombre de carpeta basado en el nombre del proyecto (limpio de acentos/espacios)
+        // Ejemplo: "Casa de Luis" -> "proyecto_casa-de-luis"
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $carpeta = "proyectos/proyecto_{$nombreCarpeta}"; // Nota: añadí 'proyectos/' para agruparlos mejor si quieres, o déjalo directo
+        // Si prefieres directo en la raíz del disco 'proyectos':
+        $carpeta = "proyecto_{$nombreCarpeta}";
+
+        if (Storage::disk('proyectos')->exists($carpeta)) {
+            $rutas = Storage::disk('proyectos')->files($carpeta);
+            foreach ($rutas as $ruta) {
+                $archivos[] = [
+                    'nombre' => basename($ruta),
+                    'size' => round(Storage::disk('proyectos')->size($ruta) / 1024, 2),
+                    'fecha' => date('d/m/Y H:i', Storage::disk('proyectos')->lastModified($ruta)),
+                ];
+            }
+        }
+
+        return view('proyectos.show', compact('proyecto', 'archivos'));
     }
 
     /**
@@ -215,4 +235,85 @@ class ProyectoController extends Controller
             abort(403, 'Acceso denegado. Se requieren permisos de administrador.');
         }
     }
+
+    // --- GESTIÓN DE ARCHIVOS ---
+
+    public function subirArchivo(Request $request, $id)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
+
+        $request->validate([
+            'archivos' => 'required',
+            'archivos.*' => 'file|mimes:pdf,dwg,dxf,jpg,jpeg,png|max:10240',
+        ]);
+
+        if ($request->hasFile('archivos')) {
+            $contador = 0;
+            // Generar nombre de carpeta limpio
+            $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+            $carpeta = "proyecto_{$nombreCarpeta}";
+
+            foreach ($request->file('archivos') as $file) {
+                // CAMBIO 2: Mantener nombre original (sin timestamp)
+                $filename = $file->getClientOriginalName(); 
+                
+                // Guardar (si ya existe uno con ese nombre, lo sobrescribe)
+                $file->storeAs($carpeta, $filename, 'proyectos');
+                $contador++;
+            }
+            
+            return back()->with('success', "Se han subido {$contador} archivos correctamente.");
+        }
+
+        return back()->with('error', 'Error al subir los archivos.');
+    }
+
+    public function descargarArchivo($id, $nombreArchivo)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
+
+        // Reconstruir la ruta con la nueva lógica
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('proyectos');
+        
+        if (!$disk->exists($ruta)) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        return $disk->download($ruta);
+    }
+
+    public function eliminarArchivo($id, $nombreArchivo)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (! $user->isAdmin()) {
+            abort(403, 'Solo el administrador puede eliminar archivos.');
+        }
+
+        // Reconstruir la ruta
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+        
+        if (Storage::disk('proyectos')->exists($ruta)) {
+            Storage::disk('proyectos')->delete($ruta);
+            return back()->with('success', 'Archivo eliminado.');
+        }
+
+        return back()->with('error', 'El archivo no existe.');
+    }
+
 }

@@ -19,6 +19,15 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+    // RUTAS DE ARCHIVOS
+    Route::post('/proyectos/{id}/archivos', [App\Http\Controllers\ProyectoController::class, 'subirArchivo'])->name('proyectos.archivos.subir');
+    Route::get('/proyectos/{id}/archivos/{nombreArchivo}', [App\Http\Controllers\ProyectoController::class, 'descargarArchivo'])->name('proyectos.archivos.descargar');
+    Route::delete('/proyectos/{id}/archivos/{nombreArchivo}', [App\Http\Controllers\ProyectoController::class, 'eliminarArchivo'])->name('proyectos.archivos.eliminar');
+});
+
+Route::middleware(['auth'])->group(function () {
+    // Esto genera automáticamente las 7 rutas (index, create, store, show, edit, update, destroy)
+    Route::resource('proyectos', ProyectoController::class);
 });
 
 Route::middleware(['auth'])->group(function () {
