@@ -1,0 +1,319 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Models\Proyecto;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
+
+class ProyectoController extends Controller
+
+{
+    /**
+     * Listar proyectos (Admin ve todos, Cliente solo los suyos).
+     */
+    public function index(Request $request)
+    {
+        // CAMBIO: Usamos Auth::user() que tu editor reconoce mejor
+        $user = Auth::user();
+
+        // 1. Iniciamos la consulta
+        $query = Proyecto::with('usuario');
+
+        // 2. SEGURIDAD: Si NO es Admin, filtrar solo sus proyectos
+        /** @var \App\Models\User $user */
+        if (! $user->isAdmin()) {
+            $query->where('id_usuario', $user->id_usuario);
+        }
+
+        // --- FILTROS DE BÚSQUEDA ---
+
+        // A. Búsqueda por texto
+        if ($request->filled('search')) {
+            $search = $request->search;
+            
+            // Pasamos $user dentro del 'use' para usarlo dentro
+            $query->where(function($q) use ($search, $user) {
+                    // 1. TODOS buscan por nombre de proyecto
+                    $q->where('nombre_proyecto', 'like', "%{$search}%");
+
+                    // 2. SOLO EL ADMIN entra en este bloque para buscar por cliente
+                    if ($user->isAdmin()) {
+                        $q->orWhereHas('usuario', function($qUser) use ($search) {
+                            $qUser->where('nombre', 'like', "%{$search}%")
+                              ->orWhere('apellidos', 'like', "%{$search}%")
+                              ->orWhere('email', 'like', "%{$search}%");
+                    });
+                }
+            });
+        }
+
+        // B. Filtrar por Estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // C. Filtrar por Fecha Inicio
+        if ($request->filled('fecha_inicio')) {
+            $query->whereDate('fecha_inicio', '>=', $request->fecha_inicio);
+        }
+
+        // --- ORDENACIÓN ---
+        
+        $sort = $request->input('sort', 'fecha_creacion'); 
+        $direction = $request->input('direction', 'desc');
+
+        $allowedSorts = ['nombre_proyecto', 'estado', 'fecha_inicio', 'fecha_creacion', 'id_usuario'];
+        
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        }
+
+        // 3. Ejecutar consulta
+        $proyectos = $query->get();
+
+        return view('proyectos.index', compact('proyectos'));
+    }
+
+    /**
+     * Formulario de creación (Solo Admin).
+     */
+    public function create()
+    {
+        $this->authorizeAdmin();
+
+        // Obtener lista de clientes para el select
+        // Ajusta 'rol' según tu tabla users (ej: where('rol', 'cliente'))
+        $clientes = User::where('rol', 'cliente')->get(); 
+        
+        return view('proyectos.create', compact('clientes'));
+    }
+
+    /**
+     * Guardar proyecto en BD (Solo Admin).
+     */
+    public function store(Request $request)
+    {
+        $this->authorizeAdmin();
+
+        // 1. Validar
+        $validated = $request->validate([
+            'nombre_proyecto' => 'required|string|max:255',
+            'id_usuario' => 'required|exists:usuarios,id_usuario',// Ojo: verifica si tu tabla se llama 'users' o 'usuarios'
+            'tipo_proyecto'   => 'required|string',
+            'estado'          => 'required|string',
+            'descripcion'     => 'nullable|string',
+            'fecha_inicio'    => 'required|date',
+            'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
+            'localizacion'    => 'nullable|string',] ,[
+
+            'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            
+        ]);
+
+        // 2. Añadir fecha de creación manual (ya que timestamps = false)
+        $validated['fecha_creacion'] = now();
+        // Generar nombre de carpeta único si no viene (opcional, lógica simple)
+        $validated['carpeta_archivos'] = $validated['carpeta_archivos'] ?? uniqid('proj_');
+
+        // 3. Crear
+        Proyecto::create($validated);
+
+        return redirect()->route('proyectos.index')
+                         ->with('success', 'Proyecto creado correctamente.');
+    }
+
+    /**
+     * Ver detalles de un proyecto.
+     */
+    public function show($id)
+    {
+        $proyecto = Proyecto::with('usuario')->where('id_proyecto', $id)->firstOrFail();
+        
+        // Seguridad...
+        $user = Auth::user();
+        /** @var \App\Models\User $user */
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) {
+            abort(403, 'No tienes permiso.');
+        }
+
+        $archivos = [];
+        
+        // CAMBIO 1: Nombre de carpeta basado en el nombre del proyecto (limpio de acentos/espacios)
+        // Ejemplo: "Casa de Luis" -> "proyecto_casa-de-luis"
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $carpeta = "proyectos/proyecto_{$nombreCarpeta}"; // Nota: añadí 'proyectos/' para agruparlos mejor si quieres, o déjalo directo
+        // Si prefieres directo en la raíz del disco 'proyectos':
+        $carpeta = "proyecto_{$nombreCarpeta}";
+
+        if (Storage::disk('proyectos')->exists($carpeta)) {
+            $rutas = Storage::disk('proyectos')->files($carpeta);
+            foreach ($rutas as $ruta) {
+                $archivos[] = [
+                    'nombre' => basename($ruta),
+                    'size' => round(Storage::disk('proyectos')->size($ruta) / 1024, 2),
+                    'fecha' => date('d/m/Y H:i', Storage::disk('proyectos')->lastModified($ruta)),
+                ];
+            }
+        }
+
+        return view('proyectos.show', compact('proyecto', 'archivos'));
+    }
+
+    /**
+     * Formulario de edición (Solo Admin).
+     */
+    public function edit($id)
+    {
+        $this->authorizeAdmin();
+
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $clientes = User::where('rol', 'cliente')->get();
+
+        return view('proyectos.edit', compact('proyecto', 'clientes'));
+    }
+
+    /**
+     * Actualizar proyecto (Solo Admin).
+     */
+    public function update(Request $request, $id)
+    {
+        $this->authorizeAdmin();
+
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+
+        $validated = $request->validate([
+            'nombre_proyecto' => 'required|string|max:255',
+            'id_usuario'      => 'required|exists:usuarios,id_usuario',
+            'tipo_proyecto'   => 'required|string',
+            'estado'          => 'required|string',
+            'descripcion'     => 'nullable|string',
+            'fecha_inicio'    => 'required|date',
+            'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
+            'fecha_fin_real'     => 'nullable|date|after_or_equal:fecha_inicio',
+            'localizacion'    => 'nullable|string',] ,[
+
+            'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            
+        ]);
+
+        // Actualizar fecha de modificación manual
+        $validated['ultima_actualizacion'] = now();
+
+        $proyecto->update($validated);
+
+        return redirect()->route('proyectos.index')
+                         ->with('success', 'Proyecto actualizado correctamente.');
+    }
+
+    /**
+     * Eliminar proyecto (Solo Admin).
+     */
+    public function destroy($id)
+    {
+        $this->authorizeAdmin();
+
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $proyecto->delete();
+
+        return redirect()->route('proyectos.index')
+                         ->with('success', 'Proyecto eliminado.');
+    }
+
+    /**
+     * Helper privado para verificar admin
+     */
+    private function authorizeAdmin()
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            abort(403, 'Acceso denegado. Se requieren permisos de administrador.');
+        }
+    }
+
+    // --- GESTIÓN DE ARCHIVOS ---
+
+    public function subirArchivo(Request $request, $id)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
+
+        $request->validate([
+            'archivos' => 'required',
+            'archivos.*' => 'file|mimes:pdf,dwg,dxf,jpg,jpeg,png|max:10240',
+        ]);
+
+        if ($request->hasFile('archivos')) {
+            $contador = 0;
+            // Generar nombre de carpeta limpio
+            $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+            $carpeta = "proyecto_{$nombreCarpeta}";
+
+            foreach ($request->file('archivos') as $file) {
+                // CAMBIO 2: Mantener nombre original (sin timestamp)
+                $filename = $file->getClientOriginalName(); 
+                
+                // Guardar (si ya existe uno con ese nombre, lo sobrescribe)
+                $file->storeAs($carpeta, $filename, 'proyectos');
+                $contador++;
+            }
+            
+            return back()->with('success', "Se han subido {$contador} archivos correctamente.");
+        }
+
+        return back()->with('error', 'Error al subir los archivos.');
+    }
+
+    public function descargarArchivo($id, $nombreArchivo)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
+
+        // Reconstruir la ruta con la nueva lógica
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+
+        /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
+        $disk = Storage::disk('proyectos');
+        
+        if (!$disk->exists($ruta)) {
+            abort(404, 'Archivo no encontrado');
+        }
+
+        return $disk->download($ruta);
+    }
+
+    public function eliminarArchivo($id, $nombreArchivo)
+    {
+        $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        $user = Auth::user();
+
+        /** @var \App\Models\User $user */
+        if (! $user->isAdmin()) {
+            abort(403, 'Solo el administrador puede eliminar archivos.');
+        }
+
+        // Reconstruir la ruta
+        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
+        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+        
+        if (Storage::disk('proyectos')->exists($ruta)) {
+            Storage::disk('proyectos')->delete($ruta);
+            return back()->with('success', 'Archivo eliminado.');
+        }
+
+        return back()->with('error', 'El archivo no existe.');
+    }
+
+}
