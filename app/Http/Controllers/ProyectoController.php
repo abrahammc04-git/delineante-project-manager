@@ -13,23 +13,65 @@ class ProyectoController extends Controller
     /**
      * Listar proyectos (Admin ve todos, Cliente solo los suyos).
      */
-    public function index()
+    public function index(Request $request)
     {
+        // CAMBIO: Usamos Auth::user() que tu editor reconoce mejor
         $user = Auth::user();
 
-        // Usamos el método isAdmin() que mencionaste en los requisitos
+        // 1. Iniciamos la consulta
+        $query = Proyecto::with('usuario');
+
+        // 2. SEGURIDAD: Si NO es Admin, filtrar solo sus proyectos
         /** @var \App\Models\User $user */
-        if ($user->isAdmin()) {
-            // Admin: ve todos, ordenados por fecha de creación descendente
-            $proyectos = Proyecto::with('usuario')
-                        ->orderBy('fecha_creacion', 'desc')
-                        ->get();
-        } else {
-            // Cliente: usamos el Scope definido en tu modelo
-            $proyectos = Proyecto::delUsuario($user->id_usuario) // Asumo que el PK del user es id_usuario, si es 'id' cámbialo aquí
-                        ->orderBy('fecha_creacion', 'desc')
-                        ->get();
+        if (! $user->isAdmin()) {
+            $query->where('id_usuario', $user->id_usuario);
         }
+
+        // --- FILTROS DE BÚSQUEDA ---
+
+        // A. Búsqueda por texto
+        if ($request->filled('search')) {
+            $search = $request->search;
+            
+            // Pasamos $user dentro del 'use' para usarlo dentro
+            $query->where(function($q) use ($search, $user) {
+                    // 1. TODOS buscan por nombre de proyecto
+                    $q->where('nombre_proyecto', 'like', "%{$search}%");
+
+                    // 2. SOLO EL ADMIN entra en este bloque para buscar por cliente
+                    if ($user->isAdmin()) {
+                        $q->orWhereHas('usuario', function($qUser) use ($search) {
+                            $qUser->where('nombre', 'like', "%{$search}%")
+                              ->orWhere('apellidos', 'like', "%{$search}%")
+                              ->orWhere('email', 'like', "%{$search}%");
+                    });
+                }
+            });
+        }
+
+        // B. Filtrar por Estado
+        if ($request->filled('estado')) {
+            $query->where('estado', $request->estado);
+        }
+
+        // C. Filtrar por Fecha Inicio
+        if ($request->filled('fecha_inicio')) {
+            $query->whereDate('fecha_inicio', '>=', $request->fecha_inicio);
+        }
+
+        // --- ORDENACIÓN ---
+        
+        $sort = $request->input('sort', 'fecha_creacion'); 
+        $direction = $request->input('direction', 'desc');
+
+        $allowedSorts = ['nombre_proyecto', 'estado', 'fecha_inicio', 'fecha_creacion', 'id_usuario'];
+        
+        if (in_array($sort, $allowedSorts)) {
+            $query->orderBy($sort, $direction);
+        }
+
+        // 3. Ejecutar consulta
+        $proyectos = $query->get();
 
         return view('proyectos.index', compact('proyectos'));
     }
@@ -64,7 +106,10 @@ class ProyectoController extends Controller
             'descripcion'     => 'nullable|string',
             'fecha_inicio'    => 'required|date',
             'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
-            'localizacion'    => 'nullable|string',
+            'localizacion'    => 'nullable|string',] ,[
+
+            'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            
         ]);
 
         // 2. Añadir fecha de creación manual (ya que timestamps = false)
@@ -129,7 +174,10 @@ class ProyectoController extends Controller
             'fecha_inicio'    => 'required|date',
             'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
             'fecha_fin_real'     => 'nullable|date|after_or_equal:fecha_inicio',
-            'localizacion'    => 'nullable|string',
+            'localizacion'    => 'nullable|string',] ,[
+
+            'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            
         ]);
 
         // Actualizar fecha de modificación manual
