@@ -169,17 +169,7 @@
                                         <div>In: {{ $proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : '-' }}</div>
                                     </td>
                                     <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Ver</a>
-                                        
-                                        @if(auth()->user()->isAdmin())
-                                            <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" class="text-yellow-600 hover:text-yellow-900 mr-3">Editar</a>
-                                            
-                                            <form action="{{ route('proyectos.destroy', $proyecto->id_proyecto) }}" method="POST" class="inline-block" onsubmit="return confirm('¿Eliminar proyecto?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="text-red-600 hover:text-red-900">Eliminar</button>
-                                            </form>
-                                        @endif
+                                        <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" class="text-indigo-600 hover:text-indigo-900 mr-3">Ver detalles</a>
                                     </td>
                                 </tr>
                             @empty
