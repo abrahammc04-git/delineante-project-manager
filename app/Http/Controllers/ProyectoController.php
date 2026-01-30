@@ -304,20 +304,20 @@ public function programarMasivo(Request $request, $id)
     public function subirArchivo(Request $request, $id)
     {
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
-
+        
         // ... (validaciones y permisos igual que antes) ...
 
         if ($request->hasFile('archivos')) {
             $contador = 0;
-            $slug = Str::slug($proyecto->nombreproyecto);
-            $carpeta = "proyecto{$slug}";
+            $slug = Str::slug($proyecto->nombre_proyecto);
+            $carpeta = "proyecto_{$slug}";
 
             foreach ($request->file('archivos') as $file) {
                 $filename = $file->getClientOriginalName(); 
-
+                
                 // 1. Guardar el archivo físico
                 $file->storeAs($carpeta, $filename, 'proyectos');
-
+                
                 // 2. AÑADIR ESTO: Crear/Actualizar registro en BD forzando VISIBLE = TRUE
                 Documento::updateOrCreate(
                     [
