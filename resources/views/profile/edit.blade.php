@@ -1,9 +1,15 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profile') }}
-        </h2>
-    </x-slot>
+    <div class="bg-white shadow sm:rounded-lg p-4 sm:p-6 flex items-center justify-between">
+        <div>
+            <h1 class="text-xl font-semibold text-gray-900">Perfil</h1>
+            <p class="text-sm text-gray-600 mt-1">Gestiona tu información y tu contraseña.</p>
+        </div>
+
+        <a href="{{ route('dashboard') }}" class="btn btn-secondary" style="width:auto;">
+            ← Volver al panel principal
+        </a>
+    </div>
+
 
     <div class="py-12">
         <div class="max-w-7xl mx-auto sm:px-6 lg:px-8 space-y-6">

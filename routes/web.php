@@ -3,16 +3,21 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProyectoController;
+use App\Http\Controllers\UsuarioController;
+use App\Http\Controllers\DashboardController;
+
+
+
 
 // Redirigir raíz a login
 Route::get('/', function () {
     return redirect()->route('login');
 });
 
-// Dashboard (por ahora sin controlador, lo creará Roberto)
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
+// Dashboard // ya hay controlador, hecho por Moi jeje
+Route::get('/dashboard', [DashboardController::class, 'index'])
+    ->middleware(['auth', 'verified'])
+    ->name('dashboard');
 
 // Rutas de perfil
 Route::middleware('auth')->group(function () {
@@ -28,6 +33,7 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Esto genera automáticamente las 7 rutas (index, create, store, show, edit, update, destroy)
     Route::resource('proyectos', ProyectoController::class);
+    Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 });
 
 // Incluir rutas de autenticación
