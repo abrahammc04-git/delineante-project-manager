@@ -370,15 +370,7 @@
 
     {{-- SCRIPTS --}}
     <script>
-
-    function openScheduleModal() {
-        document.getElementById('scheduleModal').classList.remove('hidden');
-    }
-    function closeScheduleModal() {
-        document.getElementById('scheduleModal').classList.add('hidden');
-    }
-
-    // --- VARIABLES GLOBALES ---
+    // --- 1. VARIABLES GLOBALES ---
     const dropzone = document.getElementById('dropzone');
     const fileInput = document.querySelector('input[type="file"]');
     const uploadActions = document.getElementById('uploadActions');
@@ -389,78 +381,105 @@
     // Array "memoria" donde guardaremos todos los archivos válidos
     let storedFiles = [];
 
-    // --- LÓGICA TOGGLE (ABRIR / CERRAR Y LIMPIAR) ---
+    // --- 2. LÓGICA DEL MODAL DE PROGRAMACIÓN ---
+    function openScheduleModal() {
+        const modal = document.getElementById('scheduleModal');
+        if(modal) modal.classList.remove('hidden');
+    }
+    function closeScheduleModal() {
+        const modal = document.getElementById('scheduleModal');
+        if(modal) modal.classList.add('hidden');
+    }
+
+    // --- 3. LÓGICA TOGGLE (ABRIR / CERRAR Y LIMPIAR SUBIDA) ---
     const toggleBtn = document.getElementById('toggleUploadBtn');
     const uploadContainer = document.getElementById('uploadContainer');
 
-    toggleBtn.addEventListener('click', () => {
-        uploadContainer.classList.toggle('hidden');
-        
-        if (!uploadContainer.classList.contains('hidden')) {
-            // AL ABRIR
-            toggleBtn.innerText = "Cancelar Subida";
-            toggleBtn.classList.add('bg-gray-100', 'text-gray-900');
-        } else {
-            // AL CERRAR (CANCELAR)
-            toggleBtn.innerHTML = `<svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Subir Nuevo Archivo`;
-            toggleBtn.classList.remove('bg-gray-100', 'text-gray-900');
+    if (toggleBtn && uploadContainer) {
+        toggleBtn.addEventListener('click', () => {
+            uploadContainer.classList.toggle('hidden');
+            
+            if (!uploadContainer.classList.contains('hidden')) {
+                // AL ABRIR
+                toggleBtn.innerText = "Cancelar Subida";
+                toggleBtn.classList.add('bg-gray-100', 'text-gray-900');
+            } else {
+                // AL CERRAR (CANCELAR)
+                toggleBtn.innerHTML = `<svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Subir Nuevo Archivo`;
+                toggleBtn.classList.remove('bg-gray-100', 'text-gray-900');
 
-            // --- ¡AQUÍ ESTÁ LA MAGIA! LIMPIEZA TOTAL ---
-            storedFiles = []; // 1. Vaciamos la memoria
-            updateUI();       // 2. Reseteamos la interfaz (vuelve el icono, se va la lista)
-            updateInput();    // 3. Limpiamos el input invisible
-        }
-    });
-
-    // --- LÓGICA DE DRAG & DROP Y GESTIÓN DE ARCHIVOS ---
-
-    // Click en la zona abre el selector
-    dropzone.addEventListener('click', (e) => {
-        if(e.target.closest('button')) return; // Evitar click si damos a borrar
-        fileInput.click();
-    });
-
-    // Efectos Drag
-    dropzone.addEventListener('dragover', (e) => {
-        e.preventDefault();
-        dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
-    });
-
-    dropzone.addEventListener('dragleave', () => {
-        dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-    });
-
-    dropzone.addEventListener('drop', (e) => {
-        e.preventDefault();
-        dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-        if (e.dataTransfer.files.length) {
-            handleFiles(e.dataTransfer.files);
-        }
-    });
-
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            // Revisamos cada archivo seleccionado
-            for (let i = 0; i < this.files.length; i++) {
-                let file = this.files[i];
-                
-                // Validación: Máximo 10MB (10 * 1024 * 1024 bytes)
-                if (file.size > 10 * 1024 * 1024) {
-                    
-                    // REEMPLAZO: Usamos SweetAlert en vez de alert()
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Archivo muy pesado',
-                        text: 'El archivo "' + file.name + '" pesa demasiado (Max 10MB).',
-                        confirmButtonColor: '#EF4444', // Rojo
-                    });
-
-                    this.value = ''; // Reseteamos el input para que no lo suba
-                    return; // Salimos
-                }
+                // LIMPIEZA TOTAL
+                storedFiles = []; 
+                updateUI();       
+                updateInput();    
             }
         });
     }
+
+    // --- 4. DRAG & DROP Y SELECCIÓN DE ARCHIVOS ---
+
+    // A) Click en la zona abre el selector
+    if (dropzone) {
+        dropzone.addEventListener('click', (e) => {
+            if(e.target.closest('button')) return; // Evitar click si damos a borrar
+            fileInput.click();
+        });
+
+        // B) Efectos Visuales Drag
+        dropzone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
+        });
+
+        dropzone.addEventListener('dragleave', () => {
+            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
+        });
+
+        // C) Soltar archivos (DROP)
+        dropzone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
+            if (e.dataTransfer.files.length) {
+                handleFiles(e.dataTransfer.files);
+            }
+        });
+    }
+
+    // D) Seleccionar archivos (CLICK INPUT)
+    if (fileInput) {
+        fileInput.addEventListener('change', function() {
+            if (this.files.length) {
+                handleFiles(this.files);
+            }
+        });
+    }
+
+    // --- 5. FUNCIÓN PRINCIPAL: PROCESAR ARCHIVOS ---
+    function handleFiles(files) {
+        for (let i = 0; i < files.length; i++) {
+            let file = files[i];
+            
+            // Validación: Máximo 10MB
+            if (file.size > 10 * 1024 * 1024) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Archivo muy pesado',
+                    text: 'El archivo "' + file.name + '" pesa demasiado (Max 10MB).',
+                    confirmButtonColor: '#EF4444',
+                });
+                continue; // Saltamos este archivo, pero seguimos con los demás
+            }
+
+            // Si pasa la validación, lo guardamos en memoria
+            storedFiles.push(file);
+        }
+        
+        // Actualizamos la vista y el input real
+        updateUI();
+        updateInput();
+    }
+
+    // --- 6. FUNCIONES AUXILIARES ---
 
     function removeFile(index) {
         storedFiles.splice(index, 1);
@@ -468,20 +487,23 @@
         updateInput();
     }
 
+    // Esta función sincroniza nuestro array con el input invisible que se envía al servidor
     function updateInput() {
         const dataTransfer = new DataTransfer();
         storedFiles.forEach(file => dataTransfer.items.add(file));
         fileInput.files = dataTransfer.files;
 
+        // Si vaciamos la lista, limpiamos el value para permitir resubir el mismo archivo
         if (storedFiles.length === 0) {
             fileInput.value = "";
         }
     }
 
+    // Esta función pinta la lista en pantalla
     function updateUI() {
         filesListUl.innerHTML = ''; 
 
-        // Si no hay archivos, mostrar estado inicial (icono grande)
+        // Estado: Sin archivos
         if (storedFiles.length === 0) {
             dropContent.classList.remove('hidden');
             fileListPreview.classList.add('hidden');
@@ -489,7 +511,7 @@
             return;
         }
 
-        // Si hay archivos, ocultar icono grande y mostrar lista
+        // Estado: Con archivos
         dropContent.classList.add('hidden');
         fileListPreview.classList.remove('hidden');
         uploadActions.classList.remove('hidden');
