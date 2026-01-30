@@ -60,6 +60,13 @@ return [
             'report' => false,
         ],
 
+        'proyectos' => [
+            'driver' => 'local',
+            'root' => storage_path('app/private/proyectos'),
+            'throw' => false,
+            'visibility' => 'private',
+        ],
+
     ],
 
     /*

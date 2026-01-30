@@ -7,36 +7,40 @@
             <div class="navbar-logo">
                 <img src="{{ asset('images/proyinstal-logo.png') }}" alt="PROYINSTAL">
             </div>
-            
-            <ul class="navbar-menu">
-                <li><a href="{{ route('dashboard') }}" class="navbar-link active">Dashboard</a></li>
-                <li><a href="{{ route('proyectos.index') }}" class="navbar-link">Proyectos</a></li>
-                @if(auth()->user()->isAdmin())
-                    <li><a href="#" class="navbar-link">Usuarios</a></li>
-                @endif
-                <li><a href="{{ route('profile.edit') }}" class="navbar-link">Mi Perfil</a></li>
-                <li>
-                    <form method="POST" action="{{ route('logout') }}" style="display: inline;">
-                        @csrf
-                        <button type="submit" class="navbar-link" style="background: none; border: none; cursor: pointer;">
-                            Cerrar Sesión
-                        </button>
-                    </form>
-                </li>
-            </ul>
+
+            <div class="navbar-right">
+                <div class="navbar-user">
+                    <span class="navbar-name">{{ auth()->user()->nombre }}</span>
+                    <span class="navbar-role">{{ auth()->user()->rol }}</span>
+                </div>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="navbar-link navbar-logout">
+                        Cerrar sesión
+                    </button>
+                </form>
+            </div>
         </div>
     </nav>
+
 
     <!-- Dashboard Content -->
     <div class="dashboard-container">
         <!-- Header -->
-        <div class="dashboard-header">
-            <h1 class="dashboard-title">
-                Hola, {{ auth()->user()->nombre }} 👋
-            </h1>
-            <p class="dashboard-subtitle">
-                Aquí tienes un resumen de tus proyectos y actividad reciente
-            </p>
+        <div class="dashboard-hero">
+            <div class="dashboard-hero-content">
+                <div>
+                    <h1 class="dashboard-title">Hola, {{ auth()->user()->nombre }} 👋</h1>
+                    <p class="dashboard-subtitle">Aquí tienes un resumen de tus proyectos y actividad reciente</p>
+                </div>
+
+                <div class="dashboard-hero-actions">
+                    <a class="btn btn-hero" href="{{ route('proyectos.index') }}">Ver proyectos</a>
+                    <a class="btn btn-hero-outline" href="{{ route('profile.edit') }}">Mi perfil</a>
+
+                </div>
+            </div>
         </div>
 
         <!-- Stats Grid -->
@@ -114,7 +118,7 @@
             <div class="table-header">
                 <h2 class="table-title">Proyectos Recientes</h2>
             </div>
-            
+
             <table>
                 <thead>
                     <tr>
