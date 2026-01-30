@@ -54,14 +54,42 @@
                             </div>
 
                             {{-- Tipo de Proyecto --}}
-                            <div>
-                                <label for="tipo_proyecto" class="block text-sm font-medium text-gray-700">Tipo *</label>
-                                <select name="tipo_proyecto" id="tipo_proyecto" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
-                                    <option value="Residencial">Residencial</option>
-                                    <option value="Comercial">Comercial</option>
-                                    <option value="Industrial">Industrial</option>
-                                    <option value="Reforma">Reforma</option>
+                            <div class="mb-4">
+                                <label for="tipo_proyecto" class="block text-gray-700 text-sm font-bold mb-2">Tipo de Proyecto *</label>
+                                
+                                <select name="tipo_proyecto" id="tipo" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
+                                    
+                                    {{-- Opción por defecto (deshabilitada) --}}
+                                    <option value="" disabled {{ old('tipo_proyecto') ? '' : 'selected' }}>Selecciona un tipo</option>
+
+                                    {{-- Opción: Industrial --}}
+                                    <option value="Industrial" {{ old('tipo_proyecto') == 'Industrial' ? 'selected' : '' }}>
+                                        Industrial
+                                    </option>
+
+                                    {{-- Opción: Comercial --}}
+                                    <option value="Comercial" {{ old('tipo_proyecto') == 'Comercial' ? 'selected' : '' }}>
+                                        Comercial
+                                    </option>
+                                    
+                                    {{-- Opción: Residencial --}}
+                                    <option value="Residencial" {{ old('tipo_proyecto') == 'Residencial' ? 'selected' : '' }}>
+                                        Residencial
+                                    </option>
+                                    
+                                    {{-- Opción: Reforma --}}
+                                    <option value="Reforma" {{ old('tipo_proyecto') == 'Reforma' ? 'selected' : '' }}>
+                                        Reforma
+                                    </option>
+
+                                    {{-- Si tienes más tipos, añade más líneas aquí --}}
+
                                 </select>
+
+                                {{-- Mensaje de error --}}
+                                @error('tipo')
+                                    <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
+                                @enderror
                             </div>
 
                             {{-- Fechas --}}
@@ -76,14 +104,32 @@
                             </div>
 
                             {{-- Estado Inicial --}}
-                            <div>
-                                <label for="estado" class="block text-sm font-medium text-gray-700">Estado Inicial *</label>
+                            <div class="mb-4">
+                                <label for="estado" class="block text-gray-700 text-sm font-bold mb-2">Estado Inicial *</label>
                                 <select name="estado" id="estado" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="En proceso">En proceso</option>
-                                    <option value="Completado">Completado</option>
+                                    
+                                    {{-- Opción por defecto (deshabilitada) --}}
+                                    <option value="" disabled {{ old('estado') ? '' : 'selected' }}>Selecciona un estado</option>
+
+                                    {{-- Opción: Pendiente --}}
+                                    <option value="Pendiente" {{ old('estado') == 'Pendiente' ? 'selected' : '' }}>
+                                        Pendiente
+                                    </option>
+                                    
+                                    {{-- Opción: En proceso --}}
+                                    <option value="En proceso" {{ old('estado') == 'En proceso' ? 'selected' : '' }}>
+                                        En proceso
+                                    </option>
+                                    
+                                    {{-- Opción: Terminado --}}
+                                    <option value="Terminado" {{ old('estado') == 'Terminado' ? 'selected' : '' }}>
+                                        Terminado
+                                    </option>
                                 </select>
-                            </div>
+    @error('estado')
+        <p class="text-red-500 text-xs italic">{{ $message }}</p>
+    @enderror
+</div>
 
                             {{-- Localización --}}
                             <div>
