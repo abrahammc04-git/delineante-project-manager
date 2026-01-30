@@ -121,10 +121,16 @@
                                         En proceso
                                     </option>
                                     
-                                    {{-- Opción: Terminado --}}
-                                    <option value="Terminado" {{ old('estado') == 'Terminado' ? 'selected' : '' }}>
-                                        Terminado
+                                    {{-- Opción: Completado --}}
+                                    <option value="Completado" {{ old('estado') == 'Completado' ? 'selected' : '' }}>
+                                        Completado
                                     </option>
+
+                                    {{-- Opción: Cancelado --}}
+                                    <option value="Cancelado" {{ old('estado') == 'Cancelado' ? 'selected' : '' }}>
+                                        Cancelado
+                                    </option>
+
                                 </select>
     @error('estado')
         <p class="text-red-500 text-xs italic">{{ $message }}</p>

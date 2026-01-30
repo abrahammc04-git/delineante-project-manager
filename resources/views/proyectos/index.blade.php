@@ -27,13 +27,6 @@
                 </div>
             </div>
 
-            {{-- Mensajes de Éxito --}}
-            @if(session('success'))
-                <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 mx-4 sm:mx-0" role="alert">
-                    <p>{{ session('success') }}</p>
-                </div>
-            @endif
-
             {{-- Tabla de Proyectos --}}
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 bg-white border-b border-gray-200 overflow-x-auto">
