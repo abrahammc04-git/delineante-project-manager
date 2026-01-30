@@ -31,17 +31,30 @@
         <div class="dashboard-hero">
             <div class="dashboard-hero-content">
                 <div>
-                    <h1 class="dashboard-title">Hola, {{ auth()->user()->nombre }} 👋</h1>
-                    <p class="dashboard-subtitle">Aquí tienes un resumen de tus proyectos y actividad reciente</p>
+                    <h1 class="dashboard-title">Hola, {{ auth()->user()->nombre }}</h1>
+                    <p class="dashboard-subtitle">
+                        Aquí tienes un resumen de tus proyectos y actividad reciente
+                    </p>
                 </div>
 
                 <div class="dashboard-hero-actions">
-                    <a class="btn btn-hero" href="{{ route('proyectos.index') }}">Ver proyectos</a>
-                    <a class="btn btn-hero-outline" href="{{ route('profile.edit') }}">Mi perfil</a>
+                    <a class="btn btn-hero" href="{{ route('proyectos.index') }}">
+                        Ver proyectos
+                    </a>
 
+                    @if(auth()->user()->rol === 'admin')
+                    <a class="btn btn-hero-outline" href="{{ route('usuarios.index') }}">
+                        Usuarios
+                    </a>
+                    @endif
+
+                    <a class="btn btn-hero-outline" href="{{ route('profile.edit') }}">
+                        Mi perfil
+                    </a>
                 </div>
             </div>
         </div>
+
 
         <!-- Stats Grid -->
         <div class="stats-grid">
@@ -50,8 +63,8 @@
                 <div class="stat-header">
                     <div>
                         <h3 class="stat-title">Total Proyectos</h3>
-                        <p class="stat-value">12</p>
-                        <p class="stat-change">+2 este mes</p>
+                        <p class="stat-value">{{ $total }}</p>
+                        <p class="stat-change">Proyectos totales</p>
                     </div>
                     <div class="stat-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -67,7 +80,7 @@
                 <div class="stat-header">
                     <div>
                         <h3 class="stat-title">En Proceso</h3>
-                        <p class="stat-value">5</p>
+                        <p class="stat-value">{{ $enProceso }}</p>
                         <p class="stat-change">Activos actualmente</p>
                     </div>
                     <div class="stat-icon">
@@ -83,8 +96,11 @@
                 <div class="stat-header">
                     <div>
                         <h3 class="stat-title">Completados</h3>
-                        <p class="stat-value">7</p>
-                        <p class="stat-change">58% tasa de éxito</p>
+                        <p class="stat-value">{{ $completados }}</p>
+                        <p class="stat-change">
+                            {{ $porcentajeCompletados }}% completados
+                        </p>
+
                     </div>
                     <div class="stat-icon">
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -100,7 +116,7 @@
                 <div class="stat-header">
                     <div>
                         <h3 class="stat-title">Pendientes</h3>
-                        <p class="stat-value">3</p>
+                        <p class="stat-value">{{ $pendientes }}</p>
                         <p class="stat-change">Por iniciar</p>
                     </div>
                     <div class="stat-icon">
@@ -131,78 +147,74 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <!-- Ejemplo de fila -->
+                    @forelse($proyectosRecientes as $p)
+                    @php
+                    // ✅ Columnas reales de tu tabla proyectos
+                    $nombre = $p->nombre_proyecto ?? 'Sin nombre';
+                    $cliente = $p->id_usuario; // por ahora mostramos el id (luego lo mejoramos con relación)
+                    $tipo = $p->tipo_proyecto ?? '—';
+
+                    $estado = strtolower(trim($p->estado ?? 'pendiente'));
+
+                    // ✅ Mismo mapeo de colores (clases CSS que YA tienes)
+                    $badgeClass = match ($estado) {
+                    'pendiente' => 'badge badge-pending',
+                    'en_proceso', 'en proceso' => 'badge badge-in-progress',
+                    'completado' => 'badge badge-completed',
+                    'pausado' => 'badge badge-paused',
+                    'cancelado', 'cancelado/a', 'cancelada' => 'badge badge-cancelled',
+                    default => 'badge badge-paused',
+                    };
+
+                    $estadoLabel = match ($estado) {
+                    'pendiente' => 'Pendiente',
+                    'en_proceso', 'en proceso' => 'En Proceso',
+                    'completado' => 'Completado',
+                    'pausado' => 'Pausado',
+                    'cancelado', 'cancelado/a', 'cancelada' => 'Cancelado',
+                    default => ucfirst(str_replace('_', ' ', $estado)),
+                    };
+
+                    // ✅ Tu columna real de fecha
+                    $ultima = $p->ultima_actualizacion
+                    ? 'hace ' . \Carbon\Carbon::parse($p->ultima_actualizacion)->diffForHumans([
+                    'syntax' => \Carbon\Carbon::DIFF_ABSOLUTE,
+                    ])
+                    : '—';
+
+
+                    // ✅ Tu PK real
+                    $idProyecto = $p->id_proyecto;
+                    @endphp
+
                     <tr>
                         <td style="font-weight: 600; color: var(--proyinstal-dark);">
-                            Vivienda Unifamiliar Pamplona
+                            {{ $nombre }}
                         </td>
-                        <td>Juan García López</td>
+                        <td>{{ $cliente }}</td>
+                        <td><span class="{{ $badgeClass }}">{{ $estadoLabel }}</span></td>
+                        <td>{{ $tipo }}</td>
+                        <td>{{ $ultima }}</td>
                         <td>
-                            <span class="badge badge-in-progress">En Proceso</span>
-                        </td>
-                        <td>Vivienda</td>
-                        <td>Hace 2 días</td>
-                        <td>
-                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                            @if($idProyecto)
+                            <a href="{{ route('proyectos.show', $idProyecto) }}" class="link" style="font-size: 0.875rem;">
+                                Ver detalles
+                            </a>
+                            @else
+                            <span style="color: var(--proyinstal-gray-600); font-size: 0.875rem;">—</span>
+                            @endif
                         </td>
                     </tr>
+                    @empty
+                    {{-- Si no hay proyectos, no mostramos filas "inventadas" --}}
                     <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
-                            Reforma Local Comercial
-                        </td>
-                        <td>María Sánchez</td>
-                        <td>
-                            <span class="badge badge-completed">Completado</span>
-                        </td>
-                        <td>Reforma</td>
-                        <td>Hace 5 días</td>
-                        <td>
-                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
+                        <td colspan="6" style="padding: 1.5rem; color: var(--proyinstal-gray-600);">
+                            No hay proyectos todavía.
                         </td>
                     </tr>
-                    <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
-                            Edificio Residencial
-                        </td>
-                        <td>Pedro Martínez</td>
-                        <td>
-                            <span class="badge badge-pending">Pendiente</span>
-                        </td>
-                        <td>Edificio</td>
-                        <td>Hace 1 semana</td>
-                        <td>
-                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
-                            Topografía Terreno Industrial
-                        </td>
-                        <td>Construcciones García S.L.</td>
-                        <td>
-                            <span class="badge badge-in-progress">En Proceso</span>
-                        </td>
-                        <td>Topografía</td>
-                        <td>Hace 3 días</td>
-                        <td>
-                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
-                            Instalaciones Eléctricas
-                        </td>
-                        <td>Ana López</td>
-                        <td>
-                            <span class="badge badge-paused">Pausado</span>
-                        </td>
-                        <td>Instalaciones</td>
-                        <td>Hace 2 semanas</td>
-                        <td>
-                            <a href="#" class="link" style="font-size: 0.875rem;">Ver detalles</a>
-                        </td>
-                    </tr>
+                    @endforelse
                 </tbody>
+
             </table>
         </div>
     </div>
