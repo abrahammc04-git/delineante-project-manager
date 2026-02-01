@@ -139,7 +139,9 @@
                 <thead>
                     <tr>
                         <th>Proyecto</th>
+                        @if(auth()->user()->rol === 'admin')
                         <th>Cliente</th>
+                        @endif
                         <th>Estado</th>
                         <th>Tipo</th>
                         <th>Última Actualización</th>
@@ -151,7 +153,10 @@
                     @php
                     // ✅ Columnas reales de tu tabla proyectos
                     $nombre = $p->nombre_proyecto ?? 'Sin nombre';
-                    $cliente = $p->id_usuario; // por ahora mostramos el id (luego lo mejoramos con relación)
+                    $cliente = $p->usuario
+                    ? trim(($p->usuario->nombre ?? '') . ' ' . ($p->usuario->apellidos ?? ''))
+                    : '—';
+
                     $tipo = $p->tipo_proyecto ?? '—';
 
                     $estado = strtolower(trim($p->estado ?? 'pendiente'));
@@ -177,10 +182,12 @@
 
                     // ✅ Tu columna real de fecha
                     $ultima = $p->ultima_actualizacion
-                    ? 'hace ' . \Carbon\Carbon::parse($p->ultima_actualizacion)->diffForHumans([
-                    'syntax' => \Carbon\Carbon::DIFF_ABSOLUTE,
-                    ])
+                    ? \Carbon\Carbon::parse($p->ultima_actualizacion)->isFuture()
+                    ? 'hace 0 minutos'
+                    : \Carbon\Carbon::parse($p->ultima_actualizacion)->diffForHumans()
                     : '—';
+
+
 
 
                     // ✅ Tu PK real
@@ -191,7 +198,9 @@
                         <td style="font-weight: 600; color: var(--proyinstal-dark);">
                             {{ $nombre }}
                         </td>
+                        @if(auth()->user()->rol === 'admin')
                         <td>{{ $cliente }}</td>
+                        @endif
                         <td><span class="{{ $badgeClass }}">{{ $estadoLabel }}</span></td>
                         <td>{{ $tipo }}</td>
                         <td>{{ $ultima }}</td>
