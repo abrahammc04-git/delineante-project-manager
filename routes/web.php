@@ -33,13 +33,9 @@ Route::middleware('auth')->group(function () {
 Route::middleware(['auth'])->group(function () {
     // Esto genera automáticamente las 7 rutas (index, create, store, show, edit, update, destroy)
     Route::resource('proyectos', ProyectoController::class);
-
-    // Rutas extra de archivos (vienen de develop)
-    Route::patch('/proyectos/{id}/archivos/toggle', [ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
-    Route::post('/proyectos/{id}/archivos/programar', [ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
-    Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
-
-    // Usuarios (tu parte)
+    Route::patch('/proyectos/{id}/archivos/toggle', [App\Http\Controllers\ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
+    Route::post('/proyectos/{id}/archivos/programar', [App\Http\Controllers\ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
+    Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [App\Http\Controllers\ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 });
 
