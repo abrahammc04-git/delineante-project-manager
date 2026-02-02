@@ -2,47 +2,71 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
+    // Especificar la tabla
+    protected $table = 'usuarios';
+    
+    // Especificar la clave primaria
+    protected $primaryKey = 'id_usuario';
+
+    // Campos que se pueden asignar masivamente
     protected $fillable = [
-        'name',
+        'nombre',
+        'apellidos',
         'email',
-        'password',
+        'telefono',
+        'empresa',
+        'password_hash',
+        'rol',
+        'activo',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
+    // Campos ocultos (no se devuelven en JSON)
     protected $hidden = [
-        'password',
+        'password_hash',
         'remember_token',
     ];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
+    // Especificar que 'password_hash' es la contraseña
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
+
+    // Deshabilitar timestamps automáticos de Laravel
+    public $timestamps = false;
+
+    // Castear tipos
     protected function casts(): array
     {
         return [
             'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+            'activo' => 'boolean',
         ];
+    }
+    
+    // Relación con proyectos
+    public function proyectos()
+    {
+        return $this->hasMany(Proyecto::class, 'id_usuario', 'id_usuario');
+    }
+    
+    // Helper: verificar si es admin
+    public function isAdmin()
+    {
+        return $this->rol === 'admin';
+    }
+    
+    // Helper: verificar si es cliente
+    public function isCliente()
+    {
+        return $this->rol === 'cliente';
     }
 }
