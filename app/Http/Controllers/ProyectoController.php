@@ -157,7 +157,7 @@ public function show($id)
             // Si subiste archivos antes de tener la BD, esto crea el registro al vuelo.
             $doc = Documento::firstOrCreate(
                 ['id_proyecto' => $id, 'nombre_archivo' => $nombreArchivo],
-                ['visible' => true]
+                ['visible' => false]
             );
 
             // Si no eres admin y está oculto, no lo añadimos a la lista
@@ -201,7 +201,11 @@ public function programarMasivo(Request $request, $id)
     $request->validate([
         'archivos_seleccionados' => 'required|array',
         'fecha_ocultacion' => 'required|date|after:now',
-    ]);
+    ],[
+            // MENSAJES PERSONALIZADOS
+            'archivos_seleccionados.required' => 'Por favor, selecciona al menos un archivo.',
+            'fecha_ocultacion.after'          => 'Es obligatorio elegir una fecha y hora válida.'
+    ,]);
 
     // Actualizamos todos los seleccionados de golpe
     Documento::where('id_proyecto', $id)
@@ -325,7 +329,7 @@ public function programarMasivo(Request $request, $id)
                         'nombre_archivo' => $filename
                     ],
                     [
-                        'visible' => true,            // <--- AQUÍ ESTÁ LA CLAVE (true = visible)
+                        'visible' => false,            // <--- AQUÍ ESTÁ LA CLAVE (true = visible)
                         'fecha_ocultacion' => null    // Por si acaso resubimos uno que estaba programado
                     ]
                 );
