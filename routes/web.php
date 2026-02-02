@@ -39,5 +39,6 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 });
 
+
 // Incluir rutas de autenticación
 require __DIR__.'/auth.php';

@@ -274,6 +274,26 @@
                                 </form>
                             @endif
                         </div>
+                        
+                        {{-- 3. Badge Programado (si existe) --}}
+                        @if($archivo['programado'])
+                            <div class="flex items-center bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-3 flex-shrink-0">
+                                <span class="text-[10px] font-medium mr-2" title="Se ocultará: {{ \Carbon\Carbon::parse($archivo['programado'])->format('d/m/Y H:i') }}">
+                                    🕒 {{ \Carbon\Carbon::parse($archivo['programado'])->format('d/m H:i') }}
+                                </span>
+                                
+                                @if(auth()->user()->isAdmin())
+                                    <form action="{{ route('proyectos.archivos.cancelar', ['id' => $proyecto->id_proyecto]) }}" method="POST" class="inline-flex">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
+                                        <button type="submit" class="text-yellow-600 hover:text-red-600 focus:outline-none transition" title="Cancelar programación">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endif
                     </div>
                 </li>
             @endforeach
@@ -403,9 +423,12 @@
             dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
         });
 
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-        });
+    function openScheduleModal() {
+        document.getElementById('scheduleModal').classList.remove('hidden');
+    }
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').classList.add('hidden');
+    }
 
         // C) Soltar archivos (DROP)
         dropzone.addEventListener('drop', (e) => {
