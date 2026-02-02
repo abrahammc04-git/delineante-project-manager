@@ -36,9 +36,11 @@ class DashboardController extends Controller
 
         // Últimos proyectos (tabla)
         $proyectosRecientes = (clone $q)
+            ->with('usuario')
             ->orderByDesc('ultima_actualizacion')
             ->limit(5)
             ->get();
+
 
         return view('dashboard', compact(
             'total',
