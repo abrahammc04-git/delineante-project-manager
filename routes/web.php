@@ -36,6 +36,8 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/proyectos/{id}/archivos/toggle', [App\Http\Controllers\ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
     Route::post('/proyectos/{id}/archivos/programar', [App\Http\Controllers\ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
     Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [App\Http\Controllers\ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
+    Route::post('/proyectos/{id}/archivos/programar-publicacion', [ProyectoController::class, 'programarPublicacion'])->name('proyectos.archivos.programar_publicacion');
+    Route::patch('/proyectos/{id}/archivos/cancelar-publicacion', [ProyectoController::class, 'cancelarPublicacion'])->name('proyectos.archivos.cancelar_publicacion');
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 });
 
