@@ -66,6 +66,7 @@
                             <th>Teléfono</th>
                             <th>Empresa</th>
                             <th>Estado</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -84,6 +85,14 @@
                                 <span class="badge badge-cancelled">Inactivo</span>
                                 @endif
                             </td>
+                            <td>
+                                <a href="{{ route('usuarios.show', $u) }}"
+                                    class="link"
+                                    style="font-size: 0.875rem;">
+                                    Ver detalles
+                                </a>
+                            </td>
+
                         </tr>
                         @empty
                         <tr>

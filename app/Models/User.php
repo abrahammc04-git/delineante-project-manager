@@ -69,4 +69,11 @@ class User extends Authenticatable
     {
         return $this->rol === 'cliente';
     }
+
+    // 🔑 Indicar a Laravel cuál es la clave primaria para Auth
+    public function getAuthIdentifierName()
+    {
+        return 'id_usuario';
+    }
+
 }

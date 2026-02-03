@@ -1,4 +1,7 @@
 <x-app-layout>
+    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
+
+
     <div class="bg-white shadow sm:rounded-lg p-4 sm:p-6 flex items-center justify-between">
         <div>
             <h1 class="text-xl font-semibold text-gray-900">Perfil</h1>
@@ -6,7 +9,7 @@
         </div>
 
         <a href="{{ route('dashboard') }}" class="btn btn-secondary" style="width:auto;">
-            ← Volver al panel principal
+            ← Volver al dashboard
         </a>
     </div>
 
