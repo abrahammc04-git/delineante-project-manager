@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\ChatbotController;
 
 
 
@@ -39,6 +39,14 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
 });
 
+// ── Rutas solo para ADMIN ──
+Route::middleware(['auth', 'admin'])->group(function () {
 
+    // Chatbot (POST) - solo admin puede usar el asistente IA
+    Route::post('/chatbot/consulta', [ChatbotController::class, 'consulta'])->name('chatbot.consulta');
+
+    // Usuarios (por implementar en Feature 5)
+    // Route::resource('usuarios', UsuarioController::class);
+});
 // Incluir rutas de autenticación
 require __DIR__.'/auth.php';
