@@ -9,3 +9,4 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Schedule::command('archivos:ocultar')->everyMinute();
+Schedule::command('archivos:mostrar')->everyMinute();

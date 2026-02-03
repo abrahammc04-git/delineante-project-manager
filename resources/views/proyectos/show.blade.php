@@ -175,6 +175,11 @@
         <h4 class="text-sm font-medium text-gray-900">Archivos Adjuntos</h4>
         
         @if(auth()->user()->isAdmin() && isset($archivos) && count($archivos) > 0)
+            {{-- Botón NUEVO: Programar MOSTRAR --}}
+            <button type="button" onclick="openShowModal()" class="text-xs flex items-center bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold py-1 px-3 rounded border border-blue-300 transition">
+                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
+                Programar mostrar archivos
+            </button>
             <button type="button" onclick="openScheduleModal()" class="text-xs flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300 transition">
                 <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                 Programar ocultar archivos
@@ -209,6 +214,25 @@
                                 {{ $archivo['size'] }} KB • {{ $archivo['fecha'] }}
                             </span>
                         </div>
+
+                        {{-- Badge AZUL: Programar mostrar archivos --}}
+                        @if(isset($archivo['programado_mostrar']) && $archivo['programado_mostrar'])
+                            <div class="flex items-center bg-blue-100 text-blue-800 rounded px-2 py-0.5 ml-3 flex-shrink-0">
+                                <span class="text-[10px] font-medium mr-2" title="Se mostrará: {{ \Carbon\Carbon::parse($archivo['programado_mostrar'])->format('d/m/Y H:i') }}">
+                                    👁️ Visible: {{ \Carbon\Carbon::parse($archivo['programado_mostrar'])->format('d/m H:i') }}
+                                </span>
+                                @if(auth()->user()->isAdmin())
+                                    <form action="{{ route('proyectos.archivos.cancelar_publicacion', ['id' => $proyecto->id_proyecto]) }}" method="POST" class="inline-flex">
+                                        @csrf
+                                        @method('PATCH')
+                                        <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
+                                        <button type="submit" class="text-blue-600 hover:text-blue-800 focus:outline-none transition font-bold ml-1" title="Cancelar programación">
+                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        </button>
+                                    </form>
+                                @endif
+                            </div>
+                        @endif
                         
                         {{-- 3. Badge Programado (si existe) --}}
                         @if($archivo['programado'])
@@ -286,6 +310,56 @@
             <p class="text-sm text-gray-500">No hay documentos subidos todavía.</p>
         </div>
     @endif
+</div>
+
+{{-- MODAL DE PROGRAMAR PUBLICACIÓN (MOSTRAR ARCHIVOS) --}}
+{{-- Fíjate que el ID es 'scheduleShowModal' --}}
+<div id="scheduleShowModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+        
+        {{-- Fondo oscuro --}}
+        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeShowModal()"></div>
+        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+
+        {{-- Ventana Modal --}}
+        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            <form method="POST" action="{{ route('proyectos.archivos.programar_publicacion', ['id' => $proyecto->id_proyecto]) }}">
+                @csrf
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <h3 class="text-lg leading-6 font-medium text-blue-900 mb-4">
+                        Programar aparición de archivos
+                    </h3>
+                    
+                    {{-- Input de Fecha --}}
+                    <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora para mostrarse</label>
+                        <input type="datetime-local" name="fecha_publicacion" required class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
+                    </div>
+
+                    {{-- Lista de Archivos --}}
+                    <div class="mb-2">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona los archivos:</label>
+                        <div class="max-h-48 overflow-y-auto border border-gray-200 rounded-md bg-gray-50 p-2 space-y-2">
+                            @if(isset($archivos))
+                                @foreach($archivos as $archivo)
+                                    <div class="flex items-center">
+                                        <input id="chk_show_{{ $loop->index }}" name="archivos_seleccionados[]" value="{{ $archivo['nombre'] }}" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer">
+                                        <label for="chk_show_{{ $loop->index }}" class="ml-2 block text-sm text-gray-900 truncate cursor-pointer">{{ $archivo['nombre'] }}</label>
+                                    </div>
+                                @endforeach
+                            @endif
+                        </div>
+                    </div>
+                </div>
+
+                {{-- Botones del pie --}}
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm">Guardar</button>
+                    <button type="button" onclick="closeShowModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 
 {{-- MODAL DE PROGRAMACIÓN MASIVA --}}
@@ -512,6 +586,23 @@
             `;
             filesListUl.appendChild(li);
         });
+    }
+
+    function openShowModal() {
+        // Busca el elemento por su ID y le quita la clase 'hidden'
+        const modal = document.getElementById('scheduleShowModal');
+        if(modal) {
+            modal.classList.remove('hidden');
+        } else {
+            console.error('No encuentro el modal con id: scheduleShowModal');
+        }
+    }
+
+    function closeShowModal() {
+        const modal = document.getElementById('scheduleShowModal');
+        if(modal) {
+            modal.classList.add('hidden');
+        }
     }
 </script>
 </x-app-layout>
