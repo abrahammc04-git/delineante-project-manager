@@ -36,7 +36,15 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/proyectos/{id}/archivos/toggle', [App\Http\Controllers\ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
     Route::post('/proyectos/{id}/archivos/programar', [App\Http\Controllers\ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
     Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [App\Http\Controllers\ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
+    
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/{usuario}', [UsuarioController::class, 'show'])->name('usuarios.show');
+    Route::patch('/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
+    Route::delete('usuarios/{usuario}', [UsuarioController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('usuarios.destroy');
+
+
 });
 
 // ── Rutas solo para ADMIN ──
