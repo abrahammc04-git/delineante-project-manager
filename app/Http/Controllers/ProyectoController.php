@@ -171,7 +171,8 @@ public function show($id)
                 'fecha'   => date('d/m/Y H:i', Storage::disk('proyectos')->lastModified($file)),
                 // Datos de la BD
                 'visible' => $doc->visible,
-                'programado' => $doc->fecha_ocultacion
+                'programado' => $doc->fecha_ocultacion,
+                'programado_mostrar' => $doc->fecha_publicacion
             ];
         }
     }
@@ -227,7 +228,48 @@ public function programarMasivo(Request $request, $id)
         $doc->fecha_ocultacion = null; // Borramos la fecha
         $doc->save();
 
-        return back()->with('success', 'Programación cancelada.');
+        return back()->with('success', 'Programación ocultar archivos cancelada.');
+    }
+
+    public function programarPublicacion(Request $request, $id)
+    {
+        $request->validate([
+            'archivos_seleccionados' => 'required|array',
+            'fecha_publicacion'      => 'required|date|after:now',
+        ], [
+            'archivos_seleccionados.required' => 'Selecciona al menos un archivo para mostrar.',
+            'fecha_publicacion.required'      => 'Debes elegir una fecha y hora.',
+            'fecha_publicacion.after'         => 'La fecha de publicación debe ser futura.',
+        ]);
+
+        $nombres = $request->input('archivos_seleccionados');
+        $fecha   = $request->input('fecha_publicacion');
+
+        Documento::where('id_proyecto', $id)
+            ->whereIn('nombre_archivo', $nombres)
+            ->update([
+                'fecha_publicacion' => $fecha,
+                // Aseguramos que siga oculto hasta que llegue la fecha
+                'visible' => false 
+            ]);
+
+        return back()->with('success', 'Se ha programado la publicación automática de los archivos seleccionados.');
+    }
+
+    public function cancelarPublicacion(Request $request, $id)
+    {
+        $request->validate([
+            'nombre_archivo' => 'required|string',
+        ]);
+
+        $nombreArchivo = $request->input('nombre_archivo');
+
+        // Buscamos el archivo y le quitamos la fecha de publicación
+        Documento::where('id_proyecto', $id)
+            ->where('nombre_archivo', $nombreArchivo)
+            ->update(['fecha_publicacion' => null]); // <--- ESTA ES LA CLAVE
+
+        return back()->with('success', 'Se ha cancelado la programación de visualización.');
     }
 
     /**

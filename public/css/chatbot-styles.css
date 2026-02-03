@@ -5,8 +5,100 @@
 /* Layout principal: tabla + chat lado a lado */
 .proyectos-chat-layout {
     display: flex;
-    height: calc(100vh - 65px); /* resto de pantalla tras navbar */
+    height: calc(100vh - 65px);
     width: 100%;
+}
+
+/* ============================================
+   BOX SUPERIOR - Título + Botones
+   ============================================ */
+.box-proyectos {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.box-proyectos-inner {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.box-proyectos-titulo h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.box-proyectos-titulo p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.box-proyectos-botones {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Botón ← Dashboard dentro del box */
+.btn-box-dashboard {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: background 0.2s;
+}
+
+.btn-box-dashboard:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Botón + Nuevo Proyecto dentro del box */
+.btn-box-nuevo {
+    background: white;
+    color: #0033CC;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: box-shadow 0.2s;
+}
+
+.btn-box-nuevo:hover {
+    box-shadow: 0 3px 8px rgba(0,51,204,0.25);
+}
+
+/* Botón toggle Asistente IA */
+.btn-toggle-chatbot {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-toggle-chatbot:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.btn-toggle-chatbot.activo {
+    background: #059669;
+    border-color: #059669;
 }
 
 /* ============================================
@@ -33,20 +125,41 @@
     color: #001F7A;
 }
 
-.btn-nuevo-proyecto {
-    background: linear-gradient(135deg, #0033CC, #001F7A);
-    color: #fff;
-    border: none;
-    padding: 0.55rem 1.1rem;
+/* Botón Mostrar Todos (limpiar filtro) */
+.btn-limpiar-filtro {
+    background: #fff;
+    color: #059669;
+    border: 2px solid #059669;
+    padding: 0.5rem 1rem;
     border-radius: 8px;
-    font-size: 0.875rem;
+    font-size: 0.82rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s;
 }
-.btn-nuevo-proyecto:hover {
-    transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(0,51,204,0.3);
+
+.btn-limpiar-filtro:hover {
+    background: #059669;
+    color: #fff;
+}
+
+/* Buscador */
+.buscador-container {
+    margin-bottom: 1rem;
+}
+
+#buscadorProyectos {
+    width: 100%;
+    padding: 0.72rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+#buscadorProyectos:focus {
+    border-color: #0033CC;
+    box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
 }
 
 /* Tabla proyectos */
@@ -75,6 +188,7 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.04em;
+    color: #fff;
 }
 
 .proyectos-tabla-wrap td {
@@ -92,16 +206,7 @@
     background: #eef2ff;
 }
 
-/* Badges */
-.badge {
-    display: inline-block;
-    padding: 0.25rem 0.65rem;
-    border-radius: 9999px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-}
+/* Badges dentro de tabla proyectos */
 .badge-pendiente   { background: #fef3c7; color: #92400e; }
 .badge-en-proceso  { background: #dbeafe; color: #1e40af; }
 .badge-completado  { background: #d1fae5; color: #065f46; }
@@ -118,6 +223,7 @@
     flex-direction: column;
     background: #fff;
     border-left: 1px solid #e5e7eb;
+    transition: all 0.3s ease-in-out;
 }
 
 /* Header del chat */
@@ -128,6 +234,14 @@
     padding: 0.85rem 1rem;
     background: linear-gradient(135deg, #0033CC, #001F7A);
     color: #fff;
+}
+
+/* Fila del header: avatar + info + botón cerrar */
+.chat-header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
 }
 
 .chat-avatar-header {
@@ -169,6 +283,22 @@
     border-radius: 50%;
     display: inline-block;
     box-shadow: 0 0 4px rgba(34,197,94,0.6);
+}
+
+/* Botón cerrar chat (×) */
+.btn-cerrar-chat {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.btn-cerrar-chat:hover {
+    opacity: 0.7;
 }
 
 /* Zona de mensajes (scroll) */
@@ -387,5 +517,9 @@
         width: 100%;
         min-width: unset;
         height: 50vh;
+    }
+    .box-proyectos-inner {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

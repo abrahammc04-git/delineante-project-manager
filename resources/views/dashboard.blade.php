@@ -195,7 +195,7 @@
                     @endphp
 
                     <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                        <td class="td-nombre">
                             {{ $nombre }}
                         </td>
                         @if(auth()->user()->rol === 'admin')
@@ -206,18 +206,18 @@
                         <td>{{ $ultima }}</td>
                         <td>
                             @if($idProyecto)
-                            <a href="{{ route('proyectos.show', $idProyecto) }}" class="link" style="font-size: 0.875rem;">
+                            <a href="{{ route('proyectos.show', $idProyecto) }}" class="enlace-ver-detalles">
                                 Ver detalles
                             </a>
                             @else
-                            <span style="color: var(--proyinstal-gray-600); font-size: 0.875rem;">—</span>
+                            <span class="td-vacia" style="padding:0;">—</span>
                             @endif
                         </td>
                     </tr>
                     @empty
                     {{-- Si no hay proyectos, no mostramos filas "inventadas" --}}
                     <tr>
-                        <td colspan="6" style="padding: 1.5rem; color: var(--proyinstal-gray-600);">
+                        <td colspan="6" class="td-vacia">
                             No hay proyectos todavía.
                         </td>
                     </tr>

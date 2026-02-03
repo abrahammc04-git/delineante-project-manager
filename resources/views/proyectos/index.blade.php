@@ -5,60 +5,28 @@
         </h2>
     </x-slot>
 
+    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
     <link rel="stylesheet" href="{{ asset('css/chatbot-styles.css') }}">
 
     <!-- ══════════════════════════════════════════════════════════════ -->
     <!-- BOX SUPERIOR: Título izquierda + Botones derecha -->
     <!-- ══════════════════════════════════════════════════════════════ -->
-    <div style="padding: 1.5rem 1.5rem 0 1.5rem;">
-        <div style="
-            background: linear-gradient(135deg, #0033CC, #001F7A);
-            border-radius: 14px;
-            padding: 1.5rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-        ">
-            <!-- Izquierda: texto -->
-            <div>
-                <h1 style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem 0;">
-                    Todos los Proyectos
-                </h1>
-                <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
-                    Gestiona y consulta todos los proyectos registrados
-                </p>
+    <div class="box-proyectos">
+        <div class="box-proyectos-inner">
+            <div class="box-proyectos-titulo">
+                <h1>Todos los Proyectos</h1>
+                <p>Gestiona y consulta todos los proyectos registrados</p>
             </div>
 
-            <!-- Derecha: botones -->
-            <div style="display: flex; gap: 0.65rem; align-items: center; flex-shrink: 0;">
-                <a href="{{ route('dashboard') }}" style="
-                    background: rgba(255,255,255,0.15);
-                    color: white;
-                    padding: 0.6rem 1.15rem;
-                    border-radius: 8px;
-                    font-weight: 600;
-                    font-size: 0.875rem;
-                    text-decoration: none;
-                    border: 1px solid rgba(255,255,255,0.3);
-                    transition: background 0.2s;
-                ">← Dashboard</a>
+            <div class="box-proyectos-botones">
+                <a href="{{ route('dashboard') }}" class="btn-box-dashboard">← Dashboard</a>
 
                 @if(Auth::user()->isAdmin())
                     <button id="btnToggleChatbot" class="btn-toggle-chatbot">
                         💬 Asistente IA
                     </button>
 
-                    <a href="{{ route('proyectos.create') }}" style="
-                        background: white;
-                        color: #0033CC;
-                        padding: 0.6rem 1.15rem;
-                        border-radius: 8px;
-                        font-weight: 600;
-                        font-size: 0.875rem;
-                        text-decoration: none;
-                        transition: box-shadow 0.2s;
-                    ">+ Nuevo Proyecto</a>
+                    <a href="{{ route('proyectos.create') }}" class="btn-box-nuevo">+ Nuevo Proyecto</a>
                 @endif
             </div>
         </div>
@@ -73,13 +41,13 @@
         <div class="proyectos-panel">
             
             @if(session('success'))
-                <div class="mb-4 bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded">
+                <div class="alert alert-success">
                     {{ session('success') }}
                 </div>
             @endif
 
             @if(session('error'))
-                <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded">
+                <div class="alert alert-error">
                     {{ session('error') }}
                 </div>
             @endif
@@ -91,12 +59,11 @@
             </div>
 
             <!-- Buscador -->
-            <div class="buscador-container" style="margin-bottom: 1rem;">
+            <div class="buscador-container">
                 <input 
                     type="text" 
                     id="buscadorProyectos" 
                     placeholder="🔍 Buscar por proyecto, cliente o empresa..."
-                    style="width: 100%; padding: 0.72rem 1rem; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 0.9rem; outline: none;"
                     autocomplete="off"
                 >
             </div>
@@ -141,15 +108,14 @@
                                 <td>{{ $proyecto->tipo_proyecto }}</td>
                                 <td>{{ $proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : '-' }}</td>
                                 <td>
-                                    <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" 
-                                       style="color: #0033CC; font-weight: 600; text-decoration: none;">
+                                    <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" class="enlace-ver-detalles">
                                         Ver Detalles
                                     </a>
                                 </td>
                             </tr>
                         @empty
                             <tr id="filaVacia">
-                                <td colspan="7" style="text-align: center; padding: 2rem; color: #6b7280;">
+                                <td colspan="7" class="td-vacia">
                                     No hay proyectos disponibles.
                                 </td>
                             </tr>
@@ -168,7 +134,7 @@
             
             <!-- Header del Chat -->
             <div class="chat-panel-header">
-                <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                <div class="chat-header-row">
                     <div class="chat-avatar-header">IA</div>
                     <div class="chat-header-info">
                         <div class="nombre">Asistente PROYINSTAL</div>
@@ -178,9 +144,7 @@
                         </div>
                     </div>
                 </div>
-                <button id="btnCerrarChat" style="background: none; border: none; color: white; font-size: 1.5rem; cursor: pointer; padding: 0; line-height: 1;">
-                    ×
-                </button>
+                <button id="btnCerrarChat" class="btn-cerrar-chat">×</button>
             </div>
 
             <!-- Mensajes del Chat -->
@@ -222,55 +186,6 @@
         @endif
 
     </div>
-
-    <!-- ══════════════════════════════════════════════════════════════ -->
-    <!-- Estilos -->
-    <!-- ══════════════════════════════════════════════════════════════ -->
-    <style>
-        .btn-toggle-chatbot {
-            background: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            padding: 0.6rem 1.15rem;
-            border-radius: 8px;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-toggle-chatbot:hover {
-            background: rgba(255,255,255,0.25);
-        }
-        .btn-toggle-chatbot.activo {
-            background: #059669;
-            border-color: #059669;
-        }
-
-        .btn-limpiar-filtro {
-            background: #fff;
-            color: #059669;
-            border: 2px solid #059669;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-size: 0.82rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-limpiar-filtro:hover {
-            background: #059669;
-            color: #fff;
-        }
-
-        #buscadorProyectos:focus {
-            border-color: #0033CC;
-            box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
-        }
-
-        .chat-panel {
-            transition: all 0.3s ease-in-out;
-        }
-    </style>
 
     <!-- ══════════════════════════════════════════════════════════════ -->
     <!-- JavaScript: Buscador -->
@@ -334,7 +249,7 @@
                     const tbody = document.getElementById('tablaProyectos');
                     const nuevaFila = document.createElement('tr');
                     nuevaFila.id = 'filaSinResultados';
-                    nuevaFila.innerHTML = '<td colspan="7" style="text-align: center; padding: 2rem; color: #6b7280;">No se encontraron proyectos con ese criterio.</td>';
+                    nuevaFila.innerHTML = '<td colspan="7" class="td-vacia">No se encontraron proyectos con ese criterio.</td>';
                     tbody.appendChild(nuevaFila);
                 }
             } else if (filaSinResultados) {
@@ -361,7 +276,7 @@
             if (!hayResultados && !filaSinResultados) {
                 const nuevaFila = document.createElement('tr');
                 nuevaFila.id = 'filaSinResultados';
-                nuevaFila.innerHTML = '<td colspan="7" style="text-align: center; padding: 2rem; color: #6b7280;">No se encontraron proyectos con ese criterio.</td>';
+                nuevaFila.innerHTML = '<td colspan="7" class="td-vacia">No se encontraron proyectos con ese criterio.</td>';
                 tbody.appendChild(nuevaFila);
             } else if (hayResultados && filaSinResultados) {
                 filaSinResultados.remove();
