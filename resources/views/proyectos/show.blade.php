@@ -298,6 +298,9 @@
                                 </form>
                             @endif
                         </div>
+                        
+                        {{-- 3. Badge Programado (si existe) --}}
+                        
                     </div>
                 </li>
             @endforeach
@@ -477,9 +480,12 @@
             dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
         });
 
-        dropzone.addEventListener('dragleave', () => {
-            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-        });
+    function openScheduleModal() {
+        document.getElementById('scheduleModal').classList.remove('hidden');
+    }
+    function closeScheduleModal() {
+        document.getElementById('scheduleModal').classList.add('hidden');
+    }
 
         // C) Soltar archivos (DROP)
         dropzone.addEventListener('drop', (e) => {

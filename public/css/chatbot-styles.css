@@ -1,0 +1,391 @@
+/* ============================================
+   CHATBOT PROYINSTAL - Estilos Tuenti
+   ============================================ */
+
+/* Layout principal: tabla + chat lado a lado */
+.proyectos-chat-layout {
+    display: flex;
+    height: calc(100vh - 65px); /* resto de pantalla tras navbar */
+    width: 100%;
+}
+
+/* ============================================
+   PANEL IZQUIERDO - TABLA DE PROYECTOS
+   ============================================ */
+.proyectos-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f3f4f6;
+    border-right: 1px solid #e5e7eb;
+}
+
+.proyectos-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.proyectos-panel-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #001F7A;
+}
+
+.btn-nuevo-proyecto {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+    border: none;
+    padding: 0.55rem 1.1rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.btn-nuevo-proyecto:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,51,204,0.3);
+}
+
+/* Tabla proyectos */
+.proyectos-tabla-wrap {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,51,204,0.08);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.proyectos-tabla-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.proyectos-tabla-wrap thead {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+}
+
+.proyectos-tabla-wrap th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.proyectos-tabla-wrap td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.proyectos-tabla-wrap tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.proyectos-tabla-wrap tbody tr:hover {
+    background: #eef2ff;
+}
+
+/* Badges */
+.badge {
+    display: inline-block;
+    padding: 0.25rem 0.65rem;
+    border-radius: 9999px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+.badge-pendiente   { background: #fef3c7; color: #92400e; }
+.badge-en-proceso  { background: #dbeafe; color: #1e40af; }
+.badge-completado  { background: #d1fae5; color: #065f46; }
+.badge-pausado     { background: #e5e7eb; color: #374151; }
+.badge-cancelado   { background: #fee2e2; color: #991b1b; }
+
+/* ============================================
+   PANEL DERECHO - CHAT (ESTILO TUENTI)
+   ============================================ */
+.chat-panel {
+    width: 380px;
+    min-width: 380px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-left: 1px solid #e5e7eb;
+}
+
+/* Header del chat */
+.chat-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+}
+
+.chat-avatar-header {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.chat-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header-info .nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.chat-header-info .estado {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.punto-verde {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 4px rgba(34,197,94,0.6);
+}
+
+/* Zona de mensajes (scroll) */
+.chat-mensajes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0.85rem;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Mensaje genérico */
+.mensaje {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 95%;
+}
+
+/* Mensaje del bot (izquierda) */
+.mensaje-bot {
+    align-self: flex-start;
+    flex-direction: row;
+}
+
+/* Mensaje del usuario (derecha) */
+.mensaje-usuario {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+/* Avatar circular */
+.mensaje-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.mensaje-usuario .mensaje-avatar {
+    background: linear-gradient(135deg, #4D79FF, #0033CC);
+}
+
+/* Globo de mensaje */
+.mensaje-globo {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px 14px 14px 4px;
+    padding: 0.6rem 0.85rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 0.875rem;
+    color: #1f2937;
+    line-height: 1.45;
+    max-width: 280px;
+}
+
+.mensaje-usuario .mensaje-globo {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+    border-color: transparent;
+    border-radius: 14px 14px 4px 14px;
+}
+
+.mensaje-globo p {
+    margin: 0;
+}
+
+.mensaje-globo p + p {
+    margin-top: 0.4rem;
+}
+
+.mensaje-globo ul {
+    margin: 0.4rem 0 0 0;
+    padding-left: 1.2rem;
+    font-size: 0.82rem;
+}
+
+.mensaje-globo ul li {
+    margin-bottom: 0.2rem;
+}
+
+/* Hora del mensaje */
+.mensaje-hora {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    align-self: flex-end;
+    padding: 0 0.15rem;
+}
+
+.mensaje-usuario .mensaje-hora {
+    align-self: flex-end;
+    color: #9ca3af;
+}
+
+/* Indicador de escribiendo */
+.typing-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding: 0 0.1rem;
+}
+
+.typing-globo {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px 14px 14px 4px;
+    padding: 0.7rem 0.9rem;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.typing-globo .dot {
+    width: 7px;
+    height: 7px;
+    background: #9ca3af;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+}
+.typing-globo .dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-globo .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 60%, 100% { opacity: 0.2; }
+    30% { opacity: 1; }
+}
+
+/* ============================================
+   INPUT DE MENSAJE
+   ============================================ */
+.chat-input-area {
+    padding: 0.75rem;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 24px;
+    padding: 0.35rem 0.35rem 0.35rem 1rem;
+    border: 1px solid #e5e7eb;
+    transition: border-color 0.2s;
+}
+
+.chat-input-row:focus-within {
+    border-color: #0033CC;
+    box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
+}
+
+.chat-input-row input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.9rem;
+    color: #111827;
+}
+
+.chat-input-row input::placeholder {
+    color: #9ca3af;
+}
+
+.btn-enviar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-enviar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 3px 8px rgba(0,51,204,0.35);
+}
+
+.btn-enviar:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .proyectos-chat-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .proyectos-panel {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        max-height: 50vh;
+    }
+    .chat-panel {
+        width: 100%;
+        min-width: unset;
+        height: 50vh;
+    }
+}

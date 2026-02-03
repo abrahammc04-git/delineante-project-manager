@@ -5,7 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DashboardController;
-
+use App\Http\Controllers\ChatbotController;
 
 
 
@@ -39,7 +39,23 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/proyectos/{id}/archivos/programar-publicacion', [ProyectoController::class, 'programarPublicacion'])->name('proyectos.archivos.programar_publicacion');
     Route::patch('/proyectos/{id}/archivos/cancelar-publicacion', [ProyectoController::class, 'cancelarPublicacion'])->name('proyectos.archivos.cancelar_publicacion');
     Route::get('/usuarios', [UsuarioController::class, 'index'])->name('usuarios.index');
+    Route::get('/usuarios/{usuario}', [UsuarioController::class, 'show'])->name('usuarios.show');
+    Route::patch('/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
+    Route::delete('usuarios/{usuario}', [UsuarioController::class, 'destroy'])
+    ->middleware('auth')
+    ->name('usuarios.destroy');
+
+
 });
 
+// ── Rutas solo para ADMIN ──
+Route::middleware(['auth', 'admin'])->group(function () {
+
+    // Chatbot (POST) - solo admin puede usar el asistente IA
+    Route::post('/chatbot/consulta', [ChatbotController::class, 'consulta'])->name('chatbot.consulta');
+
+    // Usuarios (por implementar en Feature 5)
+    // Route::resource('usuarios', UsuarioController::class);
+});
 // Incluir rutas de autenticación
 require __DIR__.'/auth.php';

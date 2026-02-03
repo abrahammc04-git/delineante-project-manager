@@ -378,7 +378,7 @@ public function programarMasivo(Request $request, $id)
 
                 $contador++;
             }
-            
+
             return back()->with('success', "Se han subido {$contador} archivos correctamente.");
         }
 
