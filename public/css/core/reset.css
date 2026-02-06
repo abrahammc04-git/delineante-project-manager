@@ -1,0 +1,23 @@
+/* ============================================
+   RESET Y BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+    min-height: 100vh;
+    color: var(--proyinstal-gray-900);
+    line-height: 1.6;
+}
+
+/* ============================================
+   LAYOUT APP - Fondo global
+   ============================================ */
+.app-bg {
+    background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+}

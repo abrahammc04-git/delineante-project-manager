@@ -1,128 +1,167 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Editar Proyecto') }}
-        </h2>
-    </x-slot>
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
-    <div class="py-12">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    
-                    {{-- Encabezado --}}
-                    <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-800">Editar: {{ $proyecto->nombre_proyecto }}</h2>
-                        <a href="{{ route('proyectos.index') }}" class="text-gray-500 hover:text-gray-700">← Volver al listado</a>
-                    </div>
-
-                    {{-- Errores --}}
-                    @if ($errors->any())
-                        <div class="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-                            <strong>¡Ups! Revisa los campos:</strong>
-                            <ul class="mt-2 list-disc list-inside text-sm">
-                                @foreach ($errors->all() as $error)
-                                    <li>{{ $error }}</li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
-
-                    <form action="{{ route('proyectos.update', $proyecto->id_proyecto) }}" method="POST">
-                        @csrf
-                        @method('PUT') {{-- IMPORTANTE: Esto le dice a Laravel que es una actualización --}}
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            
-                            {{-- Nombre del Proyecto --}}
-                            <div class="col-span-2">
-                                <label for="nombre_proyecto" class="block text-sm font-medium text-gray-700">Nombre del Proyecto *</label>
-                                <input type="text" name="nombre_proyecto" id="nombre_proyecto" 
-                                    value="{{ old('nombre_proyecto', $proyecto->nombre_proyecto) }}" required 
-                                    class="mt-1 focus:ring-indigo-500 focus:border-indigo-500 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-
-                            {{-- Cliente --}}
-                            <div>
-                                <label for="id_usuario" class="block text-sm font-medium text-gray-700">Asignar Cliente *</label>
-                                <select name="id_usuario" id="select_cliente" required class="w-full border-gray-300 rounded-md shadow-sm">
-                                    <option value="">Selecciona un cliente</option>
-                                    @foreach($clientes as $cliente)
-                                        <option value="{{ $cliente->id_usuario }}" 
-                                            {{ (old('id_usuario', $proyecto->id_usuario) == $cliente->id_usuario) ? 'selected' : '' }}>
-                                            {{ $cliente->nombre }} {{ $cliente->apellidos }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Tipo de Proyecto --}}
-                            <div>
-                                <label for="tipo_proyecto" class="block text-sm font-medium text-gray-700">Tipo *</label>
-                                <select name="tipo_proyecto" id="tipo_proyecto" required class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
-                                    @foreach(['Residencial', 'Comercial', 'Industrial', 'Reforma'] as $tipo)
-                                        <option value="{{ $tipo }}" {{ (old('tipo_proyecto', $proyecto->tipo_proyecto) == $tipo) ? 'selected' : '' }}>
-                                            {{ $tipo }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Fechas --}}
-                            <div>
-                                <label for="fecha_inicio" class="block text-sm font-medium text-gray-700">Fecha Inicio *</label>
-                                <input type="date" name="fecha_inicio" id="fecha_inicio" 
-                                    value="{{ old('fecha_inicio', optional($proyecto->fecha_inicio)->format('Y-m-d')) }}" required 
-                                    class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-
-                            <div>
-                                <label for="fecha_fin_prevista" class="block text-sm font-medium text-gray-700">Fecha Fin Prevista</label>
-                                <input type="date" name="fecha_fin_prevista" id="fecha_fin_prevista" 
-                                    value="{{ old('fecha_fin_prevista', optional($proyecto->fecha_fin_prevista)->format('Y-m-d')) }}" 
-                                    class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-
-                            {{-- Estado --}}
-                            <div>
-                                <label for="estado" class="block text-sm font-medium text-gray-700">Estado *</label>
-                                <select name="estado" id="estado" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm sm:text-sm">
-                                    @foreach(['Pendiente', 'En proceso', 'Completado', 'Cancelado'] as $estado)
-                                        <option value="{{ $estado }}" {{ (old('estado', $proyecto->estado) == $estado) ? 'selected' : '' }}>
-                                            {{ $estado }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            {{-- Localización --}}
-                            <div>
-                                <label for="localizacion" class="block text-sm font-medium text-gray-700">Localización</label>
-                                <input type="text" name="localizacion" id="localizacion" 
-                                    value="{{ old('localizacion', $proyecto->localizacion) }}" 
-                                    class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">
-                            </div>
-
-                            {{-- Descripción --}}
-                            <div class="col-span-2">
-                                <label for="descripcion" class="block text-sm font-medium text-gray-700">Descripción</label>
-                                <textarea name="descripcion" id="descripcion" rows="3" 
-                                    class="mt-1 block w-full shadow-sm sm:text-sm border-gray-300 rounded-md">{{ old('descripcion', $proyecto->descripcion) }}</textarea>
-                            </div>
-
-                        </div>
-
-                        <div class="mt-6 flex justify-end space-x-3">
-                            <a href="{{ route('proyectos.index') }}" class="bg-gray-200 hover:bg-gray-300 text-gray-700 font-bold py-2 px-4 rounded shadow">
-                                Cancelar
-                            </a>
-                            <button type="submit" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow">
-                                Actualizar Proyecto
-                            </button>
-                        </div>
-                    </form>
+    <div class="dashboard-container">
+        
+        <!-- Box flotante estilo página -->
+        <div class="page-box">
+            <div class="page-box-inner">
+                <div class="page-box-titulo">
+                    <h1>Editar Proyecto</h1>
+                    <p>{{ $proyecto->nombre_proyecto }}</p>
+                </div>
+                <div class="page-box-botones">
+                    <a href="{{ route('proyectos.index') }}" class="btn-box-dashboard">
+                        ← Volver al listado
+                    </a>
                 </div>
             </div>
+        </div>
+
+        {{-- Mostrar errores de validación --}}
+        @if ($errors->any())
+            <div class="alert alert-error" style="margin: 0 1.5rem 1.5rem 1.5rem;">
+                <strong>¡Ups! Revisa los campos:</strong>
+                <ul style="margin-top: 0.5rem; padding-left: 1.25rem; list-style: disc;">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="table-container container-pad" style="margin: 0 1.5rem;">
+            <form action="{{ route('proyectos.update', $proyecto->id_proyecto) }}" method="POST">
+                @csrf
+                @method('PUT')
+
+                <div class="form-grid">
+                    
+                    {{-- Nombre del Proyecto --}}
+                    <div class="form-group form-group-full">
+                        <label class="form-label" for="nombre_proyecto">Nombre del Proyecto *</label>
+                        <input class="form-input" type="text" name="nombre_proyecto" id="nombre_proyecto" 
+                               value="{{ old('nombre_proyecto', $proyecto->nombre_proyecto) }}" required>
+                        @error('nombre_proyecto') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Cliente --}}
+                    <div class="form-group">
+                        <label class="form-label" for="id_usuario">Asignar Cliente *</label>
+                        <select name="id_usuario" id="select_cliente" required class="form-input">
+                            <option value="">Selecciona un cliente</option>
+                            @foreach($clientes as $cliente)
+                                <option value="{{ $cliente->id_usuario }}" 
+                                    {{ (old('id_usuario', $proyecto->id_usuario) == $cliente->id_usuario) ? 'selected' : '' }}>
+                                    {{ $cliente->nombre }} {{ $cliente->apellidos }} ({{ $cliente->email }})
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_usuario') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Tipo de Proyecto --}}
+                    <div class="form-group">
+                        <label class="form-label" for="tipo_proyecto">Tipo de Proyecto *</label>
+                        <select name="tipo_proyecto" id="tipo_proyecto" required class="form-input">
+                            @foreach(['Residencial', 'Comercial', 'Industrial', 'Reforma'] as $tipo)
+                                <option value="{{ $tipo }}" {{ (old('tipo_proyecto', $proyecto->tipo_proyecto) == $tipo) ? 'selected' : '' }}>
+                                    {{ $tipo }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('tipo_proyecto') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Fecha Inicio --}}
+                    <div class="form-group">
+                        <label class="form-label" for="fecha_inicio">Fecha Inicio *</label>
+                        <input class="form-input" type="date" name="fecha_inicio" id="fecha_inicio" 
+                               value="{{ old('fecha_inicio', optional($proyecto->fecha_inicio)->format('Y-m-d')) }}" required>
+                        @error('fecha_inicio') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Fecha Fin Prevista --}}
+                    <div class="form-group">
+                        <label class="form-label" for="fecha_fin_prevista">Fecha Fin Prevista</label>
+                        <input class="form-input" type="date" name="fecha_fin_prevista" id="fecha_fin_prevista" 
+                               value="{{ old('fecha_fin_prevista', optional($proyecto->fecha_fin_prevista)->format('Y-m-d')) }}">
+                        @error('fecha_fin_prevista') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Estado --}}
+                    <div class="form-group">
+                        <label class="form-label" for="estado">Estado *</label>
+                        <select name="estado" id="estado" required class="form-input">
+                            @foreach(['Pendiente', 'En proceso', 'Completado', 'Cancelado'] as $estado)
+                                <option value="{{ $estado }}" {{ (old('estado', $proyecto->estado) == $estado) ? 'selected' : '' }}>
+                                    {{ $estado }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('estado') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Localización --}}
+                    <div class="form-group">
+                        <label class="form-label" for="localizacion">Localización / Dirección</label>
+                        <input class="form-input" type="text" name="localizacion" id="localizacion" 
+                               value="{{ old('localizacion', $proyecto->localizacion) }}">
+                        @error('localizacion') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                    {{-- Descripción --}}
+                    <div class="form-group form-group-full">
+                        <label class="form-label" for="descripcion">Descripción</label>
+                        <textarea class="form-input" name="descripcion" id="descripcion" rows="3">{{ old('descripcion', $proyecto->descripcion) }}</textarea>
+                        @error('descripcion') 
+                            <div class="form-error">{{ $message }}</div> 
+                        @enderror
+                    </div>
+
+                </div>
+
+                <div class="form-actions">
+                    <a href="{{ route('proyectos.index') }}" class="btn btn-secondary">
+                        Cancelar
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-auto">
+                        Actualizar Proyecto
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Sección Danger: Eliminar proyecto -->
+        <div class="danger-zone" style="margin: 1.5rem 1.5rem 0 1.5rem;">
+            <h3 class="danger-title">Eliminar proyecto</h3>
+            <p class="danger-description">
+                Esta acción es irreversible. Se borrará el proyecto y todos sus datos asociados.
+            </p>
+
+            <form method="POST" action="{{ route('proyectos.destroy', $proyecto->id_proyecto) }}"
+                  onsubmit="return confirm('¿Seguro que quieres eliminar este proyecto?');">
+                @csrf
+                @method('DELETE')
+
+                <button type="submit" class="btn btn-danger">
+                    Eliminar proyecto
+                </button>
+            </form>
         </div>
     </div>
 </x-app-layout>
@@ -137,9 +176,7 @@
             placeholder: "Escribe para buscar un cliente...",
             allowClear: true,
             width: '100%',
-            
-            minimumInputLength: 1, 
-
+            minimumInputLength: 1,
             language: {
                 inputTooShort: function () {
                     return "Escribe al menos una letra para buscar.";

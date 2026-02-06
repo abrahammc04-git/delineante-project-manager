@@ -1,0 +1,96 @@
+/* ============================================
+   TABLAS
+   ============================================ */
+.table-container {
+    background: var(--proyinstal-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--proyinstal-gray-200);
+}
+
+.table-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--proyinstal-gray-200);
+    background: var(--proyinstal-gray-50);
+}
+
+/* Header con título izquierda y botón derecha */
+.table-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+}
+
+/* Subtítulo bajo el título */
+.table-header-subtitle {
+    color: var(--proyinstal-gray-600);
+    margin-top: 0.25rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--proyinstal-gray-50);
+}
+
+th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--proyinstal-gray-200);
+    color: var(--proyinstal-gray-900);
+}
+
+tr {
+    transition: var(--transition);
+}
+
+tbody tr:hover {
+    background: var(--proyinstal-gray-50);
+}
+
+/* ============================================
+   CELDAS REUTILIZABLES
+   ============================================ */
+
+/* Nombre de proyecto / cliente en negrita */
+.td-nombre {
+    font-weight: 600;
+    color: var(--proyinstal-dark);
+}
+
+/* Enlace "Ver detalles" en tablas */
+.enlace-ver-detalles {
+    color: var(--proyinstal-blue);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.enlace-ver-detalles:hover {
+    color: var(--proyinstal-dark);
+}
+
+/* Celda vacía / sin resultados */
+.td-vacia {
+    text-align: center;
+    padding: 2rem;
+    color: var(--proyinstal-gray-600);

@@ -1,5 +1,5 @@
 <x-guest-layout>
-    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
     
     <div class="guest-layout">
         <div class="auth-container">

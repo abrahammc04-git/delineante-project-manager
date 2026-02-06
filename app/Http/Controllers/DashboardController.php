@@ -14,25 +14,22 @@ class DashboardController extends Controller
         // Query base
         $q = Proyecto::query();
 
-        // 🔐 Si es cliente, solo sus proyectos.
-        // ⚠️ AJUSTA el campo según tu BD:
-        // - si en proyectos tienes id_usuario (FK a usuarios) -> usa where('id_usuario', $user->id_usuario)
-        // - si tienes cliente_id -> where('cliente_id', $user->id_usuario)
+        // 🔐 Si es cliente, solo sus proyectos
         if ($user->rol !== 'admin') {
-            $q->where('id_usuario', $user->id_usuario); // <-- AJUSTA si tu FK se llama distinto
+            $q->where('id_usuario', $user->id_usuario);
         }
 
-        // Estadísticas por estado (AJUSTA los valores si en BD usáis otros)
+        // Estadísticas por estado (con el formato exacto de la BD)
         $total = (clone $q)->count();
 
-        $enProceso = (clone $q)->where('estado', 'en_proceso')->count();
-        $completados = (clone $q)->where('estado', 'completado')->count();
-        $pendientes = (clone $q)->where('estado', 'pendiente')->count();
+        // ✅ CORREGIDO: usar 'En proceso' (con espacio y mayúscula) en lugar de 'en_proceso'
+        $enProceso = (clone $q)->where('estado', 'En proceso')->count();
+        $completados = (clone $q)->where('estado', 'Completado')->count();
+        $pendientes = (clone $q)->where('estado', 'Pendiente')->count();
 
         $porcentajeCompletados = $total > 0
             ? round(($completados / $total) * 100)
             : 0;
-
 
         // Últimos proyectos (tabla)
         $proyectosRecientes = (clone $q)
@@ -40,7 +37,6 @@ class DashboardController extends Controller
             ->orderByDesc('ultima_actualizacion')
             ->limit(5)
             ->get();
-
 
         return view('dashboard', compact(
             'total',

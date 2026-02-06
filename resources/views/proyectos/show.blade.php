@@ -5,604 +5,656 @@
         </h2>
     </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
+    <div style="max-width: 1280px; margin: 0 auto; padding: 1.5rem;">
+        
+        <!-- Header como box flotante (igual que index) -->
+        <div style="background: linear-gradient(135deg, #0033CC, #001F7A); border-radius: 14px; padding: 1.5rem 2rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; gap: 1rem;">
+            <div>
+                <h1 style="color: white; font-size: 1.5rem; font-weight: 700; margin: 0 0 0.25rem 0;">
+                    Información General
+                </h1>
+                <p style="color: rgba(255,255,255,0.8); font-size: 0.9rem; margin: 0;">
+                    Detalles completos del proyecto y gestión de documentos
+                </p>
+            </div>
+            <div style="display: flex; gap: 0.65rem; align-items: center; flex-shrink: 0;">
+                <a href="{{ route('proyectos.index') }}" 
+                   style="background: rgba(255,255,255,0.15); color: white; padding: 0.6rem 1.15rem; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); transition: all 0.2s;">
+                    ← Volver
+                </a>
+                
+                @if(Auth::user()->isAdmin())
+                    <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" 
+                       style="background: white; color: #0033CC; padding: 0.6rem 1.15rem; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.2s;">
+                        Editar
+                    </a>
+                @endif
+            </div>
+        </div>
+
+        <!-- Grid de 2 columnas -->
+        <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
             
-            {{-- Encabezado y Botón Volver --}}
-            <div class="flex justify-between items-center mb-6 px-4 sm:px-0">
-                <h3 class="text-lg font-bold text-gray-900">
+            <!-- Columna Izquierda: Info Principal -->
+            <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,51,204,0.08); border: 1px solid #e5e7eb; padding: 1.5rem;">
+                <!-- NOMBRE DEL PROYECTO como título principal -->
+                <h3 style="font-size: 1.5rem; font-weight: 700; color: #001F7A; margin-bottom: 1.5rem; padding-bottom: 0.75rem; border-bottom: 2px solid #e5e7eb;">
                     {{ $proyecto->nombre_proyecto }}
                 </h3>
-                <a href="{{ route('proyectos.index') }}" class="text-gray-600 hover:text-gray-900 font-medium">
-                    &larr; Volver al listado
-                </a>
-            </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 
-                {{-- Columna Izquierda: Información Principal --}}
-                <div class="md:col-span-2 space-y-6">
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <h4 class="text-lg font-bold text-gray-700 border-b pb-2 mb-4">Información General</h4>
-                        
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <p class="text-sm text-gray-500">Cliente</p>
-                                <p class="font-medium text-gray-900">{{ $proyecto->usuario->nombre ?? 'N/A' }} {{ $proyecto->usuario->apellidos ?? '' }}</p>
-                                <p class="text-xs text-gray-500">{{ $proyecto->usuario->email ?? '' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Tipo de Proyecto</p>
-                                <p class="font-medium text-gray-900">{{ $proyecto->tipo_proyecto }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Ubicación</p>
-                                <p class="font-medium text-gray-900">{{ $proyecto->localizacion ?? 'No especificada' }}</p>
-                            </div>
-                            <div>
-                                <p class="text-sm text-gray-500">Estado Actual</p>
-                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                    {{ $proyecto->estado === 'Completado' ? 'bg-green-100 text-green-800' : '' }}
-                                    {{ $proyecto->estado === 'En proceso' ? 'bg-blue-100 text-blue-800' : '' }}
-                                    {{ $proyecto->estado === 'Pendiente' ? 'bg-yellow-100 text-yellow-800' : '' }}
-                                    {{ $proyecto->estado === 'Cancelado' ? 'bg-red-100 text-red-800' : '' }}">
-                                    {{ $proyecto->estado }}
-                                </span>
-                            </div>
-                        </div>
-
-                        <div class="mt-6">
-                            <p class="text-sm text-gray-500 mb-1">Descripción</p>
-                            <div class="bg-gray-50 p-4 rounded-md text-gray-700 text-sm">
-                                {{ $proyecto->descripcion ?? 'Sin descripción.' }}
-                            </div>
-                        </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+                    <div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Cliente</p>
+                        <p style="font-weight: 600; color: #111827; font-size: 1rem;">{{ $proyecto->usuario->nombre }} {{ $proyecto->usuario->apellidos }}</p>
+                        <p style="font-size: 0.875rem; color: #6b7280;">{{ $proyecto->usuario->email }}</p>
+                    </div>
+                    
+                    <div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Empresa</p>
+                        <p style="font-weight: 600; color: #111827; font-size: 1rem;">{{ $proyecto->usuario->empresa ?? 'No especificada' }}</p>
+                    </div>
+                    
+                    <div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Tipo de Proyecto</p>
+                        <p style="font-weight: 600; color: #111827; font-size: 1rem;">{{ $proyecto->tipo_proyecto }}</p>
+                    </div>
+                    
+                    <div>
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Estado Actual</p>
+                        <span style="display: inline-flex; padding: 0.375rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em;
+                            @if($proyecto->estado == 'Completado') background: #D1FAE5; color: #065F46;
+                            @elseif($proyecto->estado == 'En proceso') background: #DBEAFE; color: #1E40AF;
+                            @elseif($proyecto->estado == 'Pendiente') background: #FEF3C7; color: #92400E;
+                            @elseif($proyecto->estado == 'Pausado') background: #E5E7EB; color: #374151;
+                            @elseif($proyecto->estado == 'Cancelado') background: #FEE2E2; color: #991B1B;
+                            @endif">
+                            {{ $proyecto->estado }}
+                        </span>
+                    </div>
+                    
+                    <div style="grid-column: span 2;">
+                        <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.25rem;">Ubicación</p>
+                        <p style="font-weight: 600; color: #111827; font-size: 1rem;">{{ $proyecto->localizacion ?? 'No especificada' }}</p>
+                        @if($proyecto->direccion)
+                            <p style="font-size: 0.875rem; color: #6b7280;">{{ $proyecto->direccion }}</p>
+                        @endif
                     </div>
                 </div>
 
-                {{-- Columna Derecha: Fechas y Acciones --}}
-                <div class="space-y-6">
-                    {{-- Tarjeta Cronograma --}}
-                    <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                        <h4 class="text-lg font-bold text-gray-700 border-b pb-2 mb-4">Cronograma</h4>
-                        <ul class="space-y-4">
-                            <li class="flex justify-between">
-                                <span class="text-sm text-gray-500">Fecha Inicio:</span>
-                                <span class="font-medium">{{ $proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : '-' }}</span>
-                            </li>
-                            <li class="flex justify-between">
-                                <span class="text-sm text-gray-500">Fin Previsto:</span>
-                                <span class="font-medium">{{ $proyecto->fecha_fin_prevista ? $proyecto->fecha_fin_prevista->format('d/m/Y') : '-' }}</span>
-                            </li>
-                        </ul>
+                @if($proyecto->descripcion)
+                <div style="margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid #e5e7eb;">
+                    <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.5rem;">Descripción</p>
+                    <div style="background: #f9fafb; padding: 1rem; border-radius: 8px; color: #374151; line-height: 1.6;">
+                        {{ $proyecto->descripcion }}
                     </div>
+                </div>
+                @endif
+            </div>
 
-                    {{-- Botones de Acción (Solo Admin) --}}
-                    @if(auth()->user()->isAdmin())
-                        <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6">
-                            <h4 class="text-lg font-bold text-gray-700 mb-4">Acciones</h4>
-                            <div class="flex flex-col gap-3">
-                                {{-- 1. Editar --}}
-                                <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" class="w-full text-center bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded shadow transition duration-150 ease-in-out">
-                                    Editar Proyecto
-                                </a>
-
-                                {{-- 2. Eliminar --}}
-                                <form action="{{ route('proyectos.destroy', $proyecto->id_proyecto) }}" 
-                                    method="POST" 
-                                    onsubmit="return confirmarBorrado(event, 'este proyecto completo')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded w-full mt-4">
-                                        Eliminar Proyecto
-                                    </button>
-                                </form>
-                            </div>
+            <!-- Columna Derecha: Cronograma y Acciones -->
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                
+                <!-- Tarjeta Cronograma -->
+                <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,51,204,0.08); border: 1px solid #e5e7eb; padding: 1.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; color: #001F7A; margin-bottom: 1.25rem;">
+                        Cronograma
+                    </h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 1rem;">
+                        <div>
+                            <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 0.25rem;">Fecha Inicio</p>
+                            <p style="font-weight: 600; color: #111827;">{{ $proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : '-' }}</p>
                         </div>
+                        
+                        <div>
+                            <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 0.25rem;">Fin Previsto</p>
+                            <p style="font-weight: 600; color: #111827;">{{ $proyecto->fecha_fin_prevista ? $proyecto->fecha_fin_prevista->format('d/m/Y') : '-' }}</p>
+                        </div>
+                        
+                        @if($proyecto->fecha_fin_real)
+                        <div>
+                            <p style="font-size: 0.8rem; color: #6b7280; margin-bottom: 0.25rem;">Fin Real</p>
+                            <p style="font-weight: 600; color: #059669;">{{ $proyecto->fecha_fin_real->format('d/m/Y') }}</p>
+                        </div>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Acciones Admin -->
+                @if(Auth::user()->isAdmin())
+                <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,51,204,0.08); border: 1px solid #e5e7eb; padding: 1.5rem;">
+                    <h3 style="font-size: 1.125rem; font-weight: 700; color: #001F7A; margin-bottom: 1.25rem;">
+                        Acciones
+                    </h3>
+                    
+                    <div style="display: flex; flex-direction: column; gap: 0.75rem;">
+                        <a href="{{ route('proyectos.edit', $proyecto->id_proyecto) }}" 
+                           style="background: linear-gradient(135deg, #0033CC, #001F7A); color: white; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 600; text-decoration: none; text-align: center; transition: all 0.2s;">
+                            Editar Proyecto
+                        </a>
+                        
+                        <form action="{{ route('proyectos.destroy', $proyecto->id_proyecto) }}" 
+                              method="POST" 
+                              onsubmit="return confirm('¿Estás seguro de eliminar este proyecto?')">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" 
+                                    style="width: 100%; background: #dc2626; color: white; padding: 0.75rem 1rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s;">
+                                Eliminar Proyecto
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                @endif
+                
+            </div>
+        </div>
+
+        <!-- Sección de Documentos -->
+        <div style="background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,51,204,0.08); border: 1px solid #e5e7eb; padding: 1.5rem;">
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h3 style="font-size: 1.25rem; font-weight: 700; color: #001F7A;">
+                    Gestión de Documentos
+                </h3>
+                
+                @if(Auth::user()->isAdmin())
+                <button id="toggleUploadBtn" type="button" 
+                        style="background: linear-gradient(135deg, #0033CC, #001F7A); color: white; padding: 0.65rem 1.25rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 0.5rem;">
+                    <svg style="height: 1.25rem; width: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                    Subir Nuevo Archivo
+                </button>
+                @endif
+            </div>
+
+            @if(Auth::user()->isAdmin())
+            <!-- Formulario de subida (oculto por defecto) -->
+            <div id="uploadContainer" class="hidden" style="margin-bottom: 1.5rem; padding: 1.5rem; background: #f9fafb; border-radius: 8px; border: 2px dashed #d1d5db;">
+                <form action="{{ route('proyectos.archivos.subir', ['id' => $proyecto->id_proyecto]) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
+                    @csrf
+                    
+                    <div id="dropzone" style="padding: 2rem; text-align: center; cursor: pointer; border-radius: 8px; background: white; border: 2px dashed #d1d5db;">
+                        <input type="file" name="archivos[]" id="archivoInput" class="hidden" multiple accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png">
+                        
+                        <div id="dropContent">
+                            <svg style="margin: 0 auto 1rem; height: 3rem; width: 3rem; color: #9ca3af;" fill="none" stroke="currentColor" viewBox="0 0 48 48">
+                                <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                            </svg>
+                            <div style="display: flex; justify-content: center; font-size: 0.875rem; color: #6b7280;">
+                                <label for="archivoInput" style="color: #0033CC; font-weight: 600; cursor: pointer;">
+                                    Selecciona archivos
+                                </label>
+                                <span style="padding-left: 0.25rem;"> o arrastra y suelta aquí</span>
+                            </div>
+                            <p style="color: #9ca3af; font-size: 0.875rem; margin-top: 0.5rem;">
+                                PDF, Imágenes, CAD (Máx 10MB)
+                            </p>
+                        </div>
+
+                        <div id="fileListPreview" class="hidden" style="margin-top: 1rem; text-align: left;">
+                            <p style="font-weight: 600; margin-bottom: 0.5rem; font-size: 0.875rem;">Archivos listos para subir:</p>
+                            <ul id="filesList" style="background: white; border-radius: 8px; border: 1px solid #e5e7eb; padding: 1rem;"></ul>
+                        </div>
+                    </div>
+                    
+                    <div id="uploadActions" class="hidden" style="margin-top: 1rem; text-align: right;">
+                        <button type="submit" 
+                                style="background: #0033CC; color: white; padding: 0.75rem 1.5rem; border-radius: 8px; font-weight: 600; border: none; cursor: pointer; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
+                            </svg>
+                            Subir Archivos
+                        </button>
+                    </div>
+                </form>
+            </div>
+            @endif
+
+            <!-- Header de lista de archivos con botones de programación -->
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding-bottom: 0.75rem; border-bottom: 1px solid #e5e7eb;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <h4 style="font-size: 1rem; font-weight: 600; color: #111827;">Archivos Adjuntos</h4>
+                    
+                    @if(isset($archivos) && count($archivos) > 0)
+                    <!-- Checkbox para habilitar selección múltiple -->
+                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer; font-size: 0.875rem; color: #374151;">
+                        <input type="checkbox" id="toggleSelectionMode" onchange="toggleSelectionMode()" 
+                               style="width: 1rem; height: 1rem; cursor: pointer; border-radius: 4px;">
+                        <span>Seleccionar varios</span>
+                    </label>
+                    @endif
+                </div>
+                
+                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                    <!-- Botón descargar seleccionados (oculto por defecto) -->
+                    @if(isset($archivos) && count($archivos) > 0)
+                    <button type="button" id="btnDescargarSeleccionados" onclick="descargarSeleccionados()" 
+                            style="display: none; background: #059669; color: white; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: none; cursor: pointer; align-items: center; gap: 0.25rem;">
+                        <svg style="width: 1rem; height: 1rem; display: inline;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                        </svg>
+                        Descargar seleccionados (<span id="contadorSeleccionados">0</span>)
+                    </button>
+                    @endif
+                    
+                    @if(Auth::user()->isAdmin() && isset($archivos) && count($archivos) > 0)
+                    <button type="button" onclick="openShowModal()" 
+                            style="background: #dbeafe; color: #1e40af; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid #3b82f6; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                        </svg>
+                        Programar mostrar
+                    </button>
+                    
+                    <button type="button" onclick="openScheduleModal()" 
+                            style="background: #f3f4f6; color: #374151; padding: 0.375rem 0.75rem; border-radius: 6px; font-size: 0.75rem; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer; display: flex; align-items: center; gap: 0.25rem;">
+                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                        </svg>
+                        Programar ocultar
+                    </button>
                     @endif
                 </div>
             </div>
 
-            {{-- SECCIÓN DE DOCUMENTOS --}}
-            @if(auth()->user()->isAdmin())
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg p-6 mt-6">
-                
-                {{-- CABECERA CON BOTÓN TOGGLE --}}
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="text-lg font-bold text-gray-900">Gestión de Documentos</h3>
-                    
-                    <button id="toggleUploadBtn" type="button" class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
-                        <svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
-                        </svg>
-                        Subir Nuevo Archivo
-                    </button>
-                </div>
-
-                {{-- CONTENEDOR OCULTO (hidden por defecto) --}}
-                <div id="uploadContainer" class="hidden mb-6 transition-all duration-300 ease-in-out">
-                    
-                    {{-- 1. FORMULARIO DRAG & DROP (MÚLTIPLE) --}}
-                    <form action="{{ route('proyectos.archivos.subir', ['id' => $proyecto->id_proyecto]) }}" method="POST" enctype="multipart/form-data" id="uploadForm">
-                        @csrf
+            <!-- Lista de archivos -->
+            @if(isset($archivos) && count($archivos) > 0)
+                <div style="background: #f9fafb; border-radius: 8px; padding: 0.5rem;">
+                    @foreach($archivos as $archivo)
+                        @php $nombre = $archivo['nombre']; @endphp
                         
-                        {{-- ... (Aquí sigue todo tu código del dropzone igual que antes) ... --}}
-                        {{-- Zona de Drop --}}
-                        <div id="dropzone" class="border-2 border-dashed border-gray-300 rounded-lg p-8 text-center hover:bg-gray-50 transition cursor-pointer relative bg-gray-50">
-                            {{-- ... contenido del dropzone ... --}}
+                        <div style="background: white; padding: 1rem; margin-bottom: 0.75rem; border-radius: 8px; border: 1px solid #e5e7eb; display: flex; justify-content: space-between; align-items: center;">
+                            <!-- Checkbox de selección (oculto por defecto) -->
+                            <input type="checkbox" class="archivo-checkbox" data-nombre="{{ $nombre }}" 
+                                   style="display: none; width: 1.25rem; height: 1.25rem; cursor: pointer; margin-right: 0.75rem; flex-shrink: 0;"
+                                   onchange="actualizarContador()">
                             
-                            {{-- IMPORTANTE: COPIA AQUÍ EL CONTENIDO INTERNO DE TU DROPZONE ACTUAL --}}
-                             <input type="file" name="archivos[]" id="archivoInput" class="hidden" multiple accept=".pdf,.dwg,.dxf,.jpg,.jpeg,.png">
-                            
-                            <div class="space-y-1" id="dropContent">
-                                <svg class="mx-auto h-12 w-12 text-gray-400" width="48" height="80" stroke="currentColor" fill="none" viewBox="0 0 48 48" aria-hidden="true">
-                                    <path d="M28 8H12a4 4 0 00-4 4v20m32-12v8m0 0v8a4 4 0 01-4 4H12a4 4 0 01-4-4v-4m32-4l-3.172-3.172a4 4 0 00-5.656 0L28 28M8 32l9.172-9.172a4 4 0 015.656 0L28 28m0 0l4 4m4-24h8m-4-4v8m-12 4h.02" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
-                                </svg>
-                                <div class="flex text-sm text-gray-600 justify-center">
-                                    <label for="archivoInput" class="relative cursor-pointer bg-white rounded-md font-medium text-indigo-600 hover:text-indigo-500 focus-within:outline-none focus-within:ring-2 focus-within:ring-offset-2 focus-within:ring-indigo-500">
-                                        <span>Selecciona archivos</span>
-                                    </label>
-                                    <p class="pl-1">o arrastra y suelta aquí</p>
-                                </div>
-                                <p class="text-xs text-gray-500">
-                                    PDF, Imágenes, CAD (Máx 10MB)
-                                </p>
-                            </div>
-
-                            <div id="fileListPreview" class="hidden mt-4 text-left w-full">
-                                <p class="text-sm font-medium text-gray-700 mb-2">Archivos listos para subir:</p>
-                                <ul id="filesList" class="text-sm bg-white rounded-md border border-gray-200 px-4"></ul>
-                            </div>
-                        </div>
-                        
-                        <div id="uploadActions" class="hidden mt-4 text-right">
-                            <button type="submit" class="w-full sm:w-auto inline-flex justify-center items-center py-2 px-6 border border-transparent shadow-sm text-sm font-bold rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors">
-                                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path>
-                                </svg>
-                                Subir Archivos
-                            </button>
-                        </div>
-                    </form> 
-                </div>
-                @endif
-
-                {{-- 2. LISTA DE ARCHIVOS EXISTENTES --}}
-<div class="mt-8 border-t border-gray-200 pt-6">
-    
-    {{-- CABECERA DE LA LISTA CON BOTÓN DE PROGRAMAR --}}
-    <div class="flex justify-between items-center mb-4">
-        <h4 class="text-sm font-medium text-gray-900">Archivos Adjuntos</h4>
-        
-        @if(auth()->user()->isAdmin() && isset($archivos) && count($archivos) > 0)
-            {{-- Botón NUEVO: Programar MOSTRAR --}}
-            <button type="button" onclick="openShowModal()" class="text-xs flex items-center bg-blue-100 hover:bg-blue-200 text-blue-800 font-semibold py-1 px-3 rounded border border-blue-300 transition">
-                <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                Programar mostrar archivos
-            </button>
-            <button type="button" onclick="openScheduleModal()" class="text-xs flex items-center bg-gray-100 hover:bg-gray-200 text-gray-700 font-semibold py-1 px-3 rounded border border-gray-300 transition">
-                <svg class="w-4 h-4 mr-1 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
-                Programar ocultar archivos
-            </button>
-        @endif
-    </div>
-
-    @if(isset($archivos) && count($archivos) > 0)
-        <ul class="border border-gray-200 rounded-md divide-y divide-gray-200 bg-white shadow-sm">
-            @foreach($archivos as $archivo)
-                @php $nombre = $archivo['nombre']; @endphp
-
-                <li class="pl-3 pr-4 py-3 flex items-center justify-between text-sm hover:bg-gray-50 transition">
-                    {{-- IZQUIERDA: Icono + (Nombre y Metadatos en vertical) + Badge --}}
-                    <div class="flex items-center flex-1 w-0 mr-4">
-                        {{-- 1. Icono --}}
-                        <span class="flex-shrink-0 h-5 w-5 text-gray-400 text-lg">
-                            @if(Str::endsWith(Str::lower($nombre), ['.jpg', '.png', '.jpeg', '.gif'])) 📷
-                            @elseif(Str::endsWith(Str::lower($nombre), ['.pdf'])) 📄
-                            @elseif(Str::endsWith(Str::lower($nombre), ['.dwg', '.dxf'])) 📐
-                            @else 📎
-                            @endif
-                        </span>
-                        
-                        {{-- 2. COLUMNA: Nombre + Metadatos (Aquí está el cambio) --}}
-                        <div class="ml-3 flex flex-col flex-1 min-w-0">
-                            <span class="truncate text-gray-700 font-medium" title="{{ $nombre }}">
-                                {{ $nombre }}
-                            </span>
-                            {{-- METADATOS: Debajo del nombre y siempre visibles --}}
-                            <span class="text-xs text-gray-400">
-                                {{ $archivo['size'] }} KB • {{ $archivo['fecha'] }}
-                            </span>
-                        </div>
-
-                        {{-- Badge AZUL: Programar mostrar archivos --}}
-                        @if(isset($archivo['programado_mostrar']) && $archivo['programado_mostrar'])
-                            <div class="flex items-center bg-blue-100 text-blue-800 rounded px-2 py-0.5 ml-3 flex-shrink-0">
-                                <span class="text-[10px] font-medium mr-2" title="Se mostrará: {{ \Carbon\Carbon::parse($archivo['programado_mostrar'])->format('d/m/Y H:i') }}">
-                                    👁️ Visible: {{ \Carbon\Carbon::parse($archivo['programado_mostrar'])->format('d/m H:i') }}
-                                </span>
-                                @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('proyectos.archivos.cancelar_publicacion', ['id' => $proyecto->id_proyecto]) }}" method="POST" class="inline-flex">
-                                        @csrf
-                                        @method('PATCH')
-                                        <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
-                                        <button type="submit" class="text-blue-600 hover:text-blue-800 focus:outline-none transition font-bold ml-1" title="Cancelar programación">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
-                                        </button>
-                                    </form>
-                                @endif
-                            </div>
-                        @endif
-                        
-                        {{-- 3. Badge Programado (si existe) --}}
-                        @if($archivo['programado'])
-                            <div class="flex items-center bg-yellow-100 text-yellow-800 rounded px-2 py-0.5 ml-3 flex-shrink-0">
-                                <span class="text-[10px] font-medium mr-2" title="Se ocultará: {{ \Carbon\Carbon::parse($archivo['programado'])->format('d/m/Y H:i') }}">
-                                    🕒 {{ \Carbon\Carbon::parse($archivo['programado'])->format('d/m H:i') }}
+                            <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+                                <span style="font-size: 1.25rem; flex-shrink: 0;">
+                                    @if(Str::endsWith(Str::lower($nombre), ['.jpg', '.png', '.jpeg', '.gif'])) 🖼️
+                                    @elseif(Str::endsWith(Str::lower($nombre), ['.pdf'])) 📄
+                                    @elseif(Str::endsWith(Str::lower($nombre), ['.dwg', '.dxf'])) 📐
+                                    @else 📎
+                                    @endif
                                 </span>
                                 
-                                @if(auth()->user()->isAdmin())
-                                    <form action="{{ route('proyectos.archivos.cancelar', ['id' => $proyecto->id_proyecto]) }}" method="POST" class="inline-flex">
+                                <div style="flex: 1; min-width: 0;">
+                                    <p style="font-weight: 600; color: #111827; margin-bottom: 0.25rem; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $nombre }}</p>
+                                    <p style="font-size: 0.875rem; color: #6b7280;">{{ $archivo['size'] }} KB • {{ $archivo['fecha'] }}</p>
+                                </div>
+
+                                <!-- Badges de programación -->
+                                @if(isset($archivo['programado_mostrar']) && $archivo['programado_mostrar'])
+                                <div style="display: flex; align-items: center; background: #dbeafe; color: #1e40af; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">
+                                    <span style="margin-right: 0.5rem;">Visible: {{ \Carbon\Carbon::parse($archivo['programado_mostrar'])->format('d/m H:i') }}</span>
+                                    @if(Auth::user()->isAdmin())
+                                        <form action="{{ route('proyectos.archivos.cancelar_publicacion', ['id' => $proyecto->id_proyecto]) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
+                                            <button type="submit" style="background: none; border: none; color: #1e40af; cursor: pointer; padding: 0; font-weight: 700;">×</button>
+                                        </form>
+                                    @endif
+                                </div>
+                                @endif
+
+                                @if($archivo['programado'])
+                                <div style="display: flex; align-items: center; background: #fef3c7; color: #92400e; border-radius: 6px; padding: 0.25rem 0.5rem; font-size: 0.7rem; font-weight: 600;">
+                                    <span style="margin-right: 0.5rem;">{{ \Carbon\Carbon::parse($archivo['programado'])->format('d/m H:i') }}</span>
+                                    @if(Auth::user()->isAdmin())
+                                        <form action="{{ route('proyectos.archivos.cancelar', ['id' => $proyecto->id_proyecto]) }}" method="POST" style="display: inline;">
+                                            @csrf
+                                            @method('PATCH')
+                                            <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
+                                            <button type="submit" style="background: none; border: none; color: #92400e; cursor: pointer; padding: 0; font-weight: 700;">×</button>
+                                        </form>
+                                    @endif
+                                </div>
+                                @endif
+                            </div>
+                            
+                            <div style="display: flex; gap: 0.5rem; align-items: center; flex-shrink: 0; margin-left: 1rem;">
+                                <!-- Botón toggle visibilidad (Ojo) -->
+                                @if(Auth::user()->isAdmin())
+                                    <form action="{{ route('proyectos.archivos.toggle', ['id' => $proyecto->id_proyecto]) }}" method="POST" style="display: inline;">
                                         @csrf
                                         @method('PATCH')
                                         <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
-                                        <button type="submit" class="text-yellow-600 hover:text-red-600 focus:outline-none transition" title="Cancelar programación">
-                                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                                        <button type="submit" style="background: none; border: none; padding: 0.25rem; cursor: pointer; border-radius: 4px;" title="{{ $archivo['visible'] ? 'Visible para cliente' : 'Oculto para cliente' }}">
+                                            @if($archivo['visible'])
+                                                <svg style="width: 1.25rem; height: 1.25rem; color: #059669;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path>
+                                                </svg>
+                                            @else
+                                                <svg style="width: 1.25rem; height: 1.25rem; color: #dc2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.059 10.059 0 013.999-5.42m5.06-2.106c.361-.055.733-.085 1.11-.085 4.478 0 8.268 2.943 9.542 7a10.057 10.057 0 01-2.029 3.56M15 12a3 3 0 01-3 3m0 0a3 3 0 01-3-3m0 0a3 3 0 013-3m-3 3l-6.364-6.364M21 21l-6.364-6.364"></path>
+                                                </svg>
+                                            @endif
                                         </button>
                                     </form>
                                 @endif
-                            </div>
-                        @endif
-                    </div>
-                    
-                    {{-- DERECHA: Botones de Acción (Ojo, Descargar, Eliminar) --}}
-                    <div class="flex items-center flex-shrink-0 ml-4">
-                        <div class="flex items-center space-x-2">
-                            
-                            {{-- Botón OJO --}}
-                            @if(auth()->user()->isAdmin())
-                                <form action="{{ route('proyectos.archivos.toggle', ['id' => $proyecto->id_proyecto]) }}" method="POST" class="inline-flex">
-                                    @csrf
-                                    @method('PATCH')
-                                    <input type="hidden" name="nombre_archivo" value="{{ $nombre }}">
-                                    
-                                    <button type="submit" class="p-1 rounded-full hover:bg-gray-100 transition focus:outline-none" title="{{ $archivo['visible'] ? 'Visible para cliente' : 'Oculto para cliente' }}">
-                                        @if($archivo['visible'])
-                                            <svg class="w-5 h-5 text-green-500 hover:text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"></path></svg>
-                                        @else
-                                            <svg class="w-5 h-5 text-red-500 hover:text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.542-7a10.059 10.059 0 013.999-5.42m5.06-2.106c.361-.055.733-.085 1.11-.085 4.478 0 8.268 2.943 9.542 7a10.057 10.057 0 01-2.029 3.56M15 12a3 3 0 01-3 3m0 0a3 3 0 01-3-3m0 0a3 3 0 013-3m-3 3l-6.364-6.364M21 21l-6.364-6.364"></path></svg>
-                                        @endif
-                                    </button>
-                                </form>
-                            @endif
 
-                            {{-- Botón Descargar --}}
-                            <a href="{{ route('proyectos.archivos.descargar', ['id' => $proyecto->id_proyecto, 'nombreArchivo' => $nombre]) }}" 
-                               class="font-medium text-blue-600 hover:text-blue-800 flex items-center transition group mr-2 ml-2" 
-                               title="Descargar">
-                               <svg class="w-4 h-4 mr-1 group-hover:translate-y-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
-                               <span class="hidden sm:inline">Descargar</span>
-                            </a>
-
-                            {{-- Botón Eliminar --}}
-                            @if(auth()->user()->isAdmin())
+                                <!-- Botón Descargar -->
+                                <a href="{{ route('proyectos.archivos.descargar', ['id' => $proyecto->id_proyecto, 'nombreArchivo' => $nombre]) }}" 
+                                   style="background: #0033CC; color: white; padding: 0.5rem 0.75rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.875rem; display: inline-flex; align-items: center; gap: 0.25rem;">
+                                    <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                    </svg>
+                                </a>
+                                
+                                <!-- Botón Eliminar -->
+                                @if(Auth::user()->isAdmin())
                                 <form action="{{ route('proyectos.archivos.eliminar', ['id' => $proyecto->id_proyecto, 'nombreArchivo' => $nombre]) }}" 
                                       method="POST" 
-                                      class="flex items-center" 
-                                      onsubmit="return confirmarBorrado(event, '{{ $nombre }}')">
+                                      onsubmit="return confirm('¿Eliminar este archivo?')">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="text-red-600 hover:text-red-800 transition p-1 rounded hover:bg-red-50" title="Eliminar">
-                                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                    <button type="submit" 
+                                            style="background: #dc2626; color: white; padding: 0.5rem 0.75rem; border-radius: 6px; font-weight: 600; border: none; cursor: pointer; font-size: 0.875rem;">
+                                        Eliminar
                                     </button>
                                 </form>
-                            @endif
+                                @endif
+                            </div>
                         </div>
-                        
-                        {{-- 3. Badge Programado (si existe) --}}
-                        
-                    </div>
-                </li>
-            @endforeach
-        </ul>
-    @else
-        <div class="text-center border-2 border-gray-100 border-dashed rounded-lg p-6 bg-gray-50">
-            <p class="text-sm text-gray-500">No hay documentos subidos todavía.</p>
+                    @endforeach
+                </div>
+            @else
+                <div style="text-align: center; padding: 3rem; color: #9ca3af; background: #f9fafb; border-radius: 8px; border: 2px dashed #e5e7eb;">
+                    <p style="font-size: 1.125rem; margin-bottom: 0.5rem;">No hay documentos adjuntos</p>
+                    <p style="font-size: 0.875rem;">Los archivos del proyecto aparecerán aquí</p>
+                </div>
+            @endif
         </div>
-    @endif
-</div>
-
-{{-- MODAL DE PROGRAMAR PUBLICACIÓN (MOSTRAR ARCHIVOS) --}}
-{{-- Fíjate que el ID es 'scheduleShowModal' --}}
-<div id="scheduleShowModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
         
-        {{-- Fondo oscuro --}}
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" onclick="closeShowModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    </div>
 
-        {{-- Ventana Modal --}}
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <form method="POST" action="{{ route('proyectos.archivos.programar_publicacion', ['id' => $proyecto->id_proyecto]) }}">
-                @csrf
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 class="text-lg leading-6 font-medium text-blue-900 mb-4">
-                        Programar aparición de archivos
-                    </h3>
-                    
-                    {{-- Input de Fecha --}}
-                    <div class="mb-4">
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora para mostrarse</label>
-                        <input type="datetime-local" name="fecha_publicacion" required class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                    </div>
+    {{-- MODAL: Programar MOSTRAR archivos --}}
+    <div id="scheduleShowModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div style="display: flex; align-items: flex-end; justify-content: center; min-height: 100vh; padding: 1rem; text-align: center;">
+            <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.5);" onclick="closeShowModal()"></div>
+            <span style="display: inline-block; height: 100vh; vertical-align: middle;"></span>
 
-                    {{-- Lista de Archivos --}}
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona los archivos:</label>
-                        <div class="max-h-48 overflow-y-auto border border-gray-200 rounded-md bg-gray-50 p-2 space-y-2">
-                            @if(isset($archivos))
-                                @foreach($archivos as $archivo)
-                                    <div class="flex items-center">
-                                        <input id="chk_show_{{ $loop->index }}" name="archivos_seleccionados[]" value="{{ $archivo['nombre'] }}" type="checkbox" class="h-4 w-4 text-blue-600 border-gray-300 rounded cursor-pointer">
-                                        <label for="chk_show_{{ $loop->index }}" class="ml-2 block text-sm text-gray-900 truncate cursor-pointer">{{ $archivo['nombre'] }}</label>
-                                    </div>
-                                @endforeach
-                            @endif
+            <div style="display: inline-block; background: white; border-radius: 12px; text-align: left; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); max-width: 32rem; width: 100%; position: relative; z-index: 10;">
+                <form method="POST" action="{{ route('proyectos.archivos.programar_publicacion', ['id' => $proyecto->id_proyecto]) }}">
+                    @csrf
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.125rem; font-weight: 700; color: #1e40af; margin-bottom: 1rem;">
+                            Programar aparición de archivos
+                        </h3>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Fecha y Hora para mostrarse</label>
+                            <input type="datetime-local" name="fecha_publicacion" required style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem;">
+                        </div>
+
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Selecciona los archivos:</label>
+                            <div style="max-height: 12rem; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; padding: 0.5rem;">
+                                @if(isset($archivos))
+                                    @foreach($archivos as $archivo)
+                                        <div style="display: flex; align-items: center; padding: 0.25rem 0;">
+                                            <input id="chk_show_{{ $loop->index }}" name="archivos_seleccionados[]" value="{{ $archivo['nombre'] }}" type="checkbox" style="width: 1rem; height: 1rem; color: #1e40af; border-radius: 4px; cursor: pointer;">
+                                            <label for="chk_show_{{ $loop->index }}" style="margin-left: 0.5rem; font-size: 0.875rem; color: #111827; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $archivo['nombre'] }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Botones del pie --}}
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 sm:ml-3 sm:w-auto sm:text-sm">Guardar</button>
-                    <button type="button" onclick="closeShowModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">Cancelar</button>
-                </div>
-            </form>
+                    <div style="background: #f9fafb; padding: 0.75rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="button" onclick="closeShowModal()" style="background: white; color: #374151; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="background: #1e40af; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; border: none; cursor: pointer;">Guardar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-{{-- MODAL DE PROGRAMACIÓN MASIVA --}}
-<div id="scheduleModal" class="fixed inset-0 z-50 hidden overflow-y-auto" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-    <div class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
-        {{-- Overlay oscuro --}}
-        <div class="fixed inset-0 bg-gray-500 bg-opacity-75 transition-opacity" aria-hidden="true" onclick="closeScheduleModal()"></div>
-        <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+    {{-- MODAL: Programar OCULTAR archivos --}}
+    <div id="scheduleModal" class="fixed inset-0 z-50 hidden overflow-y-auto">
+        <div style="display: flex; align-items: flex-end; justify-content: center; min-height: 100vh; padding: 1rem; text-align: center;">
+            <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.5);" onclick="closeScheduleModal()"></div>
+            <span style="display: inline-block; height: 100vh; vertical-align: middle;"></span>
 
-        <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-            <form method="POST" action="{{ route('proyectos.archivos.programar', ['id' => $proyecto->id_proyecto]) }}">
-                @csrf
-                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 mb-4" id="modal-title">
-                        Programar ocultación de archivos
-                    </h3>
-                    
-                    {{-- 1. Selector de Fecha --}}
-                    <div class="mb-4">
-                        <label for="fecha_ocultacion" class="block text-sm font-medium text-gray-700 mb-1">Fecha y Hora de ocultación</label>
-                        <input type="datetime-local" name="fecha_ocultacion" id="fecha_ocultacion" required
-                               class="shadow-sm focus:ring-blue-500 focus:border-blue-500 block w-full sm:text-sm border-gray-300 rounded-md">
-                    </div>
+            <div style="display: inline-block; background: white; border-radius: 12px; text-align: left; overflow: hidden; box-shadow: 0 20px 25px -5px rgba(0,0,0,0.2); max-width: 32rem; width: 100%; position: relative; z-index: 10;">
+                <form method="POST" action="{{ route('proyectos.archivos.programar', ['id' => $proyecto->id_proyecto]) }}">
+                    @csrf
+                    <div style="padding: 1.5rem;">
+                        <h3 style="font-size: 1.125rem; font-weight: 700; color: #92400e; margin-bottom: 1rem;">
+                            Programar ocultación de archivos
+                        </h3>
+                        
+                        <div style="margin-bottom: 1rem;">
+                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Fecha y Hora de ocultación</label>
+                            <input type="datetime-local" name="fecha_ocultacion" required style="width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 6px; font-size: 0.875rem;">
+                        </div>
 
-                    {{-- 2. Lista de Archivos (Checkboxes) --}}
-                    <div class="mb-2">
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Selecciona los archivos:</label>
-                        <div class="max-h-48 overflow-y-auto border border-gray-200 rounded-md bg-gray-50 p-2 space-y-2">
-                            @if(isset($archivos))
-                                @foreach($archivos as $archivo)
-                                    <div class="flex items-center">
-                                        <input id="chk_{{ $loop->index }}" name="archivos_seleccionados[]" value="{{ $archivo['nombre'] }}" type="checkbox" 
-                                               class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded cursor-pointer">
-                                        <label for="chk_{{ $loop->index }}" class="ml-2 block text-sm text-gray-900 cursor-pointer truncate" title="{{ $archivo['nombre'] }}">
-                                            {{ $archivo['nombre'] }}
-                                        </label>
-                                    </div>
-                                @endforeach
-                            @endif
+                        <div>
+                            <label style="display: block; font-size: 0.875rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">Selecciona los archivos:</label>
+                            <div style="max-height: 12rem; overflow-y: auto; border: 1px solid #e5e7eb; border-radius: 6px; background: #f9fafb; padding: 0.5rem;">
+                                @if(isset($archivos))
+                                    @foreach($archivos as $archivo)
+                                        <div style="display: flex; align-items: center; padding: 0.25rem 0;">
+                                            <input id="chk_{{ $loop->index }}" name="archivos_seleccionados[]" value="{{ $archivo['nombre'] }}" type="checkbox" style="width: 1rem; height: 1rem; color: #92400e; border-radius: 4px; cursor: pointer;">
+                                            <label for="chk_{{ $loop->index }}" style="margin-left: 0.5rem; font-size: 0.875rem; color: #111827; cursor: pointer; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{ $archivo['nombre'] }}</label>
+                                        </div>
+                                    @endforeach
+                                @endif
+                            </div>
                         </div>
                     </div>
-                </div>
 
-                {{-- Footer del Modal --}}
-                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                    <button type="submit" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none sm:ml-3 sm:w-auto sm:text-sm">
-                        Guardar
-                    </button>
-                    <button type="button" onclick="closeScheduleModal()" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
-                        Cancelar
-                    </button>
-                </div>
-            </form>
+                    <div style="background: #f9fafb; padding: 0.75rem 1.5rem; display: flex; justify-content: flex-end; gap: 0.75rem;">
+                        <button type="button" onclick="closeScheduleModal()" style="background: white; color: #374151; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; border: 1px solid #d1d5db; cursor: pointer;">Cancelar</button>
+                        <button type="submit" style="background: #92400e; color: white; padding: 0.5rem 1rem; border-radius: 6px; font-weight: 600; border: none; cursor: pointer;">Guardar</button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
-</div>
 
-    {{-- SCRIPTS --}}
     <script>
-    // --- 1. VARIABLES GLOBALES ---
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.querySelector('input[type="file"]');
-    const uploadActions = document.getElementById('uploadActions');
-    const dropContent = document.getElementById('dropContent');
-    const fileListPreview = document.getElementById('fileListPreview');
-    const filesListUl = document.getElementById('filesList');
-    
-    // Array "memoria" donde guardaremos todos los archivos válidos
-    let storedFiles = [];
-
-    // --- 2. LÓGICA DEL MODAL DE PROGRAMACIÓN ---
-    function openScheduleModal() {
-        const modal = document.getElementById('scheduleModal');
-        if(modal) modal.classList.remove('hidden');
-    }
-    function closeScheduleModal() {
-        const modal = document.getElementById('scheduleModal');
-        if(modal) modal.classList.add('hidden');
-    }
-
-    // --- 3. LÓGICA TOGGLE (ABRIR / CERRAR Y LIMPIAR SUBIDA) ---
-    const toggleBtn = document.getElementById('toggleUploadBtn');
-    const uploadContainer = document.getElementById('uploadContainer');
-
-    if (toggleBtn && uploadContainer) {
-        toggleBtn.addEventListener('click', () => {
-            uploadContainer.classList.toggle('hidden');
+        // ═══════════════════════════════════════════════════════════
+        // SELECCIÓN MÚLTIPLE Y DESCARGA MASIVA
+        // ═══════════════════════════════════════════════════════════
+        
+        function toggleSelectionMode() {
+            const checkbox = document.getElementById('toggleSelectionMode');
+            const checkboxes = document.querySelectorAll('.archivo-checkbox');
+            const btnDescargar = document.getElementById('btnDescargarSeleccionados');
             
-            if (!uploadContainer.classList.contains('hidden')) {
-                // AL ABRIR
-                toggleBtn.innerText = "Cancelar Subida";
-                toggleBtn.classList.add('bg-gray-100', 'text-gray-900');
+            if (checkbox.checked) {
+                // Mostrar todos los checkboxes
+                checkboxes.forEach(cb => cb.style.display = 'block');
+                btnDescargar.style.display = 'inline-flex';
             } else {
-                // AL CERRAR (CANCELAR)
-                toggleBtn.innerHTML = `<svg class="h-5 w-5 mr-2 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg> Subir Nuevo Archivo`;
-                toggleBtn.classList.remove('bg-gray-100', 'text-gray-900');
-
-                // LIMPIEZA TOTAL
-                storedFiles = []; 
-                updateUI();       
-                updateInput();    
-            }
-        });
-    }
-
-    // --- 4. DRAG & DROP Y SELECCIÓN DE ARCHIVOS ---
-
-    // A) Click en la zona abre el selector
-    if (dropzone) {
-        dropzone.addEventListener('click', (e) => {
-            if(e.target.closest('button')) return; // Evitar click si damos a borrar
-            fileInput.click();
-        });
-
-        // B) Efectos Visuales Drag
-        dropzone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropzone.classList.add('border-indigo-500', 'bg-indigo-50');
-        });
-
-    function openScheduleModal() {
-        document.getElementById('scheduleModal').classList.remove('hidden');
-    }
-    function closeScheduleModal() {
-        document.getElementById('scheduleModal').classList.add('hidden');
-    }
-
-        // C) Soltar archivos (DROP)
-        dropzone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropzone.classList.remove('border-indigo-500', 'bg-indigo-50');
-            if (e.dataTransfer.files.length) {
-                handleFiles(e.dataTransfer.files);
-            }
-        });
-    }
-
-    // D) Seleccionar archivos (CLICK INPUT)
-    if (fileInput) {
-        fileInput.addEventListener('change', function() {
-            if (this.files.length) {
-                handleFiles(this.files);
-            }
-        });
-    }
-
-    // --- 5. FUNCIÓN PRINCIPAL: PROCESAR ARCHIVOS ---
-    function handleFiles(files) {
-        for (let i = 0; i < files.length; i++) {
-            let file = files[i];
-            
-            // Validación: Máximo 10MB
-            if (file.size > 10 * 1024 * 1024) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Archivo muy pesado',
-                    text: 'El archivo "' + file.name + '" pesa demasiado (Max 10MB).',
-                    confirmButtonColor: '#EF4444',
+                // Ocultar checkboxes y desmarcar todos
+                checkboxes.forEach(cb => {
+                    cb.style.display = 'none';
+                    cb.checked = false;
                 });
-                continue; // Saltamos este archivo, pero seguimos con los demás
+                btnDescargar.style.display = 'none';
+                actualizarContador();
             }
-
-            // Si pasa la validación, lo guardamos en memoria
-            storedFiles.push(file);
         }
         
-        // Actualizamos la vista y el input real
-        updateUI();
-        updateInput();
-    }
-
-    // --- 6. FUNCIONES AUXILIARES ---
-
-    function removeFile(index) {
-        storedFiles.splice(index, 1);
-        updateUI();
-        updateInput();
-    }
-
-    // Esta función sincroniza nuestro array con el input invisible que se envía al servidor
-    function updateInput() {
-        const dataTransfer = new DataTransfer();
-        storedFiles.forEach(file => dataTransfer.items.add(file));
-        fileInput.files = dataTransfer.files;
-
-        // Si vaciamos la lista, limpiamos el value para permitir resubir el mismo archivo
-        if (storedFiles.length === 0) {
-            fileInput.value = "";
+        function actualizarContador() {
+            const checkboxes = document.querySelectorAll('.archivo-checkbox:checked');
+            const contador = document.getElementById('contadorSeleccionados');
+            if (contador) {
+                contador.textContent = checkboxes.length;
+            }
         }
-    }
-
-    // Esta función pinta la lista en pantalla
-    function updateUI() {
-        filesListUl.innerHTML = ''; 
-
-        // Estado: Sin archivos
-        if (storedFiles.length === 0) {
-            dropContent.classList.remove('hidden');
-            fileListPreview.classList.add('hidden');
-            uploadActions.classList.add('hidden');
-            return;
-        }
-
-        // Estado: Con archivos
-        dropContent.classList.add('hidden');
-        fileListPreview.classList.remove('hidden');
-        uploadActions.classList.remove('hidden');
-
-        storedFiles.forEach((file, index) => {
-            const li = document.createElement('li');
-            li.className = "flex justify-between items-center py-2 border-b border-gray-100 last:border-0";
+        
+        function descargarSeleccionados() {
+            const checkboxes = document.querySelectorAll('.archivo-checkbox:checked');
             
-            li.innerHTML = `
-                <div class="flex items-center">
-                    <span class="text-gray-400 mr-2 text-lg">📄</span>
-                    <span class="text-gray-700 font-medium truncate max-w-xs" title="${file.name}">${file.name}</span>
-                    <span class="text-gray-400 text-xs ml-2">(${(file.size/1024/1024).toFixed(2)} MB)</span>
-                </div>
-                <button type="button" onclick="removeFile(${index})" class="text-red-500 hover:text-red-700 transition p-1 rounded-md hover:bg-red-50" title="Quitar de la lista">
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                </button>
-            `;
-            filesListUl.appendChild(li);
-        });
-    }
-
-    function openShowModal() {
-        // Busca el elemento por su ID y le quita la clase 'hidden'
-        const modal = document.getElementById('scheduleShowModal');
-        if(modal) {
-            modal.classList.remove('hidden');
-        } else {
-            console.error('No encuentro el modal con id: scheduleShowModal');
+            if (checkboxes.length === 0) {
+                alert('Selecciona al menos un archivo');
+                return;
+            }
+            
+            // Descargar cada archivo con un pequeño delay para no sobrecargar
+            checkboxes.forEach((checkbox, index) => {
+                setTimeout(() => {
+                    const nombreArchivo = checkbox.getAttribute('data-nombre');
+                    const url = `{{ route('proyectos.archivos.descargar', ['id' => $proyecto->id_proyecto, 'nombreArchivo' => '__NOMBRE__']) }}`.replace('__NOMBRE__', encodeURIComponent(nombreArchivo));
+                    
+                    // Crear enlace temporal y hacer click
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = nombreArchivo;
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                }, index * 300); // 300ms de delay entre cada descarga
+            });
+            
+            // Opcional: Desmarcar todos después de descargar
+            setTimeout(() => {
+                checkboxes.forEach(cb => cb.checked = false);
+                actualizarContador();
+            }, checkboxes.length * 300 + 500);
         }
-    }
 
-    function closeShowModal() {
-        const modal = document.getElementById('scheduleShowModal');
-        if(modal) {
-            modal.classList.add('hidden');
+        // ═══════════════════════════════════════════════════════════
+        // FORMULARIO DE SUBIDA
+        // ═══════════════════════════════════════════════════════════
+        
+        // Toggle formulario de subida
+        const toggleBtn = document.getElementById('toggleUploadBtn');
+        const uploadContainer = document.getElementById('uploadContainer');
+        
+        if (toggleBtn) {
+            toggleBtn.addEventListener('click', function() {
+                uploadContainer.classList.toggle('hidden');
+                if (!uploadContainer.classList.contains('hidden')) {
+                    toggleBtn.textContent = 'Cancelar';
+                } else {
+                    toggleBtn.innerHTML = `<svg style="height: 1.25rem; width: 1.25rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg> Subir Nuevo Archivo`;
+                    storedFiles = [];
+                    updateUI();
+                }
+            });
         }
-    }
-</script>
+
+        // Drag & Drop
+        const dropzone = document.getElementById('dropzone');
+        const fileInput = document.getElementById('archivoInput');
+        const dropContent = document.getElementById('dropContent');
+        const fileListPreview = document.getElementById('fileListPreview');
+        const filesListUl = document.getElementById('filesList');
+        const uploadActions = document.getElementById('uploadActions');
+
+        let storedFiles = [];
+
+        if (dropzone && fileInput) {
+            dropzone.addEventListener('click', (e) => {
+                if(e.target.closest('button')) return;
+                fileInput.click();
+            });
+            
+            dropzone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropzone.style.background = '#e5e7eb';
+            });
+            
+            dropzone.addEventListener('dragleave', () => {
+                dropzone.style.background = 'white';
+            });
+            
+            dropzone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropzone.style.background = 'white';
+                handleFiles(e.dataTransfer.files);
+            });
+            
+            fileInput.addEventListener('change', (e) => {
+                handleFiles(e.target.files);
+            });
+        }
+
+        function handleFiles(files) {
+            for (let file of files) {
+                if (file.size > 10 * 1024 * 1024) {
+                    alert(`${file.name} supera los 10MB`);
+                    continue;
+                }
+                storedFiles.push(file);
+            }
+            updateUI();
+        }
+
+        function removeFile(index) {
+            storedFiles.splice(index, 1);
+            updateUI();
+            if (storedFiles.length === 0) {
+                fileInput.value = "";
+            }
+        }
+
+        function updateUI() {
+            filesListUl.innerHTML = ''; 
+
+            if (storedFiles.length === 0) {
+                dropContent.classList.remove('hidden');
+                fileListPreview.classList.add('hidden');
+                uploadActions.classList.add('hidden');
+                return;
+            }
+
+            dropContent.classList.add('hidden');
+            fileListPreview.classList.remove('hidden');
+            uploadActions.classList.remove('hidden');
+
+            storedFiles.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.style = "display: flex; justify-content: space-between; align-items: center; padding: 0.5rem 0; border-bottom: 1px solid #f3f4f6;";
+                
+                li.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 0.5rem;">
+                        <span style="font-size: 1.25rem;">📄</span>
+                        <span style="font-weight: 500;">${file.name}</span>
+                        <span style="font-size: 0.875rem; color: #9ca3af;">(${(file.size/1024/1024).toFixed(2)} MB)</span>
+                    </div>
+                    <button type="button" onclick="removeFile(${index})" style="color: #dc2626; background: none; border: none; cursor: pointer; font-size: 1.25rem;">
+                        ×
+                    </button>
+                `;
+                filesListUl.appendChild(li);
+            });
+
+            // Sincronizar con el input real
+            const dataTransfer = new DataTransfer();
+            storedFiles.forEach(file => dataTransfer.items.add(file));
+            fileInput.files = dataTransfer.files;
+        }
+
+        // ═══════════════════════════════════════════════════════════
+        // MODALES
+        // ═══════════════════════════════════════════════════════════
+        
+        function openShowModal() {
+            document.getElementById('scheduleShowModal').classList.remove('hidden');
+        }
+        function closeShowModal() {
+            document.getElementById('scheduleShowModal').classList.add('hidden');
+        }
+        function openScheduleModal() {
+            document.getElementById('scheduleModal').classList.remove('hidden');
+        }
+        function closeScheduleModal() {
+            document.getElementById('scheduleModal').classList.add('hidden');
+        }
+    </script>
 </x-app-layout>

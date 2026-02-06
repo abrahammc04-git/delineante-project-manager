@@ -1,5 +1,5 @@
 <x-app-layout>
-    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
 
     <div class="bg-white shadow sm:rounded-lg p-4 sm:p-6 flex items-center justify-between">

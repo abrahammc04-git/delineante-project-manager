@@ -1,0 +1,10 @@
+/* ============================================
+   USUARIOS - Box superior y buscador
+   ============================================ */
+
+/* Box superior azul (igual que proyectos) */
+.box-usuarios {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.box-usuarios-inner {

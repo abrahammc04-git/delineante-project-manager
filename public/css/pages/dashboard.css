@@ -1,0 +1,191 @@
+/* ============================================
+   DASHBOARD - CONTENIDO
+   ============================================ */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    font-size: 1.125rem;
+    color: var(--proyinstal-gray-600);
+}
+
+/* ============================================
+   DASHBOARD - HERO
+   ============================================ */
+.dashboard-hero {
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    padding: 1.75rem 1.75rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -20%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.dashboard-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -70%;
+    left: -10%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.dashboard-hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dashboard-hero .dashboard-title {
+    color: var(--proyinstal-white);
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-hero .dashboard-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Botones del hero */
+.dashboard-hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--proyinstal-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+}
+
+.btn-hero:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-hero-outline {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--proyinstal-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+}
+
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Cards de estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--proyinstal-white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--proyinstal-gray-200);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-light-blue) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--proyinstal-white);
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+    line-height: 1;
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+    margin-top: 0.5rem;
+}

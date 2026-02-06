@@ -1,0 +1,1736 @@
+/* ============================================
+   PROYINSTAL - Estilos Personalizados
+   Colores corporativos y diseño profesional
+   ============================================ */
+
+:root {
+    /* Colores PROYINSTAL */
+    --proyinstal-blue: #0033CC;
+    --proyinstal-dark: #001F7A;
+    --proyinstal-light-blue: #4D79FF;
+    --proyinstal-white: #FFFFFF;
+    --proyinstal-gray-50: #F9FAFB;
+    --proyinstal-gray-100: #F3F4F6;
+    --proyinstal-gray-200: #E5E7EB;
+    --proyinstal-gray-300: #D1D5DB;
+    --proyinstal-gray-600: #4B5563;
+    --proyinstal-gray-900: #111827;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 51, 204, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 51, 204, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 51, 204, 0.15);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 51, 204, 0.2);
+    
+    /* Transiciones */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+/* ============================================
+   RESET Y BASE
+   ============================================ */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, sans-serif;
+    background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+    min-height: 100vh;
+    color: var(--proyinstal-gray-900);
+    line-height: 1.6;
+}
+
+/* ============================================
+   LAYOUT APP - Fondo global
+   ============================================ */
+.app-bg {
+    background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);
+}
+/* ============================================
+   LAYOUT PRINCIPAL - GUEST (Login/Register)
+   ============================================ */
+.guest-layout {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem 1rem;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Fondo animado con círculos decorativos */
+.guest-layout::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -20%;
+    width: 800px;
+    height: 800px;
+    background: radial-gradient(circle, rgba(0, 51, 204, 0.1) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 20s ease-in-out infinite;
+}
+
+.guest-layout::after {
+    content: '';
+    position: absolute;
+    bottom: -30%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
+    background: radial-gradient(circle, rgba(0, 31, 122, 0.08) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: float 15s ease-in-out infinite reverse;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50% { transform: translateY(-20px) scale(1.05); }
+}
+
+/* ============================================
+   CONTENEDOR DE AUTENTICACIÓN
+   ============================================ */
+.auth-container {
+    background: var(--proyinstal-white);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    width: 100%;
+    max-width: 560px;
+    padding: 3.5rem 3rem;
+    position: relative;
+    z-index: 1;
+    border: 1px solid rgba(0, 51, 204, 0.1);
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Logo container */
+.logo-container {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.logo-container img {
+    max-width: 280px;
+    height: auto;
+    filter: drop-shadow(0 4px 6px rgba(0, 51, 204, 0.12));
+    animation: logoFadeIn 0.8s ease-out;
+    background: transparent;
+    display: block;
+    margin: 0 auto;
+}
+
+@keyframes logoFadeIn {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+/* Títulos */
+.auth-title {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+    text-align: center;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.025em;
+}
+
+.auth-subtitle {
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+/* ============================================
+   FOOTER DE AUTH
+   ============================================ */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--proyinstal-gray-200);
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+}
+
+/* ============================================
+   DASHBOARD - NAVBAR
+   ============================================ */
+.navbar {
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    color: var(--proyinstal-white);
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-logo img {
+    height: 40px;
+    filter: brightness(0) invert(1);
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.navbar-link {
+    color: var(--proyinstal-white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.navbar-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--proyinstal-white);
+    transition: width 0.3s ease;
+}
+
+.navbar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-link:hover::before {
+    width: 80%;
+}
+
+.navbar-link.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   NAVBAR MINIMAL (solo usuario + logout)
+   ============================================ */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.navbar-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+}
+
+.navbar-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.navbar-role {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.navbar-logout {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+}
+
+.navbar-logout:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+/* ============================================
+   BOTONES
+   ============================================ */
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 1.5rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    transition: var(--transition);
+    text-decoration: none;
+    outline: none;
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.3);
+    transform: translate(-50%, -50%);
+    transition: width 0.6s, height 0.6s;
+}
+
+.btn:hover::before {
+    width: 300px;
+    height: 300px;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    color: var(--proyinstal-white);
+    width: 100%;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-secondary {
+    background: var(--proyinstal-gray-100);
+    color: var(--proyinstal-gray-900);
+    border: 2px solid var(--proyinstal-gray-200);
+}
+
+.btn-secondary:hover {
+    background: var(--proyinstal-gray-200);
+    border-color: var(--proyinstal-gray-300);
+}
+
+/* Botón con ancho automático (no full-width) */
+.btn-auto {
+    width: auto;
+}
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+.form-group {
+    margin-bottom: 1.75rem;
+}
+
+/* Grid de dos columnas para formularios */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-grid .form-group {
+    margin-bottom: 0;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+/* Grupo sin margen inferior (filtros de usuarios) */
+.form-group-no-mb {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-900);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.025em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    border: 2px solid var(--proyinstal-gray-200);
+    border-radius: 10px;
+    background: var(--proyinstal-gray-50);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--proyinstal-blue);
+    background: var(--proyinstal-white);
+    box-shadow: 0 0 0 4px rgba(0, 51, 204, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--proyinstal-gray-300);
+}
+
+.form-error {
+    color: #DC2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Checkbox y Remember Me */
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+}
+
+.form-checkbox {
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--proyinstal-gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: var(--proyinstal-blue);
+}
+
+.form-checkbox-label {
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+    cursor: pointer;
+    user-select: none;
+}
+/* ============================================
+   ENLACES
+   ============================================ */
+.link {
+    color: var(--proyinstal-blue);
+    text-decoration: none;
+    font-weight: 500;
+    transition: var(--transition);
+    position: relative;
+}
+
+.link::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: var(--proyinstal-blue);
+    transition: width 0.3s ease;
+}
+
+.link:hover {
+    color: var(--proyinstal-dark);
+}
+
+.link:hover::after {
+    width: 100%;
+}
+/* ============================================
+   DIVIDER (O puedes iniciar sesión con)
+   ============================================ */
+.divider {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+    color: var(--proyinstal-gray-600);
+    font-size: 0.875rem;
+}
+
+.divider::before,
+.divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--proyinstal-gray-200);
+}
+
+/* ============================================
+   MENSAJES DE ESTADO
+   ============================================ */
+.alert {
+    padding: 1rem;
+    border-radius: 10px;
+    margin-bottom: 1.5rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.alert-success {
+    background: #ECFDF5;
+    color: #065F46;
+    border: 1px solid #A7F3D0;
+}
+
+.alert-error {
+    background: #FEF2F2;
+    color: #991B1B;
+    border: 1px solid #FECACA;
+}
+
+.alert-info {
+    background: #EFF6FF;
+    color: #1E40AF;
+    border: 1px solid #BFDBFE;
+}
+/* ============================================
+   TABLAS
+   ============================================ */
+.table-container {
+    background: var(--proyinstal-white);
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--proyinstal-gray-200);
+}
+
+.table-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--proyinstal-gray-200);
+    background: var(--proyinstal-gray-50);
+}
+
+/* Header con título izquierda y botón derecha */
+.table-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+}
+
+/* Subtítulo bajo el título */
+.table-header-subtitle {
+    color: var(--proyinstal-gray-600);
+    margin-top: 0.25rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--proyinstal-gray-50);
+}
+
+th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--proyinstal-gray-200);
+    color: var(--proyinstal-gray-900);
+}
+
+tr {
+    transition: var(--transition);
+}
+
+tbody tr:hover {
+    background: var(--proyinstal-gray-50);
+}
+
+/* ============================================
+   CELDAS REUTILIZABLES
+   ============================================ */
+
+/* Nombre de proyecto / cliente en negrita */
+.td-nombre {
+    font-weight: 600;
+    color: var(--proyinstal-dark);
+}
+
+/* Enlace "Ver detalles" en tablas */
+.enlace-ver-detalles {
+    color: var(--proyinstal-blue);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: 0.875rem;
+}
+
+.enlace-ver-detalles:hover {
+    color: var(--proyinstal-dark);
+}
+
+/* Celda vacía / sin resultados */
+.td-vacia {
+    text-align: center;
+    padding: 2rem;
+    color: var(--proyinstal-gray-600);
+/* ============================================
+   BADGES DE ESTADO
+   ============================================ */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge-pending {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.badge-in-progress {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.badge-completed {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.badge-paused {
+    background: #E5E7EB;
+    color: #374151;
+}
+
+.badge-cancelled {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+/* ============================================
+   USUARIOS - Box superior y buscador
+   ============================================ */
+
+/* Box superior azul (igual que proyectos) */
+.box-usuarios {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.box-usuarios-inner {
+/* ============================================
+   DASHBOARD - CONTENIDO
+   ============================================ */
+.dashboard-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.dashboard-header {
+    margin-bottom: 2rem;
+}
+
+.dashboard-title {
+    font-size: 2.25rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+    margin-bottom: 0.5rem;
+}
+
+.dashboard-subtitle {
+    font-size: 1.125rem;
+    color: var(--proyinstal-gray-600);
+}
+
+/* ============================================
+   DASHBOARD - HERO
+   ============================================ */
+.dashboard-hero {
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    border-radius: 20px;
+    box-shadow: var(--shadow-xl);
+    padding: 1.75rem 1.75rem;
+    margin-bottom: 2rem;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+.dashboard-hero::before {
+    content: '';
+    position: absolute;
+    top: -60%;
+    right: -20%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.dashboard-hero::after {
+    content: '';
+    position: absolute;
+    bottom: -70%;
+    left: -10%;
+    width: 520px;
+    height: 520px;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, transparent 70%);
+    border-radius: 50%;
+}
+
+.dashboard-hero-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.dashboard-hero .dashboard-title {
+    color: var(--proyinstal-white);
+    margin-bottom: 0.25rem;
+}
+
+.dashboard-hero .dashboard-subtitle {
+    color: rgba(255, 255, 255, 0.85);
+}
+
+/* Botones del hero */
+.dashboard-hero-actions {
+    display: flex;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.btn-hero {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--proyinstal-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+}
+
+.btn-hero:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-hero-outline {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--proyinstal-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: 12px;
+}
+
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Cards de estadísticas */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--proyinstal-white);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: var(--shadow-md);
+    border: 1px solid var(--proyinstal-gray-200);
+    transition: var(--transition);
+    position: relative;
+    overflow: hidden;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+}
+
+.stat-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.stat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+}
+
+.stat-title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-light-blue) 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--proyinstal-white);
+    font-size: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--proyinstal-dark);
+    line-height: 1;
+}
+
+.stat-change {
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+    margin-top: 0.5rem;
+}
+/* ============================================
+   FILTROS (Usuarios)
+   ============================================ */
+.filtros-container {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--proyinstal-gray-200);
+    background: var(--proyinstal-gray-50);
+}
+
+.filtros-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.filtros-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* ============================================
+   CONTENEDORES DE USUARIOS
+   ============================================ */
+.container-pad {
+    padding: 1.5rem;
+}
+
+.tabla-overflow {
+    overflow-x: auto;
+}
+
+.paginacion-wrap {
+    padding: 1rem 1.5rem;
+}
+
+/* ============================================
+   SECCION DANGER (Eliminar usuario)
+   ============================================ */
+.danger-zone {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid #FECACA;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    background: var(--proyinstal-white);
+}
+
+.danger-title {
+    font-weight: 700;
+    color: #991B1B;
+    margin-bottom: 0.5rem;
+}
+
+.danger-description {
+    color: var(--proyinstal-gray-600);
+    margin-bottom: 1rem;
+}
+
+.btn-danger {
+    width: auto;
+    background: #DC2626;
+    color: white;
+}
+
+/* ============================================
+   FORM ACTIONS (botones al final del form)
+   ============================================ */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* ============================================
+   SELECT2 (create/edit proyectos)
+   ============================================ */
+.select2-container .select2-selection--single {
+    height: 42px !important;
+    padding-top: 6px;
+    border-color: #d1d5db !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 2.5rem 2rem;
+        max-width: 100%;
+        margin: 0 1rem;
+    }
+    
+    .logo-container img {
+        max-width: 240px;
+    }
+    
+    /* Grid a una columna en móvil */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .navbar {
+        padding: 1rem;
+    }
+    
+    .navbar-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    table {
+        font-size: 0.875rem;
+    }
+    
+    th, td {
+        padding: 0.75rem 1rem;
+    }
+
+    .filtros-grid {
+        grid-template-columns: 1fr;
+    }
+}
+/* ============================================
+   CHATBOT PROYINSTAL - Estilos Tuenti
+   ============================================ */
+
+/* Layout principal: tabla + chat lado a lado */
+.proyectos-chat-layout {
+    display: flex;
+    height: calc(100vh - 65px);
+    width: 100%;
+}
+
+/* ============================================
+   BOX SUPERIOR - Título + Botones
+   ============================================ */
+.box-proyectos {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.box-proyectos-inner {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.box-proyectos-titulo h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.box-proyectos-titulo p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.box-proyectos-botones {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Botón ← Dashboard dentro del box */
+.btn-box-dashboard {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.3);
+    transition: background 0.2s;
+}
+
+.btn-box-dashboard:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+/* Botón + Nuevo Proyecto dentro del box */
+.btn-box-nuevo {
+    background: white;
+    color: #0033CC;
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: box-shadow 0.2s;
+}
+
+.btn-box-nuevo:hover {
+    box-shadow: 0 3px 8px rgba(0,51,204,0.25);
+}
+
+/* Botón toggle Asistente IA */
+.btn-toggle-chatbot {
+    background: rgba(255,255,255,0.15);
+    color: white;
+    border: 1px solid rgba(255,255,255,0.3);
+    padding: 0.6rem 1.15rem;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-toggle-chatbot:hover {
+    background: rgba(255,255,255,0.25);
+}
+
+.btn-toggle-chatbot.activo {
+    background: #059669;
+    border-color: #059669;
+}
+
+/* ============================================
+   PANEL IZQUIERDO - TABLA DE PROYECTOS
+   ============================================ */
+.proyectos-panel {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1.5rem;
+    background: #f3f4f6;
+    border-right: 1px solid #e5e7eb;
+}
+
+.proyectos-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.proyectos-panel-header h2 {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #001F7A;
+}
+
+/* Botón Mostrar Todos (limpiar filtro) */
+.btn-limpiar-filtro {
+    background: #fff;
+    color: #059669;
+    border: 2px solid #059669;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-limpiar-filtro:hover {
+    background: #059669;
+    color: #fff;
+}
+
+/* Buscador */
+.buscador-container {
+    margin-bottom: 1rem;
+}
+
+#buscadorProyectos {
+    width: 100%;
+    padding: 0.72rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+#buscadorProyectos:focus {
+    border-color: #0033CC;
+    box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
+}
+
+/* Tabla proyectos */
+.proyectos-tabla-wrap {
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,51,204,0.08);
+    overflow: hidden;
+    border: 1px solid #e5e7eb;
+}
+
+.proyectos-tabla-wrap table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.proyectos-tabla-wrap thead {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+}
+
+.proyectos-tabla-wrap th {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-size: 0.8rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: #fff;
+}
+
+.proyectos-tabla-wrap td {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #f0f0f0;
+    font-size: 0.875rem;
+    color: #374151;
+}
+
+.proyectos-tabla-wrap tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.proyectos-tabla-wrap tbody tr:hover {
+    background: #eef2ff;
+}
+
+/* Badges dentro de tabla proyectos */
+.badge-pendiente   { background: #fef3c7; color: #92400e; }
+.badge-en-proceso  { background: #dbeafe; color: #1e40af; }
+.badge-completado  { background: #d1fae5; color: #065f46; }
+.badge-pausado     { background: #e5e7eb; color: #374151; }
+.badge-cancelado   { background: #fee2e2; color: #991b1b; }
+
+/* ============================================
+   PANEL DERECHO - CHAT (ESTILO TUENTI)
+   ============================================ */
+.chat-panel {
+    width: 380px;
+    min-width: 380px;
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border-left: 1px solid #e5e7eb;
+    transition: all 0.3s ease-in-out;
+}
+
+/* Header del chat */
+.chat-panel-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.85rem 1rem;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+}
+
+/* Fila del header: avatar + info + botón cerrar */
+.chat-header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+}
+
+.chat-avatar-header {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+}
+
+.chat-header-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header-info .nombre {
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+
+.chat-header-info .estado {
+    font-size: 0.75rem;
+    opacity: 0.85;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+}
+
+.punto-verde {
+    width: 8px;
+    height: 8px;
+    background: #22c55e;
+    border-radius: 50%;
+    display: inline-block;
+    box-shadow: 0 0 4px rgba(34,197,94,0.6);
+}
+
+/* Botón cerrar chat (×) */
+.btn-cerrar-chat {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    flex-shrink: 0;
+}
+
+.btn-cerrar-chat:hover {
+    opacity: 0.7;
+}
+
+/* Zona de mensajes (scroll) */
+.chat-mensajes {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem 0.85rem;
+    background: #f9fafb;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+}
+
+/* Mensaje genérico */
+.mensaje {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 95%;
+}
+
+/* Mensaje del bot (izquierda) */
+.mensaje-bot {
+    align-self: flex-start;
+    flex-direction: row;
+}
+
+/* Mensaje del usuario (derecha) */
+.mensaje-usuario {
+    align-self: flex-end;
+    flex-direction: row-reverse;
+}
+
+/* Avatar circular */
+.mensaje-avatar {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.7rem;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.mensaje-usuario .mensaje-avatar {
+    background: linear-gradient(135deg, #4D79FF, #0033CC);
+}
+
+/* Globo de mensaje */
+.mensaje-globo {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px 14px 14px 4px;
+    padding: 0.6rem 0.85rem;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    font-size: 0.875rem;
+    color: #1f2937;
+    line-height: 1.45;
+    max-width: 280px;
+}
+
+.mensaje-usuario .mensaje-globo {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: #fff;
+    border-color: transparent;
+    border-radius: 14px 14px 4px 14px;
+}
+
+.mensaje-globo p {
+    margin: 0;
+}
+
+.mensaje-globo p + p {
+    margin-top: 0.4rem;
+}
+
+.mensaje-globo ul {
+    margin: 0.4rem 0 0 0;
+    padding-left: 1.2rem;
+    font-size: 0.82rem;
+}
+
+.mensaje-globo ul li {
+    margin-bottom: 0.2rem;
+}
+
+/* Hora del mensaje */
+.mensaje-hora {
+    font-size: 0.68rem;
+    color: #9ca3af;
+    align-self: flex-end;
+    padding: 0 0.15rem;
+}
+
+.mensaje-usuario .mensaje-hora {
+    align-self: flex-end;
+    color: #9ca3af;
+}
+
+/* Indicador de escribiendo */
+.typing-row {
+    display: flex;
+    gap: 0.5rem;
+    align-items: flex-end;
+    padding: 0 0.1rem;
+}
+
+.typing-globo {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 14px 14px 14px 4px;
+    padding: 0.7rem 0.9rem;
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.typing-globo .dot {
+    width: 7px;
+    height: 7px;
+    background: #9ca3af;
+    border-radius: 50%;
+    animation: blink 1.4s infinite;
+}
+.typing-globo .dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-globo .dot:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes blink {
+    0%, 60%, 100% { opacity: 0.2; }
+    30% { opacity: 1; }
+}
+
+/* ============================================
+   INPUT DE MENSAJE
+   ============================================ */
+.chat-input-area {
+    padding: 0.75rem;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.chat-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f3f4f6;
+    border-radius: 24px;
+    padding: 0.35rem 0.35rem 0.35rem 1rem;
+    border: 1px solid #e5e7eb;
+    transition: border-color 0.2s;
+}
+
+.chat-input-row:focus-within {
+    border-color: #0033CC;
+    box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
+}
+
+.chat-input-row input {
+    flex: 1;
+    border: none;
+    background: transparent;
+    outline: none;
+    font-size: 0.9rem;
+    color: #111827;
+}
+
+.chat-input-row input::placeholder {
+    color: #9ca3af;
+}
+
+.btn-enviar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.btn-enviar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 3px 8px rgba(0,51,204,0.35);
+}
+
+.btn-enviar:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .proyectos-chat-layout {
+        flex-direction: column;
+        height: auto;
+    }
+    .proyectos-panel {
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+        max-height: 50vh;
+    }
+    .chat-panel {
+        width: 100%;
+        min-width: unset;
+        height: 50vh;
+    }
+    .box-proyectos-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.box-usuarios-titulo h1 {
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0 0 0.25rem 0;
+}
+
+.box-usuarios-titulo p {
+    color: rgba(255,255,255,0.8);
+    font-size: 0.9rem;
+    margin: 0;
+}
+
+.box-usuarios-botones {
+    display: flex;
+    gap: 0.65rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Buscador fuera de la tabla */
+.usuarios-buscador-wrap {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0,51,204,0.08);
+    border: 1px solid #e5e7eb;
+    padding: 1.5rem;
+    margin: 0 1.5rem 1.5rem 1.5rem;
+}
+
+.usuarios-buscador-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.usuarios-buscador-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.75rem;
+}
+
+.usuarios-input {
+    padding: 0.75rem 1rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    font-size: 0.875rem;
+    outline: none;
+    transition: all 0.2s;
+    background: #f9fafb;
+}
+
+.usuarios-input:focus {
+    border-color: #0033CC;
+    background: white;
+    box-shadow: 0 0 0 3px rgba(0,51,204,0.1);
+}
+
+.usuarios-input::placeholder {
+    color: #9ca3af;
+}
+
+.usuarios-buscador-acciones {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    padding-top: 0.75rem;
+    border-top: 1px solid #f3f4f6;
+}
+
+.btn-usuarios-buscar {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    color: white;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+}
+
+.btn-usuarios-buscar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0,51,204,0.25);
+}
+
+.btn-usuarios-limpiar {
+    background: #f3f4f6;
+    color: #374151;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-usuarios-limpiar:hover {
+    background: #e5e7eb;
+}
+
+/* Responsive usuarios */
+@media (max-width: 1200px) {
+    .usuarios-buscador-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 768px) {
+    .box-usuarios-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .usuarios-buscador-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .usuarios-buscador-acciones {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .usuarios-buscador-acciones button,
+    .usuarios-buscador-acciones a {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Botón Dashboard en el box superior */
+.btn-box-dashboard {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.65rem 1.25rem;
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    transition: all 0.2s;
+    display: inline-block;
+}
+
+.btn-box-dashboard:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Box superior para páginas (usuarios/proyectos) */
+.page-box {
+    padding: 1.5rem 1.5rem 0 1.5rem;
+}
+
+.page-box-inner {
+    background: linear-gradient(135deg, #0033CC, #001F7A);
+    border-radius: 14px;
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 51, 204, 0.15);
+}
+
+.page-box-titulo h1 {
+    color: white;
+    font-size: 1.75rem;
+    font-weight: 700;
+    margin: 0 0 0.35rem 0;
+}
+
+.page-box-titulo p {
+    color: rgba(255,255,255,0.85);
+    font-size: 0.95rem;
+    margin: 0;
+}
+
+.page-box-botones {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+/* Responsive para box */
+@media (max-width: 768px) {
+    .page-box-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.25rem 1.5rem;
+    }
+    
+    .page-box-titulo h1 {
+        font-size: 1.5rem;
+    }
+    
+    .page-box-botones {
+        width: 100%;
+    }
+    
+    .btn-box-dashboard {
+        width: 100%;
+        text-align: center;
+    }

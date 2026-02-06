@@ -1,0 +1,27 @@
+/* ============================================
+   PROYINSTAL - Estilos Personalizados
+   Colores corporativos y diseño profesional
+   ============================================ */
+
+:root {
+    /* Colores PROYINSTAL */
+    --proyinstal-blue: #0033CC;
+    --proyinstal-dark: #001F7A;
+    --proyinstal-light-blue: #4D79FF;
+    --proyinstal-white: #FFFFFF;
+    --proyinstal-gray-50: #F9FAFB;
+    --proyinstal-gray-100: #F3F4F6;
+    --proyinstal-gray-200: #E5E7EB;
+    --proyinstal-gray-300: #D1D5DB;
+    --proyinstal-gray-600: #4B5563;
+    --proyinstal-gray-900: #111827;
+    
+    /* Sombras */
+    --shadow-sm: 0 1px 2px 0 rgba(0, 51, 204, 0.05);
+    --shadow-md: 0 4px 6px -1px rgba(0, 51, 204, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 51, 204, 0.15);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 51, 204, 0.2);
+    
+    /* Transiciones */
+    --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}

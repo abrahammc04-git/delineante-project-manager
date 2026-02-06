@@ -1,0 +1,89 @@
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+.form-group {
+    margin-bottom: 1.75rem;
+}
+
+/* Grid de dos columnas para formularios */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-grid .form-group {
+    margin-bottom: 0;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+/* Grupo sin margen inferior (filtros de usuarios) */
+.form-group-no-mb {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--proyinstal-gray-900);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.025em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: 1rem;
+    border: 2px solid var(--proyinstal-gray-200);
+    border-radius: 10px;
+    background: var(--proyinstal-gray-50);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--proyinstal-blue);
+    background: var(--proyinstal-white);
+    box-shadow: 0 0 0 4px rgba(0, 51, 204, 0.1);
+}
+
+.form-input::placeholder {
+    color: var(--proyinstal-gray-300);
+}
+
+.form-error {
+    color: #DC2626;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Checkbox y Remember Me */
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+}
+
+.form-checkbox {
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--proyinstal-gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: var(--proyinstal-blue);
+}
+
+.form-checkbox-label {
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+    cursor: pointer;
+    user-select: none;
+}

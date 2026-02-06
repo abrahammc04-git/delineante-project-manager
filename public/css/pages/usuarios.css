@@ -1,0 +1,136 @@
+/* ============================================
+   FILTROS (Usuarios)
+   ============================================ */
+.filtros-container {
+    padding: 1.25rem;
+    border-bottom: 1px solid var(--proyinstal-gray-200);
+    background: var(--proyinstal-gray-50);
+}
+
+.filtros-grid {
+    grid-template-columns: repeat(5, 1fr);
+    gap: 1rem;
+}
+
+.filtros-actions {
+    display: flex;
+    gap: 0.75rem;
+    margin-top: 0.75rem;
+}
+
+/* ============================================
+   CONTENEDORES DE USUARIOS
+   ============================================ */
+.container-pad {
+    padding: 1.5rem;
+}
+
+.tabla-overflow {
+    overflow-x: auto;
+}
+
+.paginacion-wrap {
+    padding: 1rem 1.5rem;
+}
+
+/* ============================================
+   SECCION DANGER (Eliminar usuario)
+   ============================================ */
+.danger-zone {
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    border: 1px solid #FECACA;
+    border-radius: 16px;
+    box-shadow: var(--shadow-md);
+    background: var(--proyinstal-white);
+}
+
+.danger-title {
+    font-weight: 700;
+    color: #991B1B;
+    margin-bottom: 0.5rem;
+}
+
+.danger-description {
+    color: var(--proyinstal-gray-600);
+    margin-bottom: 1rem;
+}
+
+.btn-danger {
+    width: auto;
+    background: #DC2626;
+    color: white;
+}
+
+/* ============================================
+   FORM ACTIONS (botones al final del form)
+   ============================================ */
+.form-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+/* ============================================
+   SELECT2 (create/edit proyectos)
+   ============================================ */
+.select2-container .select2-selection--single {
+    height: 42px !important;
+    padding-top: 6px;
+    border-color: #d1d5db !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: 28px;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 768px) {
+    .auth-container {
+        padding: 2.5rem 2rem;
+        max-width: 100%;
+        margin: 0 1rem;
+    }
+    
+    .logo-container img {
+        max-width: 240px;
+    }
+    
+    /* Grid a una columna en móvil */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    
+    .navbar {
+        padding: 1rem;
+    }
+    
+    .navbar-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    
+    .dashboard-container {
+        padding: 1rem;
+    }
+    
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    table {
+        font-size: 0.875rem;
+    }
+    
+    th, td {
+        padding: 0.75rem 1rem;
+    }
+
+    .filtros-grid {
+        grid-template-columns: 1fr;
+    }
+}

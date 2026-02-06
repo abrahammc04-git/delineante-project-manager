@@ -1,0 +1,116 @@
+/* ============================================
+   FOOTER DE AUTH
+   ============================================ */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--proyinstal-gray-200);
+    font-size: 0.875rem;
+    color: var(--proyinstal-gray-600);
+}
+
+/* ============================================
+   DASHBOARD - NAVBAR
+   ============================================ */
+.navbar {
+    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    color: var(--proyinstal-white);
+    padding: 1rem 2rem;
+    box-shadow: var(--shadow-lg);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.navbar-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navbar-logo img {
+    height: 40px;
+    filter: brightness(0) invert(1);
+}
+
+.navbar-menu {
+    display: flex;
+    gap: 2rem;
+    list-style: none;
+}
+
+.navbar-link {
+    color: var(--proyinstal-white);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: var(--transition);
+    position: relative;
+}
+
+.navbar-link::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 2px;
+    background: var(--proyinstal-white);
+    transition: width 0.3s ease;
+}
+
+.navbar-link:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.navbar-link:hover::before {
+    width: 80%;
+}
+
+.navbar-link.active {
+    background: rgba(255, 255, 255, 0.15);
+}
+
+/* ============================================
+   NAVBAR MINIMAL (solo usuario + logout)
+   ============================================ */
+.navbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+}
+
+.navbar-user {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    line-height: 1.1;
+}
+
+.navbar-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.navbar-role {
+    font-size: 0.7rem;
+    opacity: 0.85;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.navbar-logout {
+    background: rgba(255, 255, 255, 0.12);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 10px;
+    padding: 0.45rem 0.85rem;
+}
+
+.navbar-logout:hover {
+    background: rgba(255, 255, 255, 0.2);
+}

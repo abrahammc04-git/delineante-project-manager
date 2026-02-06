@@ -5,8 +5,7 @@
         </h2>
     </x-slot>
 
-    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/chatbot-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
     <!-- ══════════════════════════════════════════════════════════════ -->
     <!-- BOX SUPERIOR: Título izquierda + Botones derecha -->
