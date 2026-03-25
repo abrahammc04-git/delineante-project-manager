@@ -1,31 +1,43 @@
 <x-guest-layout>
-    <div class="mb-4 text-sm text-gray-600">
-        {{ __('Thanks for signing up! Before getting started, could you verify your email address by clicking on the link we just emailed to you? If you didn\'t receive the email, we will gladly send you another.') }}
-    </div>
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
-    @if (session('status') == 'verification-link-sent')
-        <div class="mb-4 font-medium text-sm text-green-600">
-            {{ __('A new verification link has been sent to the email address you provided during registration.') }}
-        </div>
-    @endif
-
-    <div class="mt-4 flex items-center justify-between">
-        <form method="POST" action="{{ route('verification.send') }}">
-            @csrf
-
-            <div>
-                <x-primary-button>
-                    {{ __('Resend Verification Email') }}
-                </x-primary-button>
+    <div class="guest-layout">
+        <div class="auth-container">
+            <div class="logo-container">
+                <img src="{{ asset('images/proyinstal-logo.png') }}" alt="PROYINSTAL">
             </div>
-        </form>
 
-        <form method="POST" action="{{ route('logout') }}">
-            @csrf
+            <h1 class="auth-title">Verifica tu Email</h1>
+            <p class="auth-subtitle">
+                Gracias por registrarte. Antes de continuar, haz clic en el enlace de verificación
+                que te hemos enviado por correo electrónico.
+            </p>
 
-            <button type="submit" class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
-                {{ __('Log Out') }}
-            </button>
-        </form>
+            @if (session('status') == 'verification-link-sent')
+                <div class="alert alert-success">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    Se ha enviado un nuevo enlace de verificación a tu correo electrónico.
+                </div>
+            @endif
+
+            <div style="display:flex; flex-direction:column; gap:0.75rem; margin-top:1.5rem;">
+                <form method="POST" action="{{ route('verification.send') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-primary">
+                        <span style="position:relative;z-index:1;">Reenviar Email de Verificación</span>
+                    </button>
+                </form>
+
+                <form method="POST" action="{{ route('logout') }}">
+                    @csrf
+                    <button type="submit" class="btn btn-secondary btn-auto" style="width:100%;">
+                        Cerrar Sesión
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 </x-guest-layout>

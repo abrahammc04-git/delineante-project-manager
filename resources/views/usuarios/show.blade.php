@@ -2,21 +2,15 @@
     <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
     <div class="dashboard-container">
-        
-        <!-- Box flotante de información del cliente -->
-        <div style="background: linear-gradient(135deg, #0033CC, #001F7A); padding: 1.5rem; border-radius: 12px; margin-bottom: 1.5rem; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h1 style="color: white; font-size: 1.5rem; font-weight: 700; margin-bottom: 0.5rem;">
-                        Detalles del Cliente
-                    </h1>
-                    <p style="color: rgba(255,255,255,0.9); font-size: 0.95rem;">
-                        Edita los datos del cliente o elimina su cuenta
-                    </p>
+
+        <div class="page-box">
+            <div class="page-box-inner">
+                <div class="page-box-titulo">
+                    <h1>Detalles del Cliente</h1>
+                    <p>Edita los datos del cliente o elimina su cuenta</p>
                 </div>
-                <div style="display: flex; gap: 0.75rem;">
-                    <a href="{{ route('usuarios.index') }}" 
-                       style="background: rgba(255,255,255,0.2); color: white; padding: 0.65rem 1.25rem; border-radius: 8px; font-weight: 600; text-decoration: none; border: 1px solid rgba(255,255,255,0.3); transition: all 0.2s; display: inline-block;">
+                <div class="page-box-botones">
+                    <a href="{{ route('usuarios.index') }}" class="btn-box-dashboard">
                         ← Volver a clientes
                     </a>
                 </div>
@@ -24,12 +18,12 @@
         </div>
 
         @if (session('status'))
-            <div class="alert alert-success">
+            <div class="alert alert-success" style="margin: 0 1.5rem 1.5rem;">
                 {{ session('status') }}
             </div>
         @endif
 
-        <div class="table-container container-pad">
+        <div class="table-container container-pad" style="margin: 0 1.5rem;">
             <form method="POST" action="{{ route('usuarios.update', $usuario) }}">
                 @csrf
                 @method('PATCH')
@@ -88,22 +82,20 @@
             </form>
         </div>
 
-        <!-- Sección Danger: Eliminar usuario -->
         <div class="danger-zone">
             <h3 class="danger-title">Eliminar usuario</h3>
             <p class="danger-description">
                 Esta acción es irreversible. Se borrará el usuario y su acceso al sistema.
             </p>
-
             <form method="POST" action="{{ route('usuarios.destroy', $usuario) }}"
-                  onsubmit="return confirm('¿Seguro que quieres eliminar este usuario?');">
+                  onsubmit="confirmarBorrado(event, '{{ $usuario->nombre }} {{ $usuario->apellidos }}')">
                 @csrf
                 @method('DELETE')
-
-                <button type="submit" class="btn btn-danger">
+                <button type="submit" class="btn-danger">
                     Eliminar usuario
                 </button>
             </form>
         </div>
+
     </div>
 </x-app-layout>

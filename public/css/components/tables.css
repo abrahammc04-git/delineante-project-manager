@@ -2,20 +2,19 @@
    TABLAS
    ============================================ */
 .table-container {
-    background: var(--proyinstal-white);
-    border-radius: 16px;
+    background: var(--color-white);
+    border-radius: var(--radius-3xl);
     box-shadow: var(--shadow-md);
     overflow: hidden;
-    border: 1px solid var(--proyinstal-gray-200);
+    border: 1px solid var(--color-gray-200);
 }
 
 .table-header {
     padding: 1.5rem;
-    border-bottom: 1px solid var(--proyinstal-gray-200);
-    background: var(--proyinstal-gray-50);
+    border-bottom: 1px solid var(--color-gray-200);
+    background: var(--color-gray-50);
 }
 
-/* Header con título izquierda y botón derecha */
 .table-header-flex {
     display: flex;
     justify-content: space-between;
@@ -23,14 +22,13 @@
 }
 
 .table-title {
-    font-size: 1.25rem;
+    font-size: var(--text-xl);
     font-weight: 700;
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
 }
 
-/* Subtítulo bajo el título */
 .table-header-subtitle {
-    color: var(--proyinstal-gray-600);
+    color: var(--color-gray-600);
     margin-top: 0.25rem;
 }
 
@@ -40,23 +38,23 @@ table {
 }
 
 thead {
-    background: var(--proyinstal-gray-50);
+    background: var(--color-gray-50);
 }
 
 th {
     padding: 1rem 1.5rem;
     text-align: left;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--proyinstal-gray-600);
+    color: var(--color-gray-600);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
 
 td {
     padding: 1rem 1.5rem;
-    border-top: 1px solid var(--proyinstal-gray-200);
-    color: var(--proyinstal-gray-900);
+    border-top: 1px solid var(--color-gray-200);
+    color: var(--color-gray-900);
 }
 
 tr {
@@ -64,33 +62,43 @@ tr {
 }
 
 tbody tr:hover {
-    background: var(--proyinstal-gray-50);
+    background: var(--color-gray-50);
 }
 
-/* ============================================
-   CELDAS REUTILIZABLES
-   ============================================ */
-
-/* Nombre de proyecto / cliente en negrita */
+/* ---- Celdas reutilizables ---- */
 .td-nombre {
     font-weight: 600;
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
 }
 
-/* Enlace "Ver detalles" en tablas */
 .enlace-ver-detalles {
-    color: var(--proyinstal-blue);
+    color: var(--color-primary);
     font-weight: 600;
     text-decoration: none;
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
 }
 
 .enlace-ver-detalles:hover {
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
 }
 
-/* Celda vacía / sin resultados */
 .td-vacia {
     text-align: center;
     padding: 2rem;
-    color: var(--proyinstal-gray-600);
+    color: var(--color-gray-600);
+}
+
+/* ============================================
+   TABLA CON SCROLL HORIZONTAL
+   ============================================ */
+.tabla-overflow {
+    overflow-x: auto;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+.paginacion-wrap {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+}

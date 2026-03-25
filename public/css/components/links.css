@@ -2,7 +2,7 @@
    ENLACES
    ============================================ */
 .link {
-    color: var(--proyinstal-blue);
+    color: var(--color-primary);
     text-decoration: none;
     font-weight: 500;
     transition: var(--transition);
@@ -16,12 +16,12 @@
     left: 0;
     width: 0;
     height: 2px;
-    background: var(--proyinstal-blue);
+    background: var(--color-primary);
     transition: width 0.3s ease;
 }
 
 .link:hover {
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
 }
 
 .link:hover::after {

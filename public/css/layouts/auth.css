@@ -1,5 +1,5 @@
 /* ============================================
-   LAYOUT PRINCIPAL - GUEST (Login/Register)
+   LAYOUT GUEST — Login / Registro
    ============================================ */
 .guest-layout {
     min-height: 100vh;
@@ -11,7 +11,7 @@
     overflow: hidden;
 }
 
-/* Fondo animado con círculos decorativos */
+/* Decoraciones de fondo animadas */
 .guest-layout::before {
     content: '';
     position: absolute;
@@ -20,7 +20,7 @@
     width: 800px;
     height: 800px;
     background: radial-gradient(circle, rgba(0, 51, 204, 0.1) 0%, transparent 70%);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     animation: float 20s ease-in-out infinite;
 }
 
@@ -32,21 +32,19 @@
     width: 600px;
     height: 600px;
     background: radial-gradient(circle, rgba(0, 31, 122, 0.08) 0%, transparent 70%);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     animation: float 15s ease-in-out infinite reverse;
 }
 
 @keyframes float {
     0%, 100% { transform: translateY(0) scale(1); }
-    50% { transform: translateY(-20px) scale(1.05); }
+    50%       { transform: translateY(-20px) scale(1.05); }
 }
 
-/* ============================================
-   CONTENEDOR DE AUTENTICACIÓN
-   ============================================ */
+/* ---- Tarjeta de autenticación ---- */
 .auth-container {
-    background: var(--proyinstal-white);
-    border-radius: 20px;
+    background: var(--color-white);
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-xl);
     width: 100%;
     max-width: 560px;
@@ -58,17 +56,11 @@
 }
 
 @keyframes slideUp {
-    from {
-        opacity: 0;
-        transform: translateY(30px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Logo container */
+/* Logo */
 .logo-container {
     text-align: center;
     margin-bottom: 2.5rem;
@@ -82,35 +74,38 @@
     height: auto;
     filter: drop-shadow(0 4px 6px rgba(0, 51, 204, 0.12));
     animation: logoFadeIn 0.8s ease-out;
-    background: transparent;
     display: block;
     margin: 0 auto;
 }
 
 @keyframes logoFadeIn {
-    from {
-        opacity: 0;
-        transform: scale(0.9);
-    }
-    to {
-        opacity: 1;
-        transform: scale(1);
-    }
+    from { opacity: 0; transform: scale(0.9); }
+    to   { opacity: 1; transform: scale(1); }
 }
 
 /* Títulos */
 .auth-title {
-    font-size: 1.875rem;
+    font-size: var(--text-3xl);
     font-weight: 700;
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
     text-align: center;
     margin-bottom: 0.5rem;
     letter-spacing: -0.025em;
 }
 
 .auth-subtitle {
-    font-size: 0.875rem;
-    color: var(--proyinstal-gray-600);
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
     text-align: center;
     margin-bottom: 2rem;
+}
+
+/* ---- Footer del formulario ---- */
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--color-gray-200);
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
 }

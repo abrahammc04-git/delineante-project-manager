@@ -11,8 +11,8 @@
                     <p>{{ $proyecto->nombre_proyecto }}</p>
                 </div>
                 <div class="page-box-botones">
-                    <a href="{{ route('proyectos.index') }}" class="btn-box-dashboard">
-                        ← Volver al listado
+                    <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" class="btn-box-dashboard">
+                        ← Volver al proyecto
                     </a>
                 </div>
             </div>
@@ -136,7 +136,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <a href="{{ route('proyectos.index') }}" class="btn btn-secondary">
+                    <a href="{{ route('proyectos.show', $proyecto->id_proyecto) }}" class="btn btn-secondary">
                         Cancelar
                     </a>
                     <button type="submit" class="btn btn-primary btn-auto">

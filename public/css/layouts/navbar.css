@@ -1,21 +1,9 @@
 /* ============================================
-   FOOTER DE AUTH
-   ============================================ */
-.auth-footer {
-    text-align: center;
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--proyinstal-gray-200);
-    font-size: 0.875rem;
-    color: var(--proyinstal-gray-600);
-}
-
-/* ============================================
-   DASHBOARD - NAVBAR
+   NAVBAR — Dashboard principal
    ============================================ */
 .navbar {
-    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
-    color: var(--proyinstal-white);
+    background: var(--gradient-primary);
+    color: var(--color-white);
     padding: 1rem 2rem;
     box-shadow: var(--shadow-lg);
     position: sticky;
@@ -24,7 +12,7 @@
 }
 
 .navbar-container {
-    max-width: 1400px;
+    max-width: var(--max-width);
     margin: 0 auto;
     display: flex;
     align-items: center;
@@ -43,11 +31,11 @@
 }
 
 .navbar-link {
-    color: var(--proyinstal-white);
+    color: var(--color-white);
     text-decoration: none;
     font-weight: 500;
     padding: 0.5rem 1rem;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
     transition: var(--transition);
     position: relative;
 }
@@ -60,12 +48,12 @@
     transform: translateX(-50%);
     width: 0;
     height: 2px;
-    background: var(--proyinstal-white);
+    background: var(--color-white);
     transition: width 0.3s ease;
 }
 
 .navbar-link:hover {
-    background: rgba(255, 255, 255, 0.1);
+    background: var(--overlay-10);
 }
 
 .navbar-link:hover::before {
@@ -73,12 +61,10 @@
 }
 
 .navbar-link.active {
-    background: rgba(255, 255, 255, 0.15);
+    background: var(--overlay-15);
 }
 
-/* ============================================
-   NAVBAR MINIMAL (solo usuario + logout)
-   ============================================ */
+/* ---- Zona derecha: usuario + logout ---- */
 .navbar-right {
     display: flex;
     align-items: center;
@@ -106,11 +92,162 @@
 
 .navbar-logout {
     background: rgba(255, 255, 255, 0.12);
-    border: 1px solid rgba(255, 255, 255, 0.25);
-    border-radius: 10px;
+    border: 1px solid var(--overlay-border);
+    border-radius: var(--radius-lg);
     padding: 0.45rem 0.85rem;
+    color: var(--color-white);
+    cursor: pointer;
+    transition: var(--transition-fast);
 }
 
 .navbar-logout:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--overlay-20);
+}
+
+
+/* ============================================
+   NAVBAR LANDING — Navegación pública
+   Difiere del navbar del dashboard en que
+   es transparente y se fija al hacer scroll.
+   ============================================ */
+:root { --nav-landing-h: 72px; }
+
+.landing-nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--nav-landing-h);
+    z-index: 100;
+    transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+}
+
+.landing-nav.scrolled {
+    background: rgba(0, 31, 122, 0.96);  /* --color-primary-dark con transparencia */
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 0 rgba(255, 255, 255, 0.07);
+}
+
+.landing-nav .nav-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    height: 100%;
+    padding: 0 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* Logo */
+.landing-nav-logo {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--color-white);
+    letter-spacing: 0.06em;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.landing-nav-logo-dot {
+    width: 8px; height: 8px;
+    background: var(--color-primary-light);
+    border-radius: var(--radius-full);
+    display: inline-block;
+    animation: landing-pulse 2.4s ease-in-out infinite;
+}
+
+@keyframes landing-pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50%       { transform: scale(1.5); opacity: 0.6; }
+}
+
+/* Links de navegación */
+.landing-nav-links {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+    list-style: none;
+}
+
+.landing-nav-links a {
+    font-size: 0.8rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: var(--transition-fast);
+}
+
+.landing-nav-links a:hover { color: var(--color-white); }
+
+/* Botón CTA del nav */
+.landing-nav-cta {
+    background: var(--color-primary-light) !important;
+    color: var(--color-white) !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    transition: var(--transition-fast) !important;
+}
+
+.landing-nav-cta:hover {
+    background: var(--color-white) !important;
+    color: var(--color-primary) !important;
+    transform: translateY(-1px);
+}
+
+/* Hamburger móvil */
+.landing-nav-hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 4px;
+}
+
+.landing-nav-hamburger span {
+    display: block;
+    width: 22px; height: 2px;
+    background: var(--color-white);
+    border-radius: 2px;
+    transition: 0.3s;
+}
+
+/* Menú móvil */
+.landing-nav-mobile {
+    display: none;
+    position: fixed;
+    top: var(--nav-landing-h);
+    left: 0; right: 0;
+    background: rgba(0, 31, 122, 0.98);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 1.5rem 2rem;
+    z-index: 99;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.landing-nav-mobile.open { display: flex; }
+
+.landing-nav-mobile a {
+    font-size: 0.85rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: rgba(255, 255, 255, 0.65);
+    text-decoration: none;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    transition: color 0.2s;
+}
+
+.landing-nav-mobile a:hover { color: var(--color-white); }
+
+@media (max-width: 640px) {
+    .landing-nav-links    { display: none; }
+    .landing-nav-hamburger{ display: flex; }
 }

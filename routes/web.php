@@ -11,8 +11,8 @@ use App\Http\Controllers\ChatbotController;
 
 // Redirigir raíz a login
 Route::get('/', function () {
-    return redirect()->route('login');
-});
+    return view('welcome');
+})->name('home');
 
 // Dashboard // ya hay controlador, hecho por Moi jeje
 Route::get('/dashboard', [DashboardController::class, 'index'])

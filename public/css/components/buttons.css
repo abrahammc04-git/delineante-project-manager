@@ -6,9 +6,9 @@
     align-items: center;
     justify-content: center;
     padding: 0.875rem 1.5rem;
-    font-size: 1rem;
+    font-size: var(--text-base);
     font-weight: 600;
-    border-radius: 10px;
+    border-radius: var(--radius-lg);
     border: none;
     cursor: pointer;
     transition: var(--transition);
@@ -18,6 +18,7 @@
     overflow: hidden;
 }
 
+/* Efecto ripple */
 .btn::before {
     content: '';
     position: absolute;
@@ -25,7 +26,7 @@
     left: 50%;
     width: 0;
     height: 0;
-    border-radius: 50%;
+    border-radius: var(--radius-full);
     background: rgba(255, 255, 255, 0.3);
     transform: translate(-50%, -50%);
     transition: width 0.6s, height 0.6s;
@@ -36,9 +37,10 @@
     height: 300px;
 }
 
+/* --- Variantes --- */
 .btn-primary {
-    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
-    color: var(--proyinstal-white);
+    background: var(--gradient-primary);
+    color: var(--color-white);
     width: 100%;
     box-shadow: var(--shadow-md);
 }
@@ -53,17 +55,356 @@
 }
 
 .btn-secondary {
-    background: var(--proyinstal-gray-100);
-    color: var(--proyinstal-gray-900);
-    border: 2px solid var(--proyinstal-gray-200);
+    background: var(--color-gray-100);
+    color: var(--color-gray-900);
+    border: 2px solid var(--color-gray-200);
 }
 
 .btn-secondary:hover {
-    background: var(--proyinstal-gray-200);
-    border-color: var(--proyinstal-gray-300);
+    background: var(--color-gray-200);
+    border-color: var(--color-gray-300);
 }
 
-/* Botón con ancho automático (no full-width) */
+/* Botón ancho automático (anula el 100% de .btn-primary) */
 .btn-auto {
     width: auto;
+}
+
+/* --- Botones del hero del dashboard --- */
+.btn-hero {
+    background: rgba(255, 255, 255, 0.16);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: var(--color-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: var(--radius-xl);
+}
+
+.btn-hero:hover {
+    background: rgba(255, 255, 255, 0.22);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.btn-hero-outline {
+    background: var(--overlay-10);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: var(--color-white);
+    width: auto;
+    padding: 0.75rem 1.1rem;
+    border-radius: var(--radius-xl);
+}
+
+.btn-hero-outline:hover {
+    background: rgba(255, 255, 255, 0.14);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* --- Botón genérico de box azul (navbar interna de páginas) --- */
+.btn-box {
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    cursor: pointer;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-box-ghost {
+    background: var(--overlay-15);
+    color: var(--color-white);
+    border: 1px solid var(--overlay-border);
+}
+
+.btn-box-ghost:hover {
+    background: var(--overlay-25);
+}
+
+.btn-box-solid {
+    background: var(--color-white);
+    color: var(--color-primary);
+    border: none;
+}
+
+.btn-box-solid:hover {
+    box-shadow: 0 3px 8px rgba(0, 51, 204, 0.25);
+}
+
+/* Alias semánticos para los botones del box */
+.btn-box-dashboard { @extend .btn-box, .btn-box-ghost; }
+
+/* --- Botón navbar login (landing) --- */
+.btn-nav-login {
+    background: var(--overlay-15);
+    color: var(--color-white);
+    padding: 0.65rem 1.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    text-decoration: none;
+    border: 1px solid var(--overlay-border);
+    transition: var(--transition-fast);
+}
+
+.btn-nav-login:hover {
+    background: var(--overlay-25);
+}
+
+/* --- Botón enviar chat --- */
+.btn-enviar {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-full);
+    background: var(--gradient-primary);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-white);
+    transition: var(--transition-fast);
+    flex-shrink: 0;
+}
+
+.btn-enviar:hover {
+    transform: scale(1.08);
+    box-shadow: 0 3px 8px rgba(0, 51, 204, 0.35);
+}
+
+.btn-enviar:disabled {
+    background: var(--color-gray-400);
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* --- Toggle chatbot (activo/inactivo) --- */
+.btn-toggle-chatbot {
+    background: var(--overlay-15);
+    color: var(--color-white);
+    border: 1px solid var(--overlay-border);
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius-md);
+    font-size: var(--text-sm);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-toggle-chatbot:hover {
+    background: var(--overlay-25);
+}
+
+.btn-toggle-chatbot.activo {
+    background: #059669;
+    border-color: #059669;
+}
+
+/* --- Botones de búsqueda de usuarios --- */
+.btn-search-primary {
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-fast);
+}
+
+.btn-search-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 51, 204, 0.25);
+}
+
+.btn-search-clear {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-search-clear:hover {
+    background: var(--color-gray-200);
+}
+
+/* --- Botón limpiar filtro (tablas) --- */
+.btn-limpiar-filtro {
+    background: var(--color-white);
+    color: #059669;
+    border: 2px solid #059669;
+    padding: 0.5rem 1rem;
+    border-radius: var(--radius-md);
+    font-size: 0.82rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition-fast);
+}
+
+.btn-limpiar-filtro:hover {
+    background: #059669;
+    color: var(--color-white);
+}
+
+/* --- Botones de la landing pública --- */
+
+/* Botón principal hero: sólido azul */
+.btn-landing-primary {
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    padding: 0.9rem 2rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-base);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+    box-shadow: var(--shadow-md);
+    border: none;
+    cursor: pointer;
+}
+
+.btn-landing-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* Botón secundario hero: contorno blanco (sobre fondo oscuro) */
+.btn-landing-ghost {
+    color: rgba(255, 255, 255, 0.8);
+    padding: 0.9rem 2rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    font-size: var(--text-base);
+    text-decoration: none;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition);
+}
+
+.btn-landing-ghost:hover {
+    border-color: rgba(255, 255, 255, 0.55);
+    color: var(--color-white);
+    transform: translateY(-2px);
+}
+
+/* Botón de envío del formulario de contacto landing */
+.btn-landing-submit {
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    border: none;
+    padding: 0.85rem 2rem;
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: var(--shadow-md);
+}
+
+.btn-landing-submit:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
+/* ---- Botón "Nuevo" dentro del box (fondo blanco) ---- */
+.btn-box-nuevo {
+    background: var(--color-white);
+    color: var(--color-primary);
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-box-nuevo:hover {
+    box-shadow: 0 3px 8px rgba(0, 51, 204, 0.25);
+}
+
+/* Alias para botones de búsqueda de usuarios (nombres que usan las views) */
+.btn-usuarios-buscar   { /* hereda de .btn-search-primary */ }
+.btn-usuarios-limpiar  { /* hereda de .btn-search-clear */ }
+
+/* Declaración real para los alias de usuarios */
+.btn-usuarios-buscar {
+    background: var(--gradient-primary);
+    color: var(--color-white);
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: var(--transition-fast);
+}
+
+.btn-usuarios-buscar:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 51, 204, 0.25);
+}
+
+.btn-usuarios-limpiar {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    padding: 0.65rem 1.25rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+}
+
+.btn-usuarios-limpiar:hover {
+    background: var(--color-gray-200);
+}
+
+/* btn-box-dashboard necesita declaración explícita (usado en views) */
+.btn-box-dashboard {
+    background: var(--overlay-15);
+    color: var(--color-white);
+    padding: 0.6rem 1.15rem;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    text-decoration: none;
+    border: 1px solid var(--overlay-border);
+    transition: var(--transition-fast);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.btn-box-dashboard:hover {
+    background: var(--overlay-25);
 }

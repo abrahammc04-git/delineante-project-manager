@@ -1,8 +1,8 @@
 /* ============================================
-   DASHBOARD - CONTENIDO
+   DASHBOARD — Contenido
    ============================================ */
 .dashboard-container {
-    max-width: 1400px;
+    max-width: var(--max-width);
     margin: 0 auto;
     padding: 2rem;
 }
@@ -12,25 +12,23 @@
 }
 
 .dashboard-title {
-    font-size: 2.25rem;
+    font-size: var(--text-4xl);
     font-weight: 700;
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
     margin-bottom: 0.5rem;
 }
 
 .dashboard-subtitle {
-    font-size: 1.125rem;
-    color: var(--proyinstal-gray-600);
+    font-size: var(--text-lg);
+    color: var(--color-gray-600);
 }
 
-/* ============================================
-   DASHBOARD - HERO
-   ============================================ */
+/* ---- Hero ---- */
 .dashboard-hero {
-    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
-    border-radius: 20px;
+    background: var(--gradient-primary);
+    border-radius: var(--radius-card);
     box-shadow: var(--shadow-xl);
-    padding: 1.75rem 1.75rem;
+    padding: 1.75rem;
     margin-bottom: 2rem;
     position: relative;
     overflow: hidden;
@@ -45,7 +43,7 @@
     width: 520px;
     height: 520px;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.16) 0%, transparent 70%);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
 }
 
 .dashboard-hero::after {
@@ -56,7 +54,7 @@
     width: 520px;
     height: 520px;
     background: radial-gradient(circle, rgba(255, 255, 255, 0.10) 0%, transparent 70%);
-    border-radius: 50%;
+    border-radius: var(--radius-full);
 }
 
 .dashboard-hero-content {
@@ -70,7 +68,7 @@
 }
 
 .dashboard-hero .dashboard-title {
-    color: var(--proyinstal-white);
+    color: var(--color-white);
     margin-bottom: 0.25rem;
 }
 
@@ -78,44 +76,13 @@
     color: rgba(255, 255, 255, 0.85);
 }
 
-/* Botones del hero */
 .dashboard-hero-actions {
     display: flex;
     gap: 0.75rem;
     flex-wrap: wrap;
 }
 
-.btn-hero {
-    background: rgba(255, 255, 255, 0.16);
-    border: 1px solid rgba(255, 255, 255, 0.22);
-    color: var(--proyinstal-white);
-    width: auto;
-    padding: 0.75rem 1.1rem;
-    border-radius: 12px;
-}
-
-.btn-hero:hover {
-    background: rgba(255, 255, 255, 0.22);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-.btn-hero-outline {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.18);
-    color: var(--proyinstal-white);
-    width: auto;
-    padding: 0.75rem 1.1rem;
-    border-radius: 12px;
-}
-
-.btn-hero-outline:hover {
-    background: rgba(255, 255, 255, 0.14);
-    transform: translateY(-2px);
-    box-shadow: var(--shadow-lg);
-}
-
-/* Cards de estadísticas */
+/* ---- Cards de estadísticas ---- */
 .stats-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -124,11 +91,11 @@
 }
 
 .stat-card {
-    background: var(--proyinstal-white);
-    border-radius: 16px;
+    background: var(--color-white);
+    border-radius: var(--radius-3xl);
     padding: 1.5rem;
     box-shadow: var(--shadow-md);
-    border: 1px solid var(--proyinstal-gray-200);
+    border: 1px solid var(--color-gray-200);
     transition: var(--transition);
     position: relative;
     overflow: hidden;
@@ -141,7 +108,7 @@
     left: 0;
     width: 4px;
     height: 100%;
-    background: linear-gradient(180deg, var(--proyinstal-blue) 0%, var(--proyinstal-dark) 100%);
+    background: var(--gradient-primary);
 }
 
 .stat-card:hover {
@@ -157,9 +124,9 @@
 }
 
 .stat-title {
-    font-size: 0.875rem;
+    font-size: var(--text-sm);
     font-weight: 600;
-    color: var(--proyinstal-gray-600);
+    color: var(--color-gray-600);
     text-transform: uppercase;
     letter-spacing: 0.05em;
 }
@@ -167,12 +134,12 @@
 .stat-icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
-    background: linear-gradient(135deg, var(--proyinstal-blue) 0%, var(--proyinstal-light-blue) 100%);
+    border-radius: var(--radius-xl);
+    background: var(--gradient-icon);
     display: flex;
     align-items: center;
     justify-content: center;
-    color: var(--proyinstal-white);
+    color: var(--color-white);
     font-size: 1.5rem;
     box-shadow: var(--shadow-sm);
 }
@@ -180,12 +147,12 @@
 .stat-value {
     font-size: 2.5rem;
     font-weight: 700;
-    color: var(--proyinstal-dark);
+    color: var(--color-primary-dark);
     line-height: 1;
 }
 
 .stat-change {
-    font-size: 0.875rem;
-    color: var(--proyinstal-gray-600);
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
     margin-top: 0.5rem;
 }
