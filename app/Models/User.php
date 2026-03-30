@@ -76,4 +76,37 @@ class User extends Authenticatable
         return 'id_usuario';
     }
 
+    // --- NUEVAS RELACIONES MULTI-EMPRESA (Multi-enterprise) ---
+
+    // Relación: Un usuario pertenece a una empresa
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'id_empresa', 'id_empresa');
+    }
+
+    // Relación: Proyectos donde este usuario es el responsable directo
+    public function proyectosPropios()
+    {
+        return $this->hasMany(Proyecto::class, 'id_usuario', 'id_usuario'); 
+    }
+
+    // --- HELPER DE PERMISOS ---
+    
+    // Función para saber si el usuario tiene permiso para ver un proyecto específico
+    public function puedeVerProyecto($proyecto)
+    {
+        // 1. Si es admin/CEO, ve todo
+        if ($this->isAdmin()) {
+            return true;
+        }
+
+        // 2. Si el proyecto pertenece a su misma empresa
+        if ($this->id_empresa && $proyecto->id_empresa === $this->id_empresa) {
+            return true;
+        }
+
+        // 3. Si es el creador/responsable directo del proyecto
+        return $proyecto->id_usuario === $this->id_usuario;
+    }
+
 }

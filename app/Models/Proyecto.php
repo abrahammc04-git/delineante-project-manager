@@ -120,4 +120,40 @@ class Proyecto extends Model
     {
         return $query->whereIn('estado', ['Pendiente', 'En proceso', 'En revisión']);
     }
+
+    // --- RELACIÓN CON EMPRESA ---
+    
+    public function empresa()
+    {
+        return $this->belongsTo(Empresa::class, 'id_empresa', 'id_empresa');
+    }
+
+    // --- SCOPES DE FILTRADO ---
+
+    // Atajo para sacar proyectos de una empresa: Proyecto::deEmpresa($id)->get();
+    public function scopeDeEmpresa($query, $idEmpresa)
+    {
+        return $query->where('id_empresa', $idEmpresa);
+    }
+
+    // Atajo vital: Saca solo los proyectos que este usuario tiene derecho a ver
+    public function scopeVisiblesPara($query, $usuario)
+    {
+        // Si es Admin, devolvemos la query tal cual (ve todo)
+        if ($usuario->isAdmin()) {
+            return $query;
+        }
+
+        // Si no es admin, filtramos:
+        return $query->where(function($q) use ($usuario) {
+            if ($usuario->id_empresa) {
+                // Ve los proyectos de su empresa
+                $q->where('id_empresa', $usuario->id_empresa);
+            } else {
+                // Si por algún motivo el usuario no tiene empresa, solo ve los que él haya creado
+                $q->where('id_usuario', $usuario->id_usuario);
+            }
+        });
+    }
+
 }
