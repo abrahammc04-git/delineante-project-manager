@@ -21,14 +21,12 @@ class ProyectoController extends Controller
         // CAMBIO: Usamos Auth::user() que tu editor reconoce mejor
         $user = Auth::user();
 
-        // 1. Iniciamos la consulta
-        $query = Proyecto::with('usuario');
-
-        // 2. SEGURIDAD: Si NO es Admin, filtrar solo sus proyectos
+        // 1. Iniciamos la consulta y usamos el Scope que creamos en el modelo
         /** @var \App\Models\User $user */
-        if (! $user->isAdmin()) {
-            $query->where('id_usuario', $user->id_usuario);
-        }
+        $user = Auth::user();
+        
+        // visiblesPara($user) ya decide si ve todo, lo de su empresa, o solo lo suyo
+        $query = Proyecto::with('usuario')->visiblesPara($user);
 
         // --- FILTROS DE BÚSQUEDA ---
 
@@ -119,6 +117,10 @@ class ProyectoController extends Controller
         $validated['fecha_creacion'] = now();
         // Generar nombre de carpeta único si no viene (opcional, lógica simple)
         $validated['carpeta_archivos'] = $validated['carpeta_archivos'] ?? uniqid('proj_');
+
+        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
+        $cliente = User::find($validated['id_usuario']);
+        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
 
         // 3. Crear
         Proyecto::create($validated);
@@ -311,6 +313,10 @@ public function programarMasivo(Request $request, $id)
 
         // Actualizar fecha de modificación manual
         $validated['ultima_actualizacion'] = now();
+
+        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
+        $cliente = User::find($validated['id_usuario']);
+        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
 
         $proyecto->update($validated);
 
