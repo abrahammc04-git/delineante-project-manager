@@ -6,8 +6,8 @@ use App\Http\Controllers\ProyectoController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ChatbotController;
-use App\Http\Controllers\EmpresaController; // <-- Añadido el controlador de Empresas
-
+use App\Http\Controllers\EmpresaController;
+use App\Http\Controllers\ChatController;
 
 // Redirigir raíz a login
 Route::get('/', function () {
@@ -55,6 +55,13 @@ Route::middleware(['auth'])->group(function () {
     Route::patch('/usuarios/{usuario}', [UsuarioController::class, 'update'])->name('usuarios.update');
     Route::delete('usuarios/{usuario}', [UsuarioController::class, 'destroy'])
     ->name('usuarios.destroy'); // (Le he quitado el ->middleware('auth') extra porque ya está dentro de un grupo auth)
+
+    // --- RUTAS DEL CHAT PRIVADO ---
+    Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
+    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/chat/enviar', [ChatController::class, 'store'])->name('chat.store');
+    Route::get('/chat/descargar/{id_archivo}', [ChatController::class, 'download'])->name('chat.descargar');
+
 });
 
 // ── Rutas solo para ADMIN ──
