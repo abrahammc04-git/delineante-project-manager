@@ -28,6 +28,7 @@
 @import 'pages/proyectos-chatbot.css';
 @import 'pages/proyectos-show.css';
 @import 'pages/landing.css';
+@import 'pages/chat.css';
 
 /* 6. CORE: Responsive (siempre al final) */
 @import 'core/responsive.css';

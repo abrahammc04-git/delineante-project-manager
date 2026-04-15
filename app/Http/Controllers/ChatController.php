@@ -49,15 +49,22 @@ class ChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        // SEGURIDAD: Solo el Admin o el dueño de la conversación pueden entrar
         if (!$user->isAdmin() && $conversacion->id_usuario !== $user->id_usuario) {
             abort(403, 'No tienes permiso para acceder a este chat.');
         }
 
-        // Marcar mensajes como leídos (opcional para más adelante)
         $conversacion->mensajes()->where('id_remitente', '!=', $user->id_usuario)->update(['leido' => true]);
 
-        return view('chat.show', compact('conversacion'));
+        if ($user->isAdmin()) {
+            $conversaciones = Conversacion::with('usuario')->where('activo', true)->get();
+
+            $usuariosParaChat = User::where('rol', 'cliente')->where('activo', true)->get();
+        } else {
+            $conversaciones = Conversacion::where('id_usuario', $user->id_usuario)->where('activo', true)->get();
+            $usuariosParaChat = collect();
+        }
+
+        return view('chat.show', compact('conversacion', 'conversaciones', 'usuariosParaChat'));
     }
 
     /**
@@ -68,7 +75,7 @@ class ChatController extends Controller
         $request->validate([
             'id_conversacion' => 'required|exists:conversaciones,id_conversacion',
             'contenido'       => 'required_without:archivo|nullable|string',
-            'archivo'         => 'nullable|file|max:10240', // Máx 10MB
+            'archivo.*'       => 'nullable|file|max:10240',
         ]);
 
         /** @var \App\Models\User $user */
@@ -77,7 +84,6 @@ class ChatController extends Controller
         try {
             DB::beginTransaction();
 
-            // 1. Crear el mensaje base
             $mensaje = Mensaje::create([
                 'id_conversacion' => $request->id_conversacion,
                 'id_remitente'    => $user->id_usuario,
@@ -85,25 +91,23 @@ class ChatController extends Controller
                 'tipo'            => $request->hasFile('archivo') ? 'archivo' : 'texto',
             ]);
 
-            // 2. Si hay archivo, lo procesamos
             if ($request->hasFile('archivo')) {
-                $file = $request->file('archivo');
-                $nombreOriginal = $file->getClientOriginalName();
-                
-                // Guardamos en un disco privado para que nadie pueda acceder por URL directa
-                $ruta = $file->store('chat_files/' . $request->id_conversacion, 'local');
+                foreach ($request->file('archivo') as $file) {
+                    $nombreOriginal = $file->getClientOriginalName();
+                    $ruta = $file->store('chat_files/' . $request->id_conversacion, 'local');
 
-                ArchivoChat::create([
-                    'id_mensaje'      => $mensaje->id_mensaje,
-                    'nombre_original' => $nombreOriginal,
-                    'ruta_storage'    => $ruta,
-                    'tamano'          => round($file->getSize() / 1024, 2),
-                    'mime_type'       => $file->getMimeType(),
-                ]);
+                    ArchivoChat::create([
+                        'id_mensaje'      => $mensaje->id_mensaje,
+                        'nombre_original' => $nombreOriginal,
+                        'ruta_storage'    => $ruta,
+                        'tamano'          => round($file->getSize() / 1024, 2),
+                        'mime_type'       => $file->getMimeType(),
+                    ]);
+                }
             }
 
             DB::commit();
-            return back()->with('success', 'Mensaje enviado.');
+            return back(); 
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -136,4 +140,43 @@ class ChatController extends Controller
         
         return $disk->download($archivo->ruta_storage, $archivo->nombre_original);
     }
+
+    /**
+     * Crear una nueva conversación (Solo Admin)
+     */
+    public function storeConversacion(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+
+        if (!$user->isAdmin()) {
+            abort(403, 'Solo el administrador puede iniciar conversaciones.');
+        }
+
+        $request->validate([
+            'id_usuario' => 'required|exists:usuarios,id_usuario' // o 'users' si tu tabla se llama users
+        ]);
+
+        // Evitamos duplicados: firstOrCreate busca la conversación, si no existe, la crea
+        $conversacion = Conversacion::firstOrCreate(
+            ['id_usuario' => $request->id_usuario],
+            ['activo' => true]
+        );
+
+        return redirect()->route('chat.show', $conversacion->id_conversacion);
+    }
+
+    public function eliminarMensaje($id)
+{
+    $mensaje = Mensaje::findOrFail($id);
+    
+    // Seguridad: Solo el que lo envió puede borrarlo
+    if ($mensaje->id_remitente !== auth()->user()->id_usuario) {
+        abort(403);
+    }
+
+    $mensaje->delete(); // Esto borrará también los archivos por el 'cascade' de la BD
+    return back();
+}
+
 }

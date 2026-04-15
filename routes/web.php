@@ -61,6 +61,8 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
     Route::post('/chat/enviar', [ChatController::class, 'store'])->name('chat.store');
     Route::get('/chat/descargar/{id_archivo}', [ChatController::class, 'download'])->name('chat.descargar');
+    Route::post('/chat/nueva', [ChatController::class, 'storeConversacion'])->name('chat.nueva');
+    Route::delete('/chat/mensaje/{id}', [ChatController::class, 'eliminarMensaje'])->name('chat.mensaje.eliminar');
 
 });
 
