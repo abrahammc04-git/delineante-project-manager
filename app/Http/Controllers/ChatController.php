@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
+use App\Events\MensajeEnviado;
 
 class ChatController extends Controller
 {
@@ -22,21 +23,74 @@ class ChatController extends Controller
         $user = Auth::user();
 
         if ($user->isAdmin()) {
-            // El Admin ve todas las conversaciones activas, con el nombre del cliente
-            $conversaciones = Conversacion::with('usuario')->where('activo', true)->get();
+            // Ya no necesitamos traer el último mensaje porque hemos quitado la preview
+            $chatsActivos = Conversacion::with('usuario')->where('activo', true)->where('archivada', false)->get();
+            $chatsArchivados = Conversacion::with('usuario')->where('activo', true)->where('archivada', true)->get();
+                            
+            // SACAMOS A LOS USUARIOS QUE YA TIENEN CHAT
+            $clientesConChat = Conversacion::pluck('id_usuario')->toArray();
+            $usuariosParaChat = \App\Models\User::where('rol', 'cliente')
+                                    ->where('activo', true)
+                                    ->whereNotIn('id_usuario', $clientesConChat)
+                                    ->get();
             
-            // También necesitamos la lista de usuarios para que el admin pueda iniciar un nuevo chat
-            $usuariosParaChat = User::where('rol', 'cliente')->where('activo', true)->get();
-            
-            return view('chat.index', compact('conversaciones', 'usuariosParaChat'));
+            return view('chat.index', compact('chatsActivos', 'chatsArchivados', 'usuariosParaChat'));
         }
 
-        // El Cliente solo ve su conversación (o conversaciones si tuviera varias)
-        $conversaciones = Conversacion::where('id_usuario', $user->id_usuario)
-            ->where('activo', true)
-            ->get();
+        $chatsActivos = Conversacion::with('usuario')->where('id_usuario', $user->id_usuario)->where('activo', true)->get();
+        $chatsArchivados = collect(); 
+        
+        return view('chat.index', compact('chatsActivos', 'chatsArchivados'));
+    }
 
-        return view('chat.index', compact('conversaciones'));
+    public function storeConversacion(Request $request)
+    {
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user->isAdmin()) abort(403);
+
+        $request->validate([
+            'id_usuario' => 'required|exists:usuarios,id_usuario' 
+        ]);
+
+        $conversacion = Conversacion::firstOrCreate(
+            ['id_usuario' => $request->id_usuario],
+            ['activo' => true, 'archivada' => false]
+        );
+
+        // Volvemos a la vista principal, indicando al JS qué chat debe abrir automáticamente
+        return redirect()->route('chat.index')->with('abrir_chat', $conversacion->id_conversacion);
+    }
+
+    public function obtenerChatApi($id) // Devuelve el chat en JSON
+    {
+        $conversacion = Conversacion::with(['mensajes.remitente', 'mensajes.archivos', 'usuario'])->findOrFail($id);
+        
+        /** @var \App\Models\User $user */
+        $user = Auth::user();
+        if (!$user->isAdmin() && $conversacion->id_usuario !== $user->id_usuario) abort(403);
+
+        return response()->json([
+            'success' => true,
+            'conversacion' => $conversacion,
+            'mensajes' => $conversacion->mensajes
+        ]);
+    }
+
+    public function toggleArchivarApi($id) // Archiva/Desarchiva
+    {
+        /** @var \App\Models\User $user */
+        if (!Auth::user()->isAdmin()) abort(403);
+
+        $conversacion = Conversacion::findOrFail($id);
+        $conversacion->archivada = !$conversacion->archivada;
+        $conversacion->save();
+
+        return response()->json([
+            'success' => true, 
+            'archivada' => $conversacion->archivada,
+            'mensaje' => $conversacion->archivada ? 'Chat archivado' : 'Chat desarchivado'
+        ]);
     }
 
     /**
@@ -74,7 +128,7 @@ class ChatController extends Controller
     {
         $request->validate([
             'id_conversacion' => 'required|exists:conversaciones,id_conversacion',
-            'contenido'       => 'required_without:archivo|nullable|string',
+            'contenido'       => 'required_without:archivo|nullable|string|max:400', 
             'archivo.*'       => 'nullable|file|max:10240',
         ]);
 
@@ -107,7 +161,16 @@ class ChatController extends Controller
             }
 
             DB::commit();
-            return back(); 
+
+            broadcast(new \App\Events\MensajeEnviado($mensaje))->toOthers();
+
+            // RESPUESTA AJAX (Sin recargar página)
+            if ($request->wantsJson() || $request->ajax()) {
+                $mensaje->load(['remitente', 'archivos']);
+                return response()->json(['success' => true, 'mensaje' => $mensaje]);
+            }
+
+            return back();
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -141,42 +204,37 @@ class ChatController extends Controller
         return $disk->download($archivo->ruta_storage, $archivo->nombre_original);
     }
 
-    /**
-     * Crear una nueva conversación (Solo Admin)
-     */
-    public function storeConversacion(Request $request)
+    public function eliminarMensaje(Request $request, $id)
     {
+        $mensaje = Mensaje::findOrFail($id);
+        
+        if ($mensaje->id_remitente !== auth()->user()->id_usuario) abort(403);
+
+        $id_conversacion = $mensaje->id_conversacion;
+        $mensaje->delete(); 
+
+        // Avisar al otro usuario de que lo borre de su pantalla
+        broadcast(new \App\Events\MensajeEliminado($id, $id_conversacion))->toOthers();
+
+        if ($request->wantsJson() || $request->ajax()) {
+            return response()->json(['success' => true]);
+        }
+        return back();
+    }
+
+    public function eliminarConversacion($id)
+    {
+        $conversacion = Conversacion::findOrFail($id);
+        
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        if (!$user->isAdmin()) {
-            abort(403, 'Solo el administrador puede iniciar conversaciones.');
-        }
+        // Solo admin o el dueño pueden borrarla
+        if (!$user->isAdmin() && $conversacion->id_usuario !== $user->id_usuario) abort(403);
 
-        $request->validate([
-            'id_usuario' => 'required|exists:usuarios,id_usuario' // o 'users' si tu tabla se llama users
-        ]);
+        $conversacion->delete();
 
-        // Evitamos duplicados: firstOrCreate busca la conversación, si no existe, la crea
-        $conversacion = Conversacion::firstOrCreate(
-            ['id_usuario' => $request->id_usuario],
-            ['activo' => true]
-        );
-
-        return redirect()->route('chat.show', $conversacion->id_conversacion);
+        return redirect()->route('chat.index')->with('success', 'Conversación eliminada.');
     }
-
-    public function eliminarMensaje($id)
-{
-    $mensaje = Mensaje::findOrFail($id);
-    
-    // Seguridad: Solo el que lo envió puede borrarlo
-    if ($mensaje->id_remitente !== auth()->user()->id_usuario) {
-        abort(403);
-    }
-
-    $mensaje->delete(); // Esto borrará también los archivos por el 'cascade' de la BD
-    return back();
-}
 
 }

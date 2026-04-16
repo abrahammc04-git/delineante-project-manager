@@ -58,11 +58,13 @@ Route::middleware(['auth'])->group(function () {
 
     // --- RUTAS DEL CHAT PRIVADO ---
     Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
-    Route::get('/chat/{id}', [ChatController::class, 'show'])->name('chat.show');
-    Route::post('/chat/enviar', [ChatController::class, 'store'])->name('chat.store');
-    Route::get('/chat/descargar/{id_archivo}', [ChatController::class, 'download'])->name('chat.descargar');
     Route::post('/chat/nueva', [ChatController::class, 'storeConversacion'])->name('chat.nueva');
+    Route::post('/chat/enviar', [ChatController::class, 'store'])->name('chat.store');
+    Route::delete('/chat/conversacion/{id}', [ChatController::class, 'eliminarConversacion'])->name('chat.conversacion.eliminar');
     Route::delete('/chat/mensaje/{id}', [ChatController::class, 'eliminarMensaje'])->name('chat.mensaje.eliminar');
+    Route::get('/chat/descargar/{id_archivo}', [ChatController::class, 'download'])->name('chat.descargar');
+    Route::get('/chat/api/conversacion/{id}', [ChatController::class, 'obtenerChatApi']);
+    Route::post('/chat/api/conversacion/{id}/archivar', [ChatController::class, 'toggleArchivarApi']);
 
 });
 
