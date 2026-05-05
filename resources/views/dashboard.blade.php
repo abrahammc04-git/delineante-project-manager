@@ -48,6 +48,10 @@
                     </a>
                     @endif
 
+                    <a class="btn btn-hero-outline" href="{{ route('chat.index') }}">
+                        Chats
+                    </a>
+
                     <a class="btn btn-hero-outline" href="{{ route('profile.edit') }}">
                         Mi perfil
                     </a>
