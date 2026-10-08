@@ -1,5 +1,5 @@
 <x-app-layout>
-    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
     <!-- Navbar -->
     <nav class="navbar">
@@ -47,6 +47,10 @@
                         Usuarios
                     </a>
                     @endif
+
+                    <a class="btn btn-hero-outline" href="{{ route('chat.index') }}">
+                        Chats
+                    </a>
 
                     <a class="btn btn-hero-outline" href="{{ route('profile.edit') }}">
                         Mi perfil
@@ -139,7 +143,9 @@
                 <thead>
                     <tr>
                         <th>Proyecto</th>
+                        @if(auth()->user()->rol === 'admin')
                         <th>Cliente</th>
+                        @endif
                         <th>Estado</th>
                         <th>Tipo</th>
                         <th>Última Actualización</th>
@@ -151,7 +157,10 @@
                     @php
                     // ✅ Columnas reales de tu tabla proyectos
                     $nombre = $p->nombre_proyecto ?? 'Sin nombre';
-                    $cliente = $p->id_usuario; // por ahora mostramos el id (luego lo mejoramos con relación)
+                    $cliente = $p->usuario
+                    ? trim(($p->usuario->nombre ?? '') . ' ' . ($p->usuario->apellidos ?? ''))
+                    : '—';
+
                     $tipo = $p->tipo_proyecto ?? '—';
 
                     $estado = strtolower(trim($p->estado ?? 'pendiente'));
@@ -177,10 +186,12 @@
 
                     // ✅ Tu columna real de fecha
                     $ultima = $p->ultima_actualizacion
-                    ? 'hace ' . \Carbon\Carbon::parse($p->ultima_actualizacion)->diffForHumans([
-                    'syntax' => \Carbon\Carbon::DIFF_ABSOLUTE,
-                    ])
+                    ? \Carbon\Carbon::parse($p->ultima_actualizacion)->isFuture()
+                    ? 'hace 0 minutos'
+                    : \Carbon\Carbon::parse($p->ultima_actualizacion)->diffForHumans()
                     : '—';
+
+
 
 
                     // ✅ Tu PK real
@@ -188,27 +199,29 @@
                     @endphp
 
                     <tr>
-                        <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                        <td class="td-nombre">
                             {{ $nombre }}
                         </td>
+                        @if(auth()->user()->rol === 'admin')
                         <td>{{ $cliente }}</td>
+                        @endif
                         <td><span class="{{ $badgeClass }}">{{ $estadoLabel }}</span></td>
                         <td>{{ $tipo }}</td>
                         <td>{{ $ultima }}</td>
                         <td>
                             @if($idProyecto)
-                            <a href="{{ route('proyectos.show', $idProyecto) }}" class="link" style="font-size: 0.875rem;">
+                            <a href="{{ route('proyectos.show', $idProyecto) }}" class="enlace-ver-detalles">
                                 Ver detalles
                             </a>
                             @else
-                            <span style="color: var(--proyinstal-gray-600); font-size: 0.875rem;">—</span>
+                            <span class="td-vacia" style="padding:0;">—</span>
                             @endif
                         </td>
                     </tr>
                     @empty
                     {{-- Si no hay proyectos, no mostramos filas "inventadas" --}}
                     <tr>
-                        <td colspan="6" style="padding: 1.5rem; color: var(--proyinstal-gray-600);">
+                        <td colspan="6" class="td-vacia">
                             No hay proyectos todavía.
                         </td>
                     </tr>

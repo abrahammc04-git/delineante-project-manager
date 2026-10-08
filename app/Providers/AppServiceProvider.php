@@ -12,8 +12,11 @@ class AppServiceProvider extends ServiceProvider
         //
     }
 
-    public function boot(): void
+    public function boot()
     {
+        if (str_contains(request()->getHost(), 'ngrok')) {
+            \URL::forceScheme('https');
+        }
         Carbon::setLocale('es');
     }
 }

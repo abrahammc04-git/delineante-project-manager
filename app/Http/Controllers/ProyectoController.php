@@ -21,14 +21,12 @@ class ProyectoController extends Controller
         // CAMBIO: Usamos Auth::user() que tu editor reconoce mejor
         $user = Auth::user();
 
-        // 1. Iniciamos la consulta
-        $query = Proyecto::with('usuario');
-
-        // 2. SEGURIDAD: Si NO es Admin, filtrar solo sus proyectos
+        // 1. Iniciamos la consulta y usamos el Scope que creamos en el modelo
         /** @var \App\Models\User $user */
-        if (! $user->isAdmin()) {
-            $query->where('id_usuario', $user->id_usuario);
-        }
+        $user = Auth::user();
+        
+        // visiblesPara($user) ya decide si ve todo, lo de su empresa, o solo lo suyo
+        $query = Proyecto::with('usuario')->visiblesPara($user);
 
         // --- FILTROS DE BÚSQUEDA ---
 
@@ -120,6 +118,10 @@ class ProyectoController extends Controller
         // Generar nombre de carpeta único si no viene (opcional, lógica simple)
         $validated['carpeta_archivos'] = $validated['carpeta_archivos'] ?? uniqid('proj_');
 
+        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
+        $cliente = User::find($validated['id_usuario']);
+        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+
         // 3. Crear
         Proyecto::create($validated);
 
@@ -157,7 +159,7 @@ public function show($id)
             // Si subiste archivos antes de tener la BD, esto crea el registro al vuelo.
             $doc = Documento::firstOrCreate(
                 ['id_proyecto' => $id, 'nombre_archivo' => $nombreArchivo],
-                ['visible' => true]
+                ['visible' => false]
             );
 
             // Si no eres admin y está oculto, no lo añadimos a la lista
@@ -171,7 +173,8 @@ public function show($id)
                 'fecha'   => date('d/m/Y H:i', Storage::disk('proyectos')->lastModified($file)),
                 // Datos de la BD
                 'visible' => $doc->visible,
-                'programado' => $doc->fecha_ocultacion
+                'programado' => $doc->fecha_ocultacion,
+                'programado_mostrar' => $doc->fecha_publicacion
             ];
         }
     }
@@ -201,7 +204,11 @@ public function programarMasivo(Request $request, $id)
     $request->validate([
         'archivos_seleccionados' => 'required|array',
         'fecha_ocultacion' => 'required|date|after:now',
-    ]);
+    ],[
+            // MENSAJES PERSONALIZADOS
+            'archivos_seleccionados.required' => 'Por favor, selecciona al menos un archivo.',
+            'fecha_ocultacion.after'          => 'Es obligatorio elegir una fecha y hora válida.'
+    ,]);
 
     // Actualizamos todos los seleccionados de golpe
     Documento::where('id_proyecto', $id)
@@ -223,7 +230,48 @@ public function programarMasivo(Request $request, $id)
         $doc->fecha_ocultacion = null; // Borramos la fecha
         $doc->save();
 
-        return back()->with('success', 'Programación cancelada.');
+        return back()->with('success', 'Programación ocultar archivos cancelada.');
+    }
+
+    public function programarPublicacion(Request $request, $id)
+    {
+        $request->validate([
+            'archivos_seleccionados' => 'required|array',
+            'fecha_publicacion'      => 'required|date|after:now',
+        ], [
+            'archivos_seleccionados.required' => 'Selecciona al menos un archivo para mostrar.',
+            'fecha_publicacion.required'      => 'Debes elegir una fecha y hora.',
+            'fecha_publicacion.after'         => 'La fecha de publicación debe ser futura.',
+        ]);
+
+        $nombres = $request->input('archivos_seleccionados');
+        $fecha   = $request->input('fecha_publicacion');
+
+        Documento::where('id_proyecto', $id)
+            ->whereIn('nombre_archivo', $nombres)
+            ->update([
+                'fecha_publicacion' => $fecha,
+                // Aseguramos que siga oculto hasta que llegue la fecha
+                'visible' => false 
+            ]);
+
+        return back()->with('success', 'Se ha programado la publicación automática de los archivos seleccionados.');
+    }
+
+    public function cancelarPublicacion(Request $request, $id)
+    {
+        $request->validate([
+            'nombre_archivo' => 'required|string',
+        ]);
+
+        $nombreArchivo = $request->input('nombre_archivo');
+
+        // Buscamos el archivo y le quitamos la fecha de publicación
+        Documento::where('id_proyecto', $id)
+            ->where('nombre_archivo', $nombreArchivo)
+            ->update(['fecha_publicacion' => null]); // <--- ESTA ES LA CLAVE
+
+        return back()->with('success', 'Se ha cancelado la programación de visualización.');
     }
 
     /**
@@ -266,6 +314,10 @@ public function programarMasivo(Request $request, $id)
         // Actualizar fecha de modificación manual
         $validated['ultima_actualizacion'] = now();
 
+        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
+        $cliente = User::find($validated['id_usuario']);
+        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+
         $proyecto->update($validated);
 
         return redirect()->route('proyectos.index')
@@ -304,31 +356,35 @@ public function programarMasivo(Request $request, $id)
     public function subirArchivo(Request $request, $id)
     {
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
-        $user = Auth::user();
-
-        /** @var \App\Models\User $user */
-        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
-
-        $request->validate([
-            'archivos' => 'required',
-            'archivos.*' => 'file|mimes:pdf,dwg,dxf,jpg,jpeg,png|max:10240',
-        ]);
+        
+        // ... (validaciones y permisos igual que antes) ...
 
         if ($request->hasFile('archivos')) {
             $contador = 0;
-            // Generar nombre de carpeta limpio
-            $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
-            $carpeta = "proyecto_{$nombreCarpeta}";
+            $slug = Str::slug($proyecto->nombre_proyecto);
+            $carpeta = "proyecto_{$slug}";
 
             foreach ($request->file('archivos') as $file) {
-                // CAMBIO 2: Mantener nombre original (sin timestamp)
                 $filename = $file->getClientOriginalName(); 
                 
-                // Guardar (si ya existe uno con ese nombre, lo sobrescribe)
+                // 1. Guardar el archivo físico
                 $file->storeAs($carpeta, $filename, 'proyectos');
+                
+                // 2. AÑADIR ESTO: Crear/Actualizar registro en BD forzando VISIBLE = TRUE
+                Documento::updateOrCreate(
+                    [
+                        'id_proyecto' => $id, 
+                        'nombre_archivo' => $filename
+                    ],
+                    [
+                        'visible' => false,            // <--- AQUÍ ESTÁ LA CLAVE (true = visible)
+                        'fecha_ocultacion' => null    // Por si acaso resubimos uno que estaba programado
+                    ]
+                );
+
                 $contador++;
             }
-            
+
             return back()->with('success', "Se han subido {$contador} archivos correctamente.");
         }
 

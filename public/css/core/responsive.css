@@ -1,0 +1,101 @@
+/* ============================================
+   RESPONSIVE — Media queries globales
+   (Los responsivos específicos de cada módulo
+    viven en sus propios archivos)
+   ============================================ */
+
+/* ---- Tablet y móvil general ---- */
+@media (max-width: 768px) {
+    /* Auth */
+    .auth-container {
+        padding: 2.5rem 2rem;
+        max-width: 100%;
+        margin: 0 1rem;
+    }
+
+    .logo-container img {
+        max-width: 240px;
+    }
+
+    /* Formularios */
+    .form-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    /* Navbar */
+    .navbar {
+        padding: 1rem;
+    }
+
+    .navbar-menu {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+
+    /* Dashboard */
+    .dashboard-container {
+        padding: 1rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    /* Tablas */
+    table      { font-size: var(--text-sm); }
+    th, td     { padding: 0.75rem 1rem; }
+
+    /* Page box */
+    .page-box-inner,
+    .box-proyectos-inner,
+    .box-usuarios-inner {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .page-box-titulo h1,
+    .box-proyectos-titulo h1,
+    .box-usuarios-titulo h1 {
+        font-size: var(--text-2xl);
+    }
+
+    .page-box-botones,
+    .box-proyectos-botones,
+    .box-usuarios-botones {
+        width: 100%;
+    }
+
+    .btn-box-ghost,
+    .btn-box-dashboard {
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+/* ---- Buscador usuarios: 3 columnas en tablet ---- */
+@media (max-width: 1200px) {
+    .usuarios-buscador-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+/* ---- Buscador usuarios: columna única en móvil ---- */
+@media (max-width: 768px) {
+    .usuarios-buscador-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .usuarios-buscador-acciones {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .usuarios-buscador-acciones button,
+    .usuarios-buscador-acciones a {
+        width: 100%;
+        justify-content: center;
+    }
+}

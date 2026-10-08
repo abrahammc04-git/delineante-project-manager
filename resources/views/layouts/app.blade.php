@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen" style="background: linear-gradient(135deg, #F9FAFB 0%, #E5E7EB 100%);">
+        <div class="min-h-screen app-bg">
             <!-- Page Content -->
             {{ $slot }}
         </div>
@@ -30,7 +30,7 @@
                     icon: 'success',
                     title: '¡Hecho!',
                     text: "{{ session('success') }}",
-                    confirmButtonColor: '#3B82F6', // Azul Tailwind
+                    confirmButtonColor: '#3B82F6',
                     timer: 3000
                 });
             @endif
@@ -41,11 +41,11 @@
                     icon: 'error',
                     title: '¡Ups!',
                     text: "{{ session('error') }}",
-                    confirmButtonColor: '#EF4444', // Rojo Tailwind
+                    confirmButtonColor: '#EF4444',
                 });
             @endif
 
-            // 3. Si hay errores de VALIDACIÓN (como archivo muy grande detectado por Request)
+            // 3. Si hay errores de VALIDACIÓN
             @if ($errors->any())
                 Swal.fire({
                     icon: 'error',
@@ -61,23 +61,23 @@
                 });
             @endif
 
-            // 4. FUNCIÓN PARA CONFIRMAR BORRADO (La usaremos en tus botones)
+            // 4. FUNCIÓN PARA CONFIRMAR BORRADO
             function confirmarBorrado(event, nombreElemento) {
-                event.preventDefault(); // Detiene el envío del formulario
-                const form = event.target; // Captura el formulario
+                event.preventDefault();
+                const form = event.target;
 
                 Swal.fire({
                     title: '¿Estás seguro?',
                     text: "Vas a eliminar: " + nombreElemento + ". Esta acción no se puede deshacer.",
                     icon: 'warning',
                     showCancelButton: true,
-                    confirmButtonColor: '#EF4444', // Rojo
-                    cancelButtonColor: '#6B7280',  // Gris
+                    confirmButtonColor: '#EF4444',
+                    cancelButtonColor: '#6B7280',
                     confirmButtonText: 'Sí, eliminar',
                     cancelButtonText: 'Cancelar'
                 }).then((result) => {
                     if (result.isConfirmed) {
-                        form.submit(); // Si dice que sí, enviamos el formulario manualmente
+                        form.submit();
                     }
                 });
             }

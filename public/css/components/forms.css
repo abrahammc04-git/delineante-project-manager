@@ -1,0 +1,108 @@
+/* ============================================
+   FORMULARIOS
+   ============================================ */
+.form-group {
+    margin-bottom: 1.75rem;
+}
+
+/* Grid de dos columnas */
+.form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.form-grid .form-group {
+    margin-bottom: 0;
+}
+
+.form-group-full {
+    grid-column: 1 / -1;
+}
+
+.form-group-no-mb {
+    margin-bottom: 0;
+}
+
+.form-label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.025em;
+}
+
+.form-input {
+    width: 100%;
+    padding: 1rem 1.25rem;
+    font-size: var(--text-base);
+    border: 2px solid var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    background: var(--color-gray-50);
+    transition: var(--transition);
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: var(--color-primary);
+    background: var(--color-white);
+    box-shadow: var(--focus-ring);
+}
+
+.form-input::placeholder {
+    color: var(--color-gray-300);
+}
+
+.form-error {
+    color: var(--color-error-text);
+    font-size: var(--text-sm);
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+/* Checkbox y Remember Me */
+.form-checkbox-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin: 1.25rem 0;
+}
+
+.form-checkbox {
+    width: 1.125rem;
+    height: 1.125rem;
+    border: 2px solid var(--color-gray-300);
+    border-radius: 4px;
+    cursor: pointer;
+    accent-color: var(--color-primary);
+}
+
+.form-checkbox-label {
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+    cursor: pointer;
+    user-select: none;
+}
+
+/* ============================================
+   ACCIONES DE FORMULARIO
+   ============================================ */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding: 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+    margin-top: 0.5rem;
+}
+
+/* ============================================
+   CONTENEDOR CON PADDING INTERNO
+   (usado en tabla-container cuando tiene form)
+   ============================================ */
+.container-pad {
+    padding: 1.5rem;
+}

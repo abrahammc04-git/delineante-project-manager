@@ -1,0 +1,51 @@
+/* ============================================
+   DANGER ZONE — Sección de acciones destructivas
+   ============================================ */
+.danger-zone {
+    margin: 1.5rem;
+    background: var(--color-white);
+    border: 2px solid var(--color-error-border);
+    border-radius: var(--radius-3xl);
+    padding: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.danger-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-error);
+    margin-bottom: 0.5rem;
+}
+
+.danger-description {
+    color: var(--color-gray-600);
+    font-size: var(--text-sm);
+    margin-bottom: 1.25rem;
+    line-height: 1.6;
+}
+
+/* ---- Botón destructivo ---- */
+.btn-danger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    background: var(--color-error-bg);
+    color: var(--color-error);
+    border: 2px solid var(--color-error-border);
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: var(--text-sm);
+    cursor: pointer;
+    transition: var(--transition-fast);
+    text-decoration: none;
+}
+
+.btn-danger:hover {
+    background: var(--color-error);
+    color: var(--color-white);
+    border-color: var(--color-error);
+    box-shadow: 0 4px 8px rgba(153, 27, 27, 0.3);
+    transform: translateY(-1px);
+}

@@ -1,0 +1,18 @@
+/* ============================================
+   SELECT2 — Sobrescrituras de estilos
+   ============================================ */
+
+/* Los estilos de select2 se gestionan en el componente de UI.
+   Si necesitas personalizar el dropdown aquí, usa las variables: */
+
+/* .select2-container--default .select2-selection--single {
+    border-color: var(--color-gray-200);
+    border-radius: var(--radius-lg);
+    height: auto;
+    padding: 0.75rem 1rem;
+}
+
+.select2-container--default .select2-selection--single:focus-within {
+    border-color: var(--color-primary);
+    box-shadow: var(--focus-ring);
+} */

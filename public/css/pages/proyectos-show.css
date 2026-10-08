@@ -1,0 +1,530 @@
+/* ============================================
+   PROYECTOS SHOW — Detalle de proyecto
+   ============================================ */
+
+/* ---- Layout grid ---- */
+.show-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 1.5rem;
+    margin: 0 var(--page-padding) var(--page-padding);
+}
+
+/* ---- Tarjeta genérica ---- */
+.show-card {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-card);
+    border: 1px solid var(--color-gray-200);
+    padding: 1.5rem;
+}
+
+.show-card-title {
+    font-size: var(--text-2xl);
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--color-gray-200);
+}
+
+.show-card-subtitle {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    color: var(--color-primary-dark);
+    margin-bottom: 1.25rem;
+}
+
+/* ---- Grid de datos ---- */
+.show-data-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.show-field {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.show-field-full {
+    grid-column: span 2;
+}
+
+.show-field-label {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+}
+
+.show-field-value {
+    font-weight: 600;
+    color: var(--color-gray-900);
+    font-size: var(--text-base);
+}
+
+.show-field-sub {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+}
+
+.show-field-success {
+    color: #059669;
+}
+
+/* ---- Descripción ---- */
+.show-description {
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+}
+
+.show-description-body {
+    background: var(--color-gray-50);
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    color: var(--color-gray-700);
+    line-height: 1.6;
+    margin-top: 0.5rem;
+}
+
+/* ---- Sidebar ---- */
+.show-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.show-dates {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.show-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+/* ---- Sección documentos ---- */
+.show-docs {
+    margin: 0 var(--page-padding) var(--page-padding);
+}
+
+.show-docs-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+/* ---- Zona de subida ---- */
+.show-upload-zone {
+    margin-bottom: 1.5rem;
+    padding: 1.5rem;
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--color-gray-300);
+}
+
+.show-dropzone {
+    padding: 2rem;
+    text-align: center;
+    cursor: pointer;
+    border-radius: var(--radius-md);
+    background: var(--color-white);
+    border: 2px dashed var(--color-gray-300);
+    transition: var(--transition-fast);
+}
+
+.show-dropzone.dragging {
+    background: var(--color-gray-100);
+    border-color: var(--color-primary);
+}
+
+.show-dropzone-text {
+    display: flex;
+    justify-content: center;
+    font-size: var(--text-sm);
+    color: var(--color-gray-600);
+}
+
+.show-dropzone-link {
+    color: var(--color-primary);
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.show-dropzone-hint {
+    color: var(--color-gray-400);
+    font-size: var(--text-sm);
+    margin-top: 0.5rem;
+}
+
+.show-file-preview {
+    margin-top: 1rem;
+    text-align: left;
+}
+
+.show-file-preview-title {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    font-size: var(--text-sm);
+}
+
+.show-file-list {
+    background: var(--color-white);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-200);
+    padding: 1rem;
+    list-style: none;
+}
+
+.show-file-list-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid var(--color-gray-100);
+    font-size: var(--text-sm);
+}
+
+.show-file-list-item:last-child {
+    border-bottom: none;
+}
+
+.show-file-remove {
+    background: none;
+    border: none;
+    color: var(--color-error-text);
+    cursor: pointer;
+    font-size: var(--text-xl);
+    line-height: 1;
+    padding: 0;
+}
+
+.show-upload-actions {
+    margin-top: 1rem;
+    text-align: right;
+}
+
+/* ---- Barra superior de archivos ---- */
+.show-files-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 1px solid var(--color-gray-200);
+}
+
+.show-files-bar-left {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.show-files-bar-right {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.show-files-title {
+    font-size: var(--text-base);
+    font-weight: 600;
+    color: var(--color-gray-900);
+}
+
+.show-select-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+    font-size: var(--text-sm);
+    color: var(--color-gray-700);
+}
+
+.show-btn-download-sel {
+    background: #059669;
+    color: var(--color-white);
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.show-btn-schedule {
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: var(--transition-fast);
+}
+
+.show-btn-schedule.show {
+    background: var(--color-info-light);
+    color: var(--color-info);
+    border: 1px solid #3B82F6;
+}
+
+.show-btn-schedule.hide {
+    background: var(--color-gray-100);
+    color: var(--color-gray-700);
+    border: 1px solid var(--color-gray-300);
+}
+
+/* ---- Ítems de archivos ---- */
+.show-file-items {
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    padding: 0.5rem;
+}
+
+.show-file-item {
+    background: var(--color-white);
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: var(--radius-md);
+    border: 1px solid var(--color-gray-200);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.show-file-item:last-child {
+    margin-bottom: 0;
+}
+
+.show-file-info {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex: 1;
+    min-width: 0;
+}
+
+.show-file-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.show-file-meta {
+    flex: 1;
+    min-width: 0;
+}
+
+.show-file-name {
+    font-weight: 600;
+    color: var(--color-gray-900);
+    margin-bottom: 0.25rem;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.show-file-size {
+    font-size: var(--text-sm);
+    color: var(--color-gray-500);
+}
+
+.show-badge-schedule {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    flex-shrink: 0;
+}
+
+.show-badge-cancel {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    line-height: 1;
+    padding: 0;
+    color: inherit;
+}
+
+.show-file-actions {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.show-btn-eye {
+    background: none;
+    border: none;
+    padding: 0.25rem;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+}
+
+.show-btn-download {
+    background: var(--color-primary);
+    color: var(--color-white);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: var(--text-sm);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.show-btn-delete {
+    background: var(--color-error);
+    color: var(--color-white);
+    padding: 0.5rem 0.75rem;
+    border-radius: var(--radius-sm);
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    font-size: var(--text-sm);
+    transition: var(--transition-fast);
+}
+
+.show-btn-delete:hover {
+    opacity: 0.85;
+}
+
+/* ---- Estado vacío ---- */
+.show-empty-docs {
+    text-align: center;
+    padding: 3rem;
+    color: var(--color-gray-400);
+    background: var(--color-gray-50);
+    border-radius: var(--radius-md);
+    border: 2px dashed var(--color-gray-200);
+}
+
+.show-empty-title {
+    font-size: var(--text-lg);
+    margin-bottom: 0.5rem;
+}
+
+.show-empty-sub {
+    font-size: var(--text-sm);
+}
+
+/* ---- Modales ---- */
+.show-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+}
+
+.show-modal.hidden {
+    display: none;
+}
+
+.show-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.show-modal-box {
+    background: var(--color-white);
+    border-radius: var(--radius-xl);
+    overflow: hidden;
+    box-shadow: var(--shadow-xl);
+    max-width: 32rem;
+    width: 100%;
+    position: relative;
+    z-index: 10;
+}
+
+.show-modal-body {
+    padding: 1.5rem;
+}
+
+.show-modal-title {
+    font-size: var(--text-lg);
+    font-weight: 700;
+    margin-bottom: 1rem;
+}
+
+.show-modal-title.info    { color: var(--color-info); }
+.show-modal-title.warning { color: var(--color-warning); }
+
+.show-modal-filelist {
+    max-height: 12rem;
+    overflow-y: auto;
+    border: 1px solid var(--color-gray-200);
+    border-radius: var(--radius-sm);
+    background: var(--color-gray-50);
+    padding: 0.5rem;
+}
+
+.show-modal-file-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.25rem 0;
+    font-size: var(--text-sm);
+    color: var(--color-gray-900);
+    cursor: pointer;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.show-modal-footer {
+    background: var(--color-gray-50);
+    padding: 0.75rem 1.5rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 0.75rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 900px) {
+    .show-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .show-docs-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+
+    .show-files-bar {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.75rem;
+    }
+}
+
+@media (max-width: 600px) {
+    .show-data-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .show-field-full {
+        grid-column: span 1;
+    }
+
+    .show-file-item {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+}

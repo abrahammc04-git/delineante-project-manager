@@ -1,0 +1,34 @@
+/* ============================================
+   PROYINSTAL — Archivo principal CSS
+   Importa todos los módulos en orden correcto
+   ============================================ */
+
+/* 1. CORE: Variables y reset base */
+@import 'core/variables.css';
+@import 'core/reset.css';
+
+/* 2. LAYOUTS: Estructuras de página */
+@import 'layouts/auth.css';
+@import 'layouts/navbar.css';
+@import 'layouts/page-box.css';
+
+/* 3. COMPONENTS: Elementos reutilizables */
+@import 'components/buttons.css';
+@import 'components/forms.css';
+@import 'components/links.css';
+@import 'components/alerts.css';
+@import 'components/tables.css';
+@import 'components/badges.css';
+@import 'components/select2.css';
+@import 'components/danger-zone.css';
+
+/* 4. PAGES: Estilos específicos de cada vista */
+@import 'pages/dashboard.css';
+@import 'pages/usuarios.css';
+@import 'pages/proyectos-chatbot.css';
+@import 'pages/proyectos-show.css';
+@import 'pages/landing.css';
+@import 'pages/chat.css';
+
+/* 6. CORE: Responsive (siempre al final) */
+@import 'core/responsive.css';

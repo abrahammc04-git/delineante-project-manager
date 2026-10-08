@@ -1,82 +1,83 @@
 <x-app-layout>
-    <link rel="stylesheet" href="{{ asset('css/proyinstal-styles.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
 
     <div class="dashboard-container">
-        <div class="table-container">
-            <div class="table-header" style="display:flex; justify-content:space-between; align-items:center;">
-                <div>
-                    <h2 class="table-title">Clientes</h2>
-                    <p style="color: var(--proyinstal-gray-600); margin-top: .25rem;">
-                        Busca por nombre, empresa, teléfono, email y estado.
-                    </p>
+        
+        <!-- Box superior mejorado -->
+        <div class="page-box">
+            <div class="page-box-inner">
+                <div class="page-box-titulo">
+                    <h1>Gestión de Clientes</h1>
+                    <p>Administra y busca clientes registrados en el sistema</p>
                 </div>
-
-                <a href="{{ route('dashboard') }}" class="btn btn-secondary" style="width:auto;">
-                    ← Volver al dashboard
-                </a>
+                <div class="page-box-botones">
+                    <a href="{{ route('dashboard') }}" class="btn-box-dashboard">
+                        ← Dashboard
+                    </a>
+                </div>
             </div>
+        </div>
 
+        <!-- Buscador principal (fuera de la tabla) -->
+        <div class="usuarios-buscador-wrap">
+            <form method="GET" action="{{ route('usuarios.index') }}" class="usuarios-buscador-form">
+                <div class="usuarios-buscador-grid">
+                    <input class="usuarios-input" name="nombre" value="{{ request('nombre') }}" 
+                           placeholder="Nombre o apellidos">
+                    
+                    <input class="usuarios-input" name="empresa" value="{{ request('empresa') }}" 
+                           placeholder="Empresa">
+                    
+                    <input class="usuarios-input" name="telefono" value="{{ request('telefono') }}" 
+                           placeholder="Teléfono">
+                    
+                    <input class="usuarios-input" name="email" value="{{ request('email') }}" 
+                           placeholder="Email">
+                    
+                    <select class="usuarios-input" name="activo">
+                        <option value="">Todos los estados</option>
+                        <option value="1" @selected(request('activo')==='1')>Activos</option>
+                        <option value="0" @selected(request('activo')==='0')>Inactivos</option>
+                    </select>
+                </div>
+                
+                <div class="usuarios-buscador-acciones">
+                    <button type="submit" class="btn-usuarios-buscar">
+                        <svg style="width: 1rem; height: 1rem;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                        </svg>
+                        Buscar
+                    </button>
+                    <a href="{{ route('usuarios.index') }}" class="btn-usuarios-limpiar">
+                        Limpiar
+                    </a>
+                </div>
+            </form>
+        </div>
 
-            {{-- Filtros --}}
-            <div style="padding: 1.25rem; border-bottom: 1px solid var(--proyinstal-gray-200); background: var(--proyinstal-gray-50);">
-                <form method="GET" action="{{ route('usuarios.index') }}" class="form-grid" style="grid-template-columns: repeat(5, 1fr); gap: 1rem;">
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Nombre</label>
-                        <input class="form-input" name="nombre" value="{{ request('nombre') }}" placeholder="Ej: Juan">
-                    </div>
-
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Empresa</label>
-                        <input class="form-input" name="empresa" value="{{ request('empresa') }}" placeholder="Ej: Construcciones">
-                    </div>
-
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Teléfono</label>
-                        <input class="form-input" name="telefono" value="{{ request('telefono') }}" placeholder="Ej: 666">
-                    </div>
-
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Email</label>
-                        <input class="form-input" name="email" value="{{ request('email') }}" placeholder="Ej: cliente@...">
-                    </div>
-
-                    <div class="form-group" style="margin-bottom:0;">
-                        <label class="form-label">Estado</label>
-                        <select class="form-input" name="activo">
-                            <option value="">Todos</option>
-                            <option value="1" @selected(request('activo')==='1' )>Activos</option>
-                            <option value="0" @selected(request('activo')==='0' )>Inactivos</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group-full" style="display:flex; gap:.75rem; margin-top:.75rem;">
-                        <button class="btn btn-primary" style="width:auto;">Buscar</button>
-                        <a class="btn btn-secondary" style="width:auto;" href="{{ route('usuarios.index') }}">Limpiar</a>
-                    </div>
-                </form>
-            </div>
-
-            {{-- Tabla --}}
-            <div style="overflow-x:auto;">
+        <!-- Tabla limpia sin filtros -->
+        <div class="table-container" style="margin: 0 1.5rem;">
+            <div class="tabla-overflow">
                 <table>
                     <thead>
                         <tr>
-                            <th>Nombre</th>
-                            <th>Email</th>
-                            <th>Teléfono</th>
-                            <th>Empresa</th>
-                            <th>Estado</th>
+                            <th>NOMBRE</th>
+                            <th>EMAIL</th>
+                            <th>TELÉFONO</th>
+                            <th>EMPRESA</th>
+                            <th>ESTADO</th>
+                            <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
                         @forelse($usuarios as $u)
                         <tr>
-                            <td style="font-weight: 600; color: var(--proyinstal-dark);">
+                            <td class="td-nombre">
                                 {{ $u->nombre }} {{ $u->apellidos }}
                             </td>
                             <td>{{ $u->email }}</td>
-                            <td>{{ $u->telefono }}</td>
-                            <td>{{ $u->empresa }}</td>
+                            <td>{{ $u->telefono ?? '-' }}</td>
+                            <td>{{ $u->empresa ?? '-' }}</td>
                             <td>
                                 @if($u->activo)
                                 <span class="badge badge-completed">Activo</span>
@@ -84,10 +85,15 @@
                                 <span class="badge badge-cancelled">Inactivo</span>
                                 @endif
                             </td>
+                            <td>
+                                <a href="{{ route('usuarios.show', $u) }}" class="enlace-ver-detalles">
+                                    Ver detalles
+                                </a>
+                            </td>
                         </tr>
                         @empty
                         <tr>
-                            <td colspan="5" style="padding: 1.5rem; color: var(--proyinstal-gray-600);">
+                            <td colspan="6" class="td-vacia">
                                 No hay usuarios que coincidan con los filtros.
                             </td>
                         </tr>
@@ -96,9 +102,11 @@
                 </table>
             </div>
 
-            <div style="padding: 1rem 1.5rem;">
+            <div class="paginacion-wrap">
                 {{ $usuarios->links() }}
             </div>
         </div>
     </div>
+
+
 </x-app-layout>

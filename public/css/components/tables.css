@@ -1,0 +1,104 @@
+/* ============================================
+   TABLAS
+   ============================================ */
+.table-container {
+    background: var(--color-white);
+    border-radius: var(--radius-3xl);
+    box-shadow: var(--shadow-md);
+    overflow: hidden;
+    border: 1px solid var(--color-gray-200);
+}
+
+.table-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--color-gray-200);
+    background: var(--color-gray-50);
+}
+
+.table-header-flex {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.table-title {
+    font-size: var(--text-xl);
+    font-weight: 700;
+    color: var(--color-primary-dark);
+}
+
+.table-header-subtitle {
+    color: var(--color-gray-600);
+    margin-top: 0.25rem;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+thead {
+    background: var(--color-gray-50);
+}
+
+th {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: var(--text-sm);
+    font-weight: 600;
+    color: var(--color-gray-600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+td {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+    color: var(--color-gray-900);
+}
+
+tr {
+    transition: var(--transition);
+}
+
+tbody tr:hover {
+    background: var(--color-gray-50);
+}
+
+/* ---- Celdas reutilizables ---- */
+.td-nombre {
+    font-weight: 600;
+    color: var(--color-primary-dark);
+}
+
+.enlace-ver-detalles {
+    color: var(--color-primary);
+    font-weight: 600;
+    text-decoration: none;
+    font-size: var(--text-sm);
+}
+
+.enlace-ver-detalles:hover {
+    color: var(--color-primary-dark);
+}
+
+.td-vacia {
+    text-align: center;
+    padding: 2rem;
+    color: var(--color-gray-600);
+}
+
+/* ============================================
+   TABLA CON SCROLL HORIZONTAL
+   ============================================ */
+.tabla-overflow {
+    overflow-x: auto;
+}
+
+/* ============================================
+   PAGINACIÓN
+   ============================================ */
+.paginacion-wrap {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--color-gray-200);
+}
