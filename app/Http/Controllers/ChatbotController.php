@@ -27,11 +27,11 @@ class ChatbotController extends Controller
 
         // 3. Llamar a Groq API
         try {
-            $response = Http::withoutVerifying()->withHeaders([
+            $response = Http::withHeaders([
                 'Authorization' => 'Bearer ' . config('services.groq.key'),
                 'Content-Type' => 'application/json',
             ])->timeout(30)->post('https://api.groq.com/openai/v1/chat/completions', [
-                'model' => 'llama-3.3-70b-versatile', // Modelo gratuito de Groq
+                'model' => config('services.groq.model'),
                 'messages' => [
                     [
                         'role' => 'system',
@@ -63,7 +63,7 @@ Respuesta: FILTER_IDS: 10,11,12,13,14"
                     ]
                 ],
                 'temperature' => 0.3,
-                'max_tokens' => 500,
+                'max_tokens' => 1000,
             ]);
 
             if ($response->successful()) {
@@ -118,7 +118,7 @@ Respuesta: FILTER_IDS: 10,11,12,13,14"
             $contexto .= "🆔 ID: {$proyecto->id_proyecto}\n";
             $contexto .= "📋 Proyecto: {$proyecto->nombre_proyecto}\n";
             $contexto .= "👤 Cliente: {$proyecto->usuario->nombre} {$proyecto->usuario->apellidos}\n";
-            $contexto .= "🏢 Empresa: " . ($proyecto->usuario->empresa ?? 'Sin empresa') . "\n";
+            $contexto .= "🏢 Empresa: " . ($proyecto->usuario->empresa?->nombre_empresa ?? 'Sin empresa') . "\n";
             $contexto .= "📊 Estado: {$proyecto->estado}\n";
             $contexto .= "🔧 Tipo: {$proyecto->tipo_proyecto}\n";
             $contexto .= "📅 Fecha Inicio: " . ($proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : 'Sin fecha') . "\n";
