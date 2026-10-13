@@ -1,20 +1,20 @@
 # Delineante Project Manager
 
-Aplicación web de gestión de proyectos para un despacho de delineación. El perfil **admin** gestiona empresas cliente, sus usuarios, proyectos y documentos técnicos. Los **clientes** acceden únicamente a sus propios proyectos y documentos. Incluye chat interno en tiempo real y un asistente IA solo visible para el admin.
+Aplicación web de gestión de proyectos para un despacho de delineación. El perfil **admin** gestiona empresas cliente, sus usuarios, proyectos y documentos técnicos. Los **clientes** acceden a los proyectos de su empresa; si no tienen empresa asignada, solo ven los proyectos asignados directamente a ellos. Incluye chat interno en tiempo real y un asistente IA solo visible para el admin.
 
 ---
 
 ## Funcionalidades
 
-- **Autenticación** — registro, login, verificación de correo y reseteo de contraseña (Laravel Breeze)
-- **Gestión de empresas** — CRUD completo solo para el admin: crear, listar, editar y eliminar empresas con sus datos fiscales
-- **Gestión de proyectos** — CRUD con tipo de proyecto, estado, localización y notas; los clientes solo ven los proyectos de su empresa
-- **Gestión de documentos** — subida, descarga y eliminación de archivos por proyecto; control de visibilidad manual o programada (ocultar/publicar en fecha y hora concretas)
-- **Gestión de usuarios** — listado, edición y baja de usuarios; filtrado por empresa
-- **Dashboard** — resumen de proyectos por estado (total, en proceso, completados, pendientes) con tabla de proyectos recientes
-- **Chat interno en tiempo real** — mensajería privada admin ↔ cliente con soporte de adjuntos; canal WebSocket privado por conversación (Laravel Reverb + Echo); archivar/desarchivar conversaciones
-- **Chatbot IA** — asistente basado en Groq (`llama-3.3-70b-versatile`, capa gratuita) visible únicamente para el admin; permite filtrar proyectos y hacer consultas en lenguaje natural
-- **Tareas programadas** — dos comandos Artisan se ejecutan cada minuto para aplicar la visibilidad programada de los documentos
+- **Autenticación** — login y registro público en `/register` (formulario Breeze adaptado al esquema propio: `nombre`, `apellidos`, `email`). Las rutas de verificación de correo y reseteo de contraseña existen, pero el reseteo está roto en la práctica por la columna personalizada `password_hash` (bug conocido).
+- **Gestión de empresas** — listar y eliminar empresas funcionan; crear y editar están en el controlador pero faltan las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` [POR CONFIRMAR].
+- **Gestión de proyectos** — CRUD con tipo de proyecto, estado, localización y notas; los clientes solo ven los proyectos de su empresa.
+- **Gestión de documentos** — subida, descarga y eliminación de archivos por proyecto; control de visibilidad manual o programada (ocultar/publicar en fecha y hora concretas).
+- **Gestión de usuarios** — listado, edición y baja de usuarios; filtrado por empresa.
+- **Dashboard** — resumen de proyectos por estado (total, en proceso, completados, pendientes) con tabla de proyectos recientes.
+- **Chat interno en tiempo real** — mensajería privada admin ↔ cliente con soporte de adjuntos; canal WebSocket privado por conversación (Laravel Reverb + Echo); archivar/desarchivar conversaciones.
+- **Chatbot IA** — asistente basado en la API de Groq (modelo configurable en `config/services.php`) visible únicamente para el admin; permite filtrar proyectos y hacer consultas en lenguaje natural.
+- **Tareas programadas** — dos comandos Artisan se ejecutan cada minuto para aplicar la visibilidad programada de los documentos.
 
 ---
 
@@ -32,7 +32,7 @@ Aplicación web de gestión de proyectos para un despacho de delineación. El pe
 | WS client | Laravel Echo | ^2.3.4 |
 | WS client | Pusher.js | ^8.5.0 |
 | HTTP cliente JS | Axios | ^1.11.0 |
-| Alertas UI | SweetAlert2 | [POR CONFIRMAR versión] |
+| Alertas UI | SweetAlert2 | 11 (CDN) |
 | IA | Groq API | — |
 | Testing | PHPUnit | ^11.5.3 |
 
@@ -41,6 +41,7 @@ Aplicación web de gestión de proyectos para un despacho de delineación. El pe
 ## Requisitos previos
 
 - PHP 8.2 o superior con extensiones: `pdo_mysql`, `mbstring`, `openssl`, `fileinfo`, `bcmath`, `tokenizer`, `xml`
+- `pdo_sqlite` habilitada (los tests usan SQLite en memoria). En Windows, descomenta la línea `extension=pdo_sqlite` en tu `php.ini` y reinicia PHP.
 - Composer 2.x
 - Node.js 18+ y npm
 - MySQL 8+ (crear la base de datos antes de migrar)
@@ -52,7 +53,7 @@ Aplicación web de gestión de proyectos para un despacho de delineación. El pe
 ### 1. Clonar e instalar dependencias
 
 ```bash
-git clone <url-del-repo>
+git clone https://github.com/abrahammc04-git/delineante-project-manager.git
 cd delineante-project-manager
 composer install
 npm install
@@ -77,15 +78,20 @@ GROQ_API_KEY=gsk_...
 
 Para el chat en tiempo real, cambia `BROADCAST_CONNECTION=log` por `reverb` y rellena las variables `REVERB_*` (ver sección [Variables de entorno](#variables-de-entorno)).
 
-### 3. Generar claves de Reverb
+### 3. Configurar las claves de Reverb
 
-Si las variables `REVERB_APP_ID`, `REVERB_APP_KEY` y `REVERB_APP_SECRET` están vacías en tu `.env`, ejecútalas:
+El proyecto ya incluye `config/reverb.php`. No ejecutes `php artisan reverb:install` (sobrescribiría la configuración). Simplemente asigna en tu `.env` los valores de `REVERB_APP_ID`, `REVERB_APP_KEY` y `REVERB_APP_SECRET` — en desarrollo puedes usar cualquier cadena, por ejemplo:
 
-```bash
-php artisan reverb:install
+```env
+REVERB_APP_ID=local-app
+REVERB_APP_KEY=local-key
+REVERB_APP_SECRET=local-secret
+REVERB_HOST=localhost
+REVERB_PORT=8080
+REVERB_SCHEME=http
 ```
 
-Esto genera las claves y las añade automáticamente al `.env`.
+Los valores deben coincidir entre servidor (`.env`) y cliente (`VITE_REVERB_*`).
 
 ### 4. Migraciones y seeders
 
@@ -195,6 +201,7 @@ SESSION_DRIVER=database
 
 # IA Chatbot
 GROQ_API_KEY=
+GROQ_MODEL=
 
 # Correo (proyecto configurado con Mailtrap)
 MAIL_MAILER=smtp
@@ -203,9 +210,11 @@ MAIL_USERNAME=
 MAIL_PASSWORD=
 ```
 
+`GROQ_MODEL` es opcional; si se deja en blanco, el código usa `openai/gpt-oss-120b` como valor por defecto (ver `config/services.php`).
+
 ### Cómo obtener la clave de Groq
 
-1. Crea una cuenta gratuita en [console.groq.com](https://console.groq.com).
+1. Crea una cuenta en [console.groq.com](https://console.groq.com).
 2. Ve a **API Keys → Create API key**.
 3. Copia la clave (empieza por `gsk_`) y pégala como valor de `GROQ_API_KEY=` en tu `.env`.
 
@@ -223,7 +232,7 @@ Después de ejecutar `php artisan db:seed` se crean automáticamente:
 | cliente | cliente3@test.com | `1234` | Funeraria JJ S.A. |
 | cliente | cliente4@test.com | `1234` | Funeraria JJ S.A. |
 
-> **Aviso:** No uses estas credenciales en producción.
+> **Aviso:** Credenciales solo para pruebas locales; cámbialas o elimina el seeder antes de cualquier despliegue real.
 
 ---
 
@@ -242,7 +251,7 @@ delineante-project-manager/
 │                                  # Conversacion, Mensaje, ArchivoChat
 ├── config/
 │   ├── filesystems.php            # Disco "proyectos" → storage/app/private/proyectos
-│   └── services.php               # Clave GROQ_API_KEY
+│   └── services.php               # Claves GROQ_API_KEY y GROQ_MODEL (modelo del chatbot)
 ├── database/
 │   ├── migrations/                # 17 migraciones (tablas propias + Laravel defaults)
 │   └── seeders/DatabaseSeeder.php # 2 empresas + 1 admin + 4 clientes de prueba
@@ -270,29 +279,99 @@ composer test
 php artisan test
 ```
 
-Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Actualmente cubren:
+Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la extensión `pdo_sqlite` habilitada (ver [Requisitos previos](#requisitos-previos)).
 
-- **Feature/Auth** — login, registro, verificación de correo, reseteo y actualización de contraseña, confirmación de contraseña
-- **Feature/ProfileTest** — edición y eliminación de perfil
-- **Feature/ExampleTest** y **Unit/ExampleTest** — scaffolding por defecto de Laravel (sin lógica de negocio propia)
+### Estado actual de los tests
+
+**Pasan:**
+
+- `Tests\Unit\ExampleTest` — scaffolding por defecto de Laravel.
+- `Tests\Feature\ExampleTest` — respuesta HTTP 200 en la raíz.
+- `Tests\Feature\Auth\AuthenticationTest` — login correcto, login con contraseña incorrecta, logout.
+- `Tests\Feature\Auth\PasswordConfirmationTest` — pantalla de confirmación y validación de contraseña.
+- `Tests\Feature\AutorizacionTest` — **tests de lógica de negocio propia**:
+  - Un cliente no puede ver proyectos de otra empresa (espera 403).
+  - Un cliente recibe 403 al llamar a `POST /chatbot/consulta`.
+  - Un admin puede acceder a la lista de empresas (espera 200).
+
+**Fallan (bugs conocidos, no relacionados con los cambios recientes):**
+
+Los tests de Breeze generados por el scaffolding fallan porque el esquema de usuarios es personalizado. El modelo usa la columna `password_hash` en lugar del `password` estándar de Laravel, y los campos `nombre`/`apellidos` en lugar de `name`. Esto rompe los tests que asumen el esquema por defecto:
+
+- `EmailVerificationTest` — falla al generar la URL firmada de verificación.
+- `PasswordResetTest` — `NewPasswordController` escribe en la columna `password` (no existe).
+- `PasswordUpdateTest` — la validación de contraseña usa el campo `password` estándar.
+- `RegistrationTest` — el factory usa `name`/`password` que no existen en la tabla.
+- `ProfileTest` (parcialmente) — actualizar perfil falla por la misma razón.
 
 ---
 
-## Capturas de pantalla
+## Limitaciones y mejoras futuras
 
-> Añade las imágenes en la carpeta `docs/` y descomenta estas líneas.
+- **Escalabilidad del chatbot:** en cada consulta se envían todos los proyectos de la base de datos al modelo. Esto no escala con volúmenes grandes; la mejora natural sería filtrar en base de datos antes de llamar a la API, o implementar búsqueda semántica.
+- **Cobertura de tests:** solo hay tres tests de lógica de negocio propia (`AutorizacionTest`). El resto son scaffolding de Breeze (que además falla). Queda pendiente cubrir proyectos, documentos, chat y el flujo del chatbot.
+- **Procesos adicionales en local:** el chat requiere `reverb:start` y la cola; la visibilidad programada requiere `schedule:work`. Son tres procesos extra además del servidor y Vite — `composer dev:win` facilita esto en Windows.
+- **Modelos de Groq cambian:** durante el desarrollo hubo que migrar el modelo tras la retirada de `llama-3.3-70b-versatile` (agosto 2026). Por eso el modelo se configura mediante `GROQ_MODEL` en `.env` y `config/services.php`, sin hardcodear.
+- **Vistas de empresas incompletas:** el `EmpresaController` implementa CRUD completo, pero las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` están pendientes de crear [POR CONFIRMAR].
 
-![Dashboard](docs/captura-dashboard.png)
-![Listado de proyectos](docs/captura-proyectos.png)
-![Detalle de proyecto con documentos](docs/captura-proyecto-detalle.png)
-![Chat interno en tiempo real](docs/captura-chat.png)
-![Chatbot IA (solo admin)](docs/captura-chatbot.png)
-![Gestión de empresas](docs/captura-empresas.png)
+---
+
+## Problemas frecuentes en Windows
+
+### `composer dev` falla por Pail / pcntl
+
+Pail requiere la extensión `pcntl`, que solo existe en Linux. En Windows usa el script alternativo:
+
+```bash
+php artisan reverb:start   # Terminal 1
+composer dev:win           # Terminal 2
+```
+
+`dev:win` incluye servidor, cola, scheduler y Vite, sin Pail.
+
+---
+
+### Chatbot devuelve "cURL error 60: SSL certificate problem"
+
+PHP no incluye el bundle de certificados de CA por defecto en Windows. Solución:
+
+1. Descarga el bundle de Mozilla: [https://curl.se/ca/cacert.pem](https://curl.se/ca/cacert.pem)
+2. Guárdalo en una ruta estable, por ejemplo `C:\php84\extras\ssl\cacert.pem`.
+3. Edita tu `php.ini` y descomenta/ajusta estas dos líneas:
+   ```ini
+   curl.cainfo = "C:\php84\extras\ssl\cacert.pem"
+   openssl.cafile = "C:\php84\extras\ssl\cacert.pem"
+   ```
+4. Reinicia los procesos de PHP.
+
+> No desactives la verificación SSL (`CURLOPT_SSL_VERIFYPEER = false`). Es un riesgo de seguridad y no resuelve el problema de raíz.
+
+---
+
+### "There are no commands defined in the reverb namespace"
+
+Significa que el paquete `laravel/reverb` no está instalado. Ejecuta:
+
+```bash
+composer install
+```
+
+---
+
+### Errores de tablas inexistentes tras un `git pull`
+
+Si ves errores como "Table X doesn't exist" al arrancar la app después de sincronizar el repositorio, ejecuta las migraciones pendientes:
+
+```bash
+php artisan migrate
+```
+
+> Asegúrate de que MySQL está arrancado antes de migrar.
 
 ---
 
 ## Equipo
 
-- **Abraham**
+- **[Abraham](https://github.com/abrahammc04-git)**
 - **Roberto**
 - **Moisés**
