@@ -77,7 +77,7 @@
                             </td>
                             <td>{{ $u->email }}</td>
                             <td>{{ $u->telefono ?? '-' }}</td>
-                            <td>{{ $u->empresa ?? '-' }}</td>
+                            <td>{{ $u->empresa?->nombre_empresa ?? '-' }}</td>
                             <td>
                                 @if($u->activo)
                                 <span class="badge badge-completed">Activo</span>

@@ -58,10 +58,17 @@
                     </div>
 
                     <div class="form-group">
-                        <label class="form-label" for="empresa">Empresa</label>
-                        <input class="form-input" id="empresa" name="empresa" type="text"
-                               value="{{ old('empresa', $usuario->empresa) }}">
-                        @error('empresa') <div class="form-error">{{ $message }}</div> @enderror
+                        <label class="form-label" for="id_empresa">Empresa</label>
+                        <select class="form-input" id="id_empresa" name="id_empresa">
+                            <option value="">Sin empresa</option>
+                            @foreach($empresas as $emp)
+                                <option value="{{ $emp->id_empresa }}"
+                                    @selected(old('id_empresa', $usuario->id_empresa) == $emp->id_empresa)>
+                                    {{ $emp->nombre_empresa }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_empresa') <div class="form-error">{{ $message }}</div> @enderror
                     </div>
 
                     <div class="form-group">

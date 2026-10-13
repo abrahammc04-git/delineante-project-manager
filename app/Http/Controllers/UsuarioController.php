@@ -72,7 +72,8 @@ class UsuarioController extends Controller
             abort(403, 'No tienes permiso para ver este usuario.');
         }
 
-        return view('usuarios.show', compact('usuario'));
+        $empresas = Empresa::orderBy('nombre_empresa')->get();
+        return view('usuarios.show', compact('usuario', 'empresas'));
     }
 
     public function update(Request $request, User $usuario)
