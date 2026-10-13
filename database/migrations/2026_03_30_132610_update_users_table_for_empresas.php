@@ -15,14 +15,13 @@ return new class extends Migration
                 $table->dropColumn('empresa');
             }
 
-            // Añadimos la relación con empresas (nullable al principio para que no falle con datos antiguos)
-            $table->unsignedBigInteger('id_empresa')->nullable()->after('id_usuario');
-            
-            // Creamos la clave foránea
-            $table->foreign('id_empresa')
-                  ->references('id_empresa')
-                  ->on('empresas')
-                  ->onDelete('set null'); // Si se borra la empresa, el usuario no se borra, se queda nulo
+            if (!Schema::hasColumn('usuarios', 'id_empresa')) {
+                $table->unsignedBigInteger('id_empresa')->nullable()->after('id_usuario');
+                $table->foreign('id_empresa')
+                      ->references('id_empresa')
+                      ->on('empresas')
+                      ->onDelete('set null');
+            }
         });
     }
 
