@@ -6,7 +6,7 @@ Aplicación web de gestión de proyectos para un despacho de delineación. El pe
 
 ## Funcionalidades
 
-- **Autenticación** — login y registro público en `/register` (formulario Breeze adaptado al esquema propio: `nombre`, `apellidos`, `email`). Las rutas de verificación de correo y reseteo de contraseña existen, pero el reseteo está roto en la práctica por la columna personalizada `password_hash` (bug conocido).
+- **Autenticación** — login y registro público en `/register` (formulario Breeze adaptado al esquema propio: `nombre`, `apellidos`, `email`). Verificación de correo y reseteo de contraseña disponibles.
 - **Gestión de empresas** — listar y eliminar empresas funcionan; crear y editar están en el controlador pero faltan las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` [POR CONFIRMAR].
 - **Gestión de proyectos** — CRUD con tipo de proyecto, estado, localización y notas; los clientes solo ven los proyectos de su empresa.
 - **Gestión de documentos** — subida, descarga y eliminación de archivos por proyecto; control de visibilidad manual o programada (ocultar/publicar en fecha y hora concretas).
@@ -283,33 +283,30 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 
 ### Estado actual de los tests
 
-**Pasan:**
+**30 tests, 69 aserciones — todos pasan.**
 
-- `Tests\Unit\ExampleTest` — scaffolding por defecto de Laravel.
-- `Tests\Feature\ExampleTest` — respuesta HTTP 200 en la raíz.
-- `Tests\Feature\Auth\AuthenticationTest` — login correcto, login con contraseña incorrecta, logout.
-- `Tests\Feature\Auth\PasswordConfirmationTest` — pantalla de confirmación y validación de contraseña.
-- `Tests\Feature\AutorizacionTest` — **tests de lógica de negocio propia**:
-  - Un cliente no puede ver proyectos de otra empresa (espera 403).
-  - Un cliente recibe 403 al llamar a `POST /chatbot/consulta`.
-  - Un admin puede acceder a la lista de empresas (espera 200).
+| Suite | Tests |
+|---|---|
+| `Unit\ExampleTest` | 1 |
+| `Feature\ExampleTest` | 1 |
+| `Feature\Auth\AuthenticationTest` | 4 |
+| `Feature\Auth\EmailVerificationTest` | 3 |
+| `Feature\Auth\PasswordConfirmationTest` | 3 |
+| `Feature\Auth\PasswordResetTest` | 4 |
+| `Feature\Auth\PasswordUpdateTest` | 2 |
+| `Feature\Auth\RegistrationTest` | 2 |
+| `Feature\Auth\RegistroSeguridadTest` | 2 |
+| `Feature\ProfileTest` | 5 |
+| `Feature\AutorizacionTest` | 3 |
 
-**Fallan (bugs conocidos, no relacionados con los cambios recientes):**
-
-Los tests de Breeze generados por el scaffolding fallan porque el esquema de usuarios es personalizado. El modelo usa la columna `password_hash` en lugar del `password` estándar de Laravel, y los campos `nombre`/`apellidos` en lugar de `name`. Esto rompe los tests que asumen el esquema por defecto:
-
-- `EmailVerificationTest` — falla al generar la URL firmada de verificación.
-- `PasswordResetTest` — `NewPasswordController` escribe en la columna `password` (no existe).
-- `PasswordUpdateTest` — la validación de contraseña usa el campo `password` estándar.
-- `RegistrationTest` — el factory usa `name`/`password` que no existen en la tabla.
-- `ProfileTest` (parcialmente) — actualizar perfil falla por la misma razón.
+`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST.
 
 ---
 
 ## Limitaciones y mejoras futuras
 
 - **Escalabilidad del chatbot:** en cada consulta se envían todos los proyectos de la base de datos al modelo. Esto no escala con volúmenes grandes; la mejora natural sería filtrar en base de datos antes de llamar a la API, o implementar búsqueda semántica.
-- **Cobertura de tests:** solo hay tres tests de lógica de negocio propia (`AutorizacionTest`). El resto son scaffolding de Breeze (que además falla). Queda pendiente cubrir proyectos, documentos, chat y el flujo del chatbot.
+- **Cobertura de tests:** los tests de autenticación y Breeze están adaptados y pasan; la lógica de negocio propia cuenta solo con `AutorizacionTest` (3 tests) y `RegistroSeguridadTest` (2 tests). Queda pendiente cubrir proyectos, documentos, chat y el flujo del chatbot.
 - **Procesos adicionales en local:** el chat requiere `reverb:start` y la cola; la visibilidad programada requiere `schedule:work`. Son tres procesos extra además del servidor y Vite — `composer dev:win` facilita esto en Windows.
 - **Modelos de Groq cambian:** durante el desarrollo hubo que migrar el modelo tras la retirada de `llama-3.3-70b-versatile` (agosto 2026). Por eso el modelo se configura mediante `GROQ_MODEL` en `.env` y `config/services.php`, sin hardcodear.
 - **Vistas de empresas incompletas:** el `EmpresaController` implementa CRUD completo, pero las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` están pendientes de crear [POR CONFIRMAR].
