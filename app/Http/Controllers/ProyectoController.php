@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Proyecto;
 use App\Models\User;
+use App\Models\Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -83,11 +84,11 @@ class ProyectoController extends Controller
     {
         $this->authorizeAdmin();
 
-        // Obtener lista de clientes para el select
-        // Ajusta 'rol' según tu tabla users (ej: where('rol', 'cliente'))
-        $clientes = User::where('rol', 'cliente')->get(); 
-        
-        return view('proyectos.create', compact('clientes'));
+        $clientes = User::where('rol', 'cliente')->get();
+        $empresas = Empresa::orderBy('nombre_empresa')->get();
+        $clienteEmpresaMap = $clientes->pluck('id_empresa', 'id_usuario');
+
+        return view('proyectos.create', compact('clientes', 'empresas', 'clienteEmpresaMap'));
     }
 
     /**
@@ -99,25 +100,27 @@ class ProyectoController extends Controller
 
         // 1. Validar
         $validated = $request->validate([
-            'nombre_proyecto' => 'required|string|max:255',
-            'id_usuario' => 'required|exists:usuarios,id_usuario',// Ojo: verifica si tu tabla se llama 'users' o 'usuarios'
-            'tipo_proyecto'   => 'required|string',
-            'estado'          => 'required|string',
-            'descripcion'     => 'nullable|string',
-            'fecha_inicio'    => 'required|date',
+            'nombre_proyecto'    => 'required|string|max:255',
+            'id_usuario'         => 'required|exists:usuarios,id_usuario',
+            'id_empresa'         => 'nullable|exists:empresas,id_empresa',
+            'tipo_proyecto'      => 'required|string',
+            'estado'             => 'required|string',
+            'descripcion'        => 'nullable|string',
+            'fecha_inicio'       => 'required|date',
             'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
-            'localizacion'    => 'nullable|string',] ,[
-
+            'localizacion'       => 'nullable|string',
+        ], [
             'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
-            
         ]);
 
         $validated['fecha_creacion'] = now();
         $validated['carpeta_archivos'] = 'proj_' . uniqid();
 
-        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
-        $cliente = User::find($validated['id_usuario']);
-        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+        // Si no se seleccionó empresa en el formulario, derivarla del cliente
+        if (empty($validated['id_empresa'])) {
+            $cliente = User::find($validated['id_usuario']);
+            $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+        }
 
         // 3. Crear
         Proyecto::create($validated);
@@ -276,8 +279,10 @@ public function programarMasivo(Request $request, $id)
 
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
         $clientes = User::where('rol', 'cliente')->get();
+        $empresas = Empresa::orderBy('nombre_empresa')->get();
+        $clienteEmpresaMap = $clientes->pluck('id_empresa', 'id_usuario');
 
-        return view('proyectos.edit', compact('proyecto', 'clientes'));
+        return view('proyectos.edit', compact('proyecto', 'clientes', 'empresas', 'clienteEmpresaMap'));
     }
 
     /**
@@ -290,26 +295,27 @@ public function programarMasivo(Request $request, $id)
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
 
         $validated = $request->validate([
-            'nombre_proyecto' => 'required|string|max:255',
-            'id_usuario'      => 'required|exists:usuarios,id_usuario',
-            'tipo_proyecto'   => 'required|string',
-            'estado'          => 'required|string',
-            'descripcion'     => 'nullable|string',
-            'fecha_inicio'    => 'required|date',
+            'nombre_proyecto'    => 'required|string|max:255',
+            'id_usuario'         => 'required|exists:usuarios,id_usuario',
+            'id_empresa'         => 'nullable|exists:empresas,id_empresa',
+            'tipo_proyecto'      => 'required|string',
+            'estado'             => 'required|string',
+            'descripcion'        => 'nullable|string',
+            'fecha_inicio'       => 'required|date',
             'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
             'fecha_fin_real'     => 'nullable|date|after_or_equal:fecha_inicio',
-            'localizacion'    => 'nullable|string',] ,[
-
+            'localizacion'       => 'nullable|string',
+        ], [
             'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
-            
         ]);
 
-        // Actualizar fecha de modificación manual
         $validated['ultima_actualizacion'] = now();
 
-        // Buscamos al cliente asignado y le copiamos su empresa al proyecto
-        $cliente = User::find($validated['id_usuario']);
-        $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+        // Si no se seleccionó empresa en el formulario, derivarla del cliente
+        if (empty($validated['id_empresa'])) {
+            $cliente = User::find($validated['id_usuario']);
+            $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
+        }
 
         $proyecto->update($validated);
 

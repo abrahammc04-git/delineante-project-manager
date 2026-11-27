@@ -58,8 +58,24 @@
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_usuario') 
-                            <div class="form-error">{{ $message }}</div> 
+                        @error('id_usuario')
+                            <div class="form-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Empresa --}}
+                    <div class="form-group">
+                        <label class="form-label" for="id_empresa">Empresa</label>
+                        <select name="id_empresa" id="select_empresa" class="form-input">
+                            <option value="">Sin empresa</option>
+                            @foreach($empresas as $emp)
+                                <option value="{{ $emp->id_empresa }}" {{ old('id_empresa') == $emp->id_empresa ? 'selected' : '' }}>
+                                    {{ $emp->nombre_empresa }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_empresa')
+                            <div class="form-error">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -153,6 +169,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    const clienteEmpresaMap = @json($clienteEmpresaMap);
+
     $(document).ready(function() {
         $('#select_cliente').select2({
             placeholder: "Escribe para buscar un cliente...",
@@ -160,16 +178,16 @@
             width: '100%',
             minimumInputLength: 1,
             language: {
-                inputTooShort: function () {
-                    return "Escribe al menos una letra para buscar.";
-                },
-                noResults: function () {
-                    return "No se ha encontrado ningún cliente";
-                },
-                searching: function () {
-                    return "Buscando...";
-                }
+                inputTooShort: function () { return "Escribe al menos una letra para buscar."; },
+                noResults: function ()     { return "No se ha encontrado ningún cliente"; },
+                searching: function ()     { return "Buscando..."; }
             }
+        });
+
+        // Al elegir cliente, auto-selecciona su empresa
+        $('#select_cliente').on('change', function() {
+            const idEmpresa = clienteEmpresaMap[$(this).val()] ?? '';
+            $('#select_empresa').val(idEmpresa);
         });
     });
 </script>
