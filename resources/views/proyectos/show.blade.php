@@ -37,7 +37,7 @@
 
                     <div class="show-field">
                         <p class="show-field-label">Empresa</p>
-                        <p class="show-field-value">{{ $proyecto->usuario->empresa ?? 'No especificada' }}</p>
+                        <p class="show-field-value">{{ $proyecto->empresa?->nombre_empresa ?? 'No especificada' }}</p>
                     </div>
 
                     <div class="show-field">

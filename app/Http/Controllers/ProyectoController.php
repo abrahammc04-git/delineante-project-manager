@@ -26,7 +26,7 @@ class ProyectoController extends Controller
         $user = Auth::user();
         
         // visiblesPara($user) ya decide si ve todo, lo de su empresa, o solo lo suyo
-        $query = Proyecto::with('usuario')->visiblesPara($user);
+        $query = Proyecto::with(['usuario', 'empresa'])->visiblesPara($user);
 
         // --- FILTROS DE BÚSQUEDA ---
 

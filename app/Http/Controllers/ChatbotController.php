@@ -20,7 +20,7 @@ class ChatbotController extends Controller
         $mensajeUsuario = $request->input('mensaje');
 
         // 1. Obtener todos los proyectos de la BD
-        $proyectos = Proyecto::with('usuario')->get();
+        $proyectos = Proyecto::with(['usuario', 'empresa'])->get();
 
         // 2. Crear contexto con los datos de proyectos
         $contextoProyectos = $this->generarContextoProyectos($proyectos);
@@ -123,7 +123,7 @@ Respuesta: FILTER_IDS: 10,11,12,13,14"
             $contexto .= "🆔 ID: {$proyecto->id_proyecto}\n";
             $contexto .= "📋 Proyecto: {$proyecto->nombre_proyecto}\n";
             $contexto .= "👤 Cliente: {$proyecto->usuario->nombre} {$proyecto->usuario->apellidos}\n";
-            $contexto .= "🏢 Empresa: " . ($proyecto->usuario->empresa?->nombre_empresa ?? 'Sin empresa') . "\n";
+            $contexto .= "🏢 Empresa: " . ($proyecto->empresa?->nombre_empresa ?? 'Sin empresa') . "\n";
             $contexto .= "📊 Estado: {$proyecto->estado}\n";
             $contexto .= "🔧 Tipo: {$proyecto->tipo_proyecto}\n";
             $contexto .= "📅 Fecha Inicio: " . ($proyecto->fecha_inicio ? $proyecto->fecha_inicio->format('d/m/Y') : 'Sin fecha') . "\n";
