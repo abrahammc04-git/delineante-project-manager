@@ -90,8 +90,14 @@ class Proyecto extends Model
     }
 
     /**
-     * Helper: Obtener la ruta de la carpeta de archivos
+     * Nombre de la carpeta dentro del disco 'proyectos' (p.ej. "proj_abc123").
+     * Usar siempre este método; nunca Str::slug(nombre_proyecto).
      */
+    public function rutaCarpeta(): string
+    {
+        return $this->carpeta_archivos;
+    }
+
     public function getRutaArchivos()
     {
         return storage_path("app/private/proyectos/{$this->carpeta_archivos}");

@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
 use App\Models\Documento;
 
 class ProyectoController extends Controller
@@ -113,10 +112,8 @@ class ProyectoController extends Controller
             
         ]);
 
-        // 2. Añadir fecha de creación manual (ya que timestamps = false)
         $validated['fecha_creacion'] = now();
-        // Generar nombre de carpeta único si no viene (opcional, lógica simple)
-        $validated['carpeta_archivos'] = $validated['carpeta_archivos'] ?? uniqid('proj_');
+        $validated['carpeta_archivos'] = 'proj_' . uniqid();
 
         // Buscamos al cliente asignado y le copiamos su empresa al proyecto
         $cliente = User::find($validated['id_usuario']);
@@ -137,11 +134,7 @@ public function show($id)
 {
     $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
         
-        // Generamos la ruta. 
-        // IMPORTANTE: Verifica en tu método 'subirArchivo' cómo creas la carpeta.
-        // Si allí usas Str::slug, aquí también.
-        $slug = Str::slug($proyecto->nombre_proyecto);
-        $rutaCarpeta = "proyecto_{$slug}"; 
+        $rutaCarpeta = $proyecto->rutaCarpeta();
 
         $archivosInfo = [];
 
@@ -339,6 +332,28 @@ public function programarMasivo(Request $request, $id)
     }
 
     /**
+     * Devuelve un nombre de archivo único dentro de la carpeta.
+     * Si "plano.pdf" existe, devuelve "plano (1).pdf", "plano (2).pdf", etc.
+     */
+    private function nombreUnico(string $carpeta, string $nombre): string
+    {
+        $disk = Storage::disk('proyectos');
+        if (!$disk->exists("{$carpeta}/{$nombre}")) {
+            return $nombre;
+        }
+
+        $ext      = pathinfo($nombre, PATHINFO_EXTENSION);
+        $base     = $ext ? substr($nombre, 0, -(strlen($ext) + 1)) : $nombre;
+        $sufijo   = 1;
+        do {
+            $candidato = $ext ? "{$base} ({$sufijo}).{$ext}" : "{$base} ({$sufijo})";
+            $sufijo++;
+        } while ($disk->exists("{$carpeta}/{$candidato}"));
+
+        return $candidato;
+    }
+
+    /**
      * Helper privado para verificar admin
      */
     private function authorizeAdmin()
@@ -355,18 +370,23 @@ public function programarMasivo(Request $request, $id)
 
     public function subirArchivo(Request $request, $id)
     {
+        $this->authorizeAdmin();
+
+        $request->validate([
+            'archivos'   => ['required', 'array'],
+            // extensions: comprueba la extensión del nombre, fiable para DWG/DXF que PHP no detecta por MIME
+            'archivos.*' => ['file', 'max:20480', 'extensions:pdf,dwg,dxf,jpg,jpeg,png,zip,docx,xlsx'],
+        ]);
+
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
-        
-        // ... (validaciones y permisos igual que antes) ...
 
         if ($request->hasFile('archivos')) {
             $contador = 0;
-            $slug = Str::slug($proyecto->nombre_proyecto);
-            $carpeta = "proyecto_{$slug}";
+            $carpeta = $proyecto->rutaCarpeta();
 
             foreach ($request->file('archivos') as $file) {
-                $filename = $file->getClientOriginalName(); 
-                
+                $filename = $this->nombreUnico($carpeta, $file->getClientOriginalName());
+
                 // 1. Guardar el archivo físico
                 $file->storeAs($carpeta, $filename, 'proyectos');
                 
@@ -394,14 +414,20 @@ public function programarMasivo(Request $request, $id)
     public function descargarArchivo($id, $nombreArchivo)
     {
         $proyecto = Proyecto::where('id_proyecto', $id)->firstOrFail();
+        /** @var \App\Models\User $user */
         $user = Auth::user();
 
-        /** @var \App\Models\User $user */
-        if (!$user->isAdmin() && $proyecto->id_usuario !== $user->id_usuario) abort(403);
+        if (!$user->puedeVerProyecto($proyecto)) abort(403);
 
-        // Reconstruir la ruta con la nueva lógica
-        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
-        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+        // No-admin no puede descargar archivos ocultos
+        if (!$user->isAdmin()) {
+            $doc = Documento::where('id_proyecto', $id)
+                            ->where('nombre_archivo', $nombreArchivo)
+                            ->first();
+            if (!$doc || !$doc->visible) abort(404);
+        }
+
+        $ruta = $proyecto->rutaCarpeta() . "/{$nombreArchivo}";
 
         /** @var \Illuminate\Filesystem\FilesystemAdapter $disk */
         $disk = Storage::disk('proyectos');
@@ -423,9 +449,7 @@ public function programarMasivo(Request $request, $id)
             abort(403, 'Solo el administrador puede eliminar archivos.');
         }
 
-        // Reconstruir la ruta
-        $nombreCarpeta = Str::slug($proyecto->nombre_proyecto);
-        $ruta = "proyecto_{$nombreCarpeta}/{$nombreArchivo}";
+        $ruta = $proyecto->rutaCarpeta() . "/{$nombreArchivo}";
         
         if (Storage::disk('proyectos')->exists($ruta)) {
             Storage::disk('proyectos')->delete($ruta);

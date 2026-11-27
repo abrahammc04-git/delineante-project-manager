@@ -72,7 +72,9 @@ class UsuarioController extends Controller
             abort(403, 'No tienes permiso para ver este usuario.');
         }
 
-        $empresas = Empresa::orderBy('nombre_empresa')->get();
+        $empresas = $authUser->isAdmin()
+            ? Empresa::orderBy('nombre_empresa')->get()
+            : collect();
         return view('usuarios.show', compact('usuario', 'empresas'));
     }
 
@@ -81,8 +83,7 @@ class UsuarioController extends Controller
         /** @var \App\Models\User $authUser */
         $authUser = Auth::user();
 
-        // SEGURIDAD: Comprobar que pertenece a la misma empresa
-        if (!$authUser->isAdmin() && $authUser->id_empresa !== $usuario->id_empresa) {
+        if (!$authUser->isAdmin()) {
             abort(403, 'No tienes permiso para editar este usuario.');
         }
 
@@ -118,8 +119,7 @@ class UsuarioController extends Controller
             abort(403);
         }
 
-        // SEGURIDAD: Comprobar que pertenece a la misma empresa
-        if (!$authUser->isAdmin() && $authUser->id_empresa !== $usuario->id_empresa) {
+        if (!$authUser->isAdmin()) {
             abort(403, 'No tienes permiso para eliminar este usuario.');
         }
 

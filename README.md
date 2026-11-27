@@ -241,7 +241,8 @@ Después de ejecutar `php artisan db:seed` se crean automáticamente:
 ```
 delineante-project-manager/
 ├── app/
-│   ├── Console/Commands/          # OcultarArchivosProgramados, MostrarArchivosProgramados
+│   ├── Console/Commands/          # OcultarArchivosProgramados, MostrarArchivosProgramados,
+│   │                              # MigrarCarpetasArchivos (archivos:migrar-carpetas --dry-run)
 │   ├── Events/                    # MensajeEnviado, MensajeEliminado (broadcasting Reverb)
 │   ├── Http/
 │   │   ├── Controllers/           # DashboardController, ProyectoController, ChatController,
@@ -283,7 +284,7 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 
 ### Estado actual de los tests
 
-**30 tests, 69 aserciones — todos pasan.**
+**43 tests, 84 aserciones — todos pasan.**
 
 | Suite | Tests |
 |---|---|
@@ -298,15 +299,16 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 | `Feature\Auth\RegistroSeguridadTest` | 2 |
 | `Feature\ProfileTest` | 5 |
 | `Feature\AutorizacionTest` | 3 |
+| `Feature\PermisosTest` | 13 |
 
-`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST.
+`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST. `PermisosTest` cubre los controles de acceso sobre usuarios, archivos de proyecto, visibilidad y chat.
 
 ---
 
 ## Limitaciones y mejoras futuras
 
 - **Escalabilidad del chatbot:** en cada consulta se envían todos los proyectos de la base de datos al modelo. Esto no escala con volúmenes grandes; la mejora natural sería filtrar en base de datos antes de llamar a la API, o implementar búsqueda semántica.
-- **Cobertura de tests:** los tests de autenticación y Breeze están adaptados y pasan; la lógica de negocio propia cuenta solo con `AutorizacionTest` (3 tests) y `RegistroSeguridadTest` (2 tests). Queda pendiente cubrir proyectos, documentos, chat y el flujo del chatbot.
+- **Cobertura de tests:** los tests de autenticación y Breeze están adaptados y pasan; la lógica de negocio propia está cubierta por `AutorizacionTest`, `RegistroSeguridadTest` y `PermisosTest`. Queda pendiente cubrir el flujo completo del chatbot y los CRUD de proyectos y empresas.
 - **Procesos adicionales en local:** el chat requiere `reverb:start` y la cola; la visibilidad programada requiere `schedule:work`. Son tres procesos extra además del servidor y Vite — `composer dev:win` facilita esto en Windows.
 - **Modelos de Groq cambian:** durante el desarrollo hubo que migrar el modelo tras la retirada de `llama-3.3-70b-versatile` (agosto 2026). Por eso el modelo se configura mediante `GROQ_MODEL` en `.env` y `config/services.php`, sin hardcodear.
 - **Vistas de empresas incompletas:** el `EmpresaController` implementa CRUD completo, pero las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` están pendientes de crear [POR CONFIRMAR].
@@ -341,7 +343,7 @@ PHP no incluye el bundle de certificados de CA por defecto en Windows. Solución
    ```
 4. Reinicia los procesos de PHP.
 
-> No desactives la verificación SSL (`CURLOPT_SSL_VERIFYPEER = false`). Es un riesgo de seguridad y no resuelve el problema de raíz.
+> La aplicación desactiva automáticamente la verificación SSL cuando `APP_ENV=local` (workaround integrado en `ChatbotController`). En entornos no-locales la verificación siempre está activa. Si prefieres tener el bundle correcto también en local, sigue los pasos anteriores y el workaround quedará inactivo.
 
 ---
 
