@@ -27,7 +27,12 @@ class ChatbotController extends Controller
 
         // 3. Llamar a Groq API
         try {
-            $response = Http::withHeaders([
+            // withoutVerifying() solo en local: PHP en Windows/XAMPP no tiene el bundle de CA
+            // de curl actualizado y lanza errores de certificado SSL con APIs externas.
+            $http = app()->environment('local')
+                ? Http::withoutVerifying()
+                : Http::withHeaders([]);
+            $response = $http->withHeaders([
                 'Authorization' => 'Bearer ' . config('services.groq.key'),
                 'Content-Type' => 'application/json',
             ])->timeout(30)->post('https://api.groq.com/openai/v1/chat/completions', [
