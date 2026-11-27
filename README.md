@@ -1,5 +1,7 @@
 # Delineante Project Manager
 
+Desarrollada en equipo durante las prácticas (FCT) del Grado Superior en DAW para un delineante autónomo, como cliente real.
+
 Aplicación web de gestión de proyectos para un despacho de delineación. El perfil **admin** gestiona empresas cliente, sus usuarios, proyectos y documentos técnicos. Los **clientes** acceden a los proyectos de su empresa; si no tienen empresa asignada, solo ven los proyectos asignados directamente a ellos. Incluye chat interno en tiempo real y un asistente IA solo visible para el admin.
 
 ---
