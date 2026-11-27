@@ -22,7 +22,7 @@ class User extends Authenticatable
         'apellidos',
         'email',
         'telefono',
-        'empresa',
+        'id_empresa',
         'password_hash',
         'rol',
         'activo',
@@ -58,6 +58,12 @@ class User extends Authenticatable
         return $this->hasMany(Proyecto::class, 'id_usuario', 'id_usuario');
     }
     
+    // Normalizar el valor "NULL" string que puede quedar en la BD de teléfonos vacíos
+    public function getTelefonoAttribute($value)
+    {
+        return $value === 'NULL' ? null : $value;
+    }
+
     // Helper: verificar si es admin
     public function isAdmin()
     {

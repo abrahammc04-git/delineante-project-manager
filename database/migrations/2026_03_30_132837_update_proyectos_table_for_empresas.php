@@ -10,14 +10,13 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('proyectos', function (Blueprint $table) {
-            // Añadimos la relación con empresas
-            $table->unsignedBigInteger('id_empresa')->nullable()->after('id_proyecto');
-            
-            // Creamos la llave foránea
-            $table->foreign('id_empresa')
-                  ->references('id_empresa')
-                  ->on('empresas')
-                  ->onDelete('cascade'); // Si borras la empresa, se borran sus proyectos
+            if (!Schema::hasColumn('proyectos', 'id_empresa')) {
+                $table->unsignedBigInteger('id_empresa')->nullable()->after('id_proyecto');
+                $table->foreign('id_empresa')
+                      ->references('id_empresa')
+                      ->on('empresas')
+                      ->onDelete('cascade');
+            }
         });
     }
 
