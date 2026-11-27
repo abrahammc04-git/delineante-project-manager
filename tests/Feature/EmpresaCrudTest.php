@@ -111,4 +111,28 @@ class EmpresaCrudTest extends TestCase
             ])
             ->assertStatus(403);
     }
+
+    // ─── show: admin ve 200, cliente de otra empresa recibe 403 ──────────
+
+    public function test_admin_puede_ver_show_empresa(): void
+    {
+        $admin   = User::factory()->admin()->create();
+        $empresa = Empresa::create(['nombre_empresa' => 'Vista SA', 'activo' => true]);
+
+        $this->actingAs($admin)
+            ->get(route('empresas.show', $empresa->id_empresa))
+            ->assertStatus(200)
+            ->assertSee('Vista SA');
+    }
+
+    public function test_cliente_de_otra_empresa_recibe_403_en_show(): void
+    {
+        $empresaA = Empresa::create(['nombre_empresa' => 'Empresa A', 'activo' => true]);
+        $empresaB = Empresa::create(['nombre_empresa' => 'Empresa B', 'activo' => true]);
+        $cliente  = User::factory()->create(['id_empresa' => $empresaA->id_empresa]);
+
+        $this->actingAs($cliente)
+            ->get(route('empresas.show', $empresaB->id_empresa))
+            ->assertStatus(403);
+    }
 }
