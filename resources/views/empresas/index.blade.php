@@ -1,4 +1,6 @@
 <x-app-layout>
+    <link rel="stylesheet" href="{{ asset('css/main.css') }}">
+
     <div class="dashboard-container">
 
         <div class="page-box">
@@ -9,47 +11,69 @@
                 </div>
                 <div class="page-box-botones">
                     <a href="{{ route('dashboard') }}" class="btn-box-dashboard">← Dashboard</a>
-                    <a href="{{ route('empresas.create') }}" class="btn-box-primary">+ Nueva Empresa</a>
+                    <a href="{{ route('empresas.create') }}" class="btn-box-nuevo">+ Nueva Empresa</a>
                 </div>
             </div>
         </div>
 
-        <div class="content-box">
-            @if($empresas->isEmpty())
-                <p>No hay empresas registradas.</p>
-            @else
-                <table class="w-full">
+        @if (session('success'))
+            <div class="alert alert-success" style="margin: 0 1.5rem 1.5rem;">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        <div class="table-container" style="margin: 0 1.5rem;">
+            <div class="tabla-overflow">
+                <table>
                     <thead>
                         <tr>
-                            <th>Nombre</th>
+                            <th>NOMBRE</th>
                             <th>CIF</th>
-                            <th>Teléfono</th>
-                            <th>Email</th>
-                            <th>Estado</th>
-                            <th>Acciones</th>
+                            <th>TELÉFONO</th>
+                            <th>EMAIL</th>
+                            <th>ESTADO</th>
+                            <th>ACCIONES</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($empresas as $empresa)
+                        @forelse($empresas as $empresa)
                         <tr>
-                            <td>{{ $empresa->nombre_empresa }}</td>
+                            <td class="td-nombre">{{ $empresa->nombre_empresa }}</td>
                             <td>{{ $empresa->cif ?? '—' }}</td>
                             <td>{{ $empresa->telefono ?? '—' }}</td>
                             <td>{{ $empresa->email_contacto ?? '—' }}</td>
-                            <td>{{ $empresa->activo ? 'Activa' : 'Inactiva' }}</td>
                             <td>
-                                <a href="{{ route('empresas.show', $empresa->id_empresa) }}">Ver</a>
-                                <a href="{{ route('empresas.edit', $empresa->id_empresa) }}">Editar</a>
-                                <form method="POST" action="{{ route('empresas.destroy', $empresa->id_empresa) }}" style="display:inline">
-                                    @csrf @method('DELETE')
-                                    <button type="submit">Eliminar</button>
+                                @if($empresa->activo)
+                                    <span class="badge badge-completed">Activa</span>
+                                @else
+                                    <span class="badge badge-cancelled">Inactiva</span>
+                                @endif
+                            </td>
+                            <td style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                                <a href="{{ route('empresas.show', $empresa->id_empresa) }}" class="enlace-ver-detalles">
+                                    Ver
+                                </a>
+                                <a href="{{ route('empresas.edit', $empresa->id_empresa) }}" class="enlace-ver-detalles">
+                                    Editar
+                                </a>
+                                <form method="POST" action="{{ route('empresas.destroy', $empresa->id_empresa) }}"
+                                      onsubmit="return confirm('¿Eliminar {{ $empresa->nombre_empresa }}?')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn-danger" style="font-size: 0.8rem; padding: 0.25rem 0.75rem;">
+                                        Eliminar
+                                    </button>
                                 </form>
                             </td>
                         </tr>
-                        @endforeach
+                        @empty
+                        <tr>
+                            <td colspan="6" class="td-vacia">No hay empresas registradas.</td>
+                        </tr>
+                        @endforelse
                     </tbody>
                 </table>
-            @endif
+            </div>
         </div>
 
     </div>

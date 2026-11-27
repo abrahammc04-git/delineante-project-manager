@@ -53,14 +53,31 @@
                         <select name="id_usuario" id="select_cliente" required class="form-input">
                             <option value="">Selecciona un cliente</option>
                             @foreach($clientes as $cliente)
-                                <option value="{{ $cliente->id_usuario }}" 
+                                <option value="{{ $cliente->id_usuario }}"
                                     {{ (old('id_usuario', $proyecto->id_usuario) == $cliente->id_usuario) ? 'selected' : '' }}>
                                     {{ $cliente->nombre }} {{ $cliente->apellidos }} ({{ $cliente->email }})
                                 </option>
                             @endforeach
                         </select>
-                        @error('id_usuario') 
-                            <div class="form-error">{{ $message }}</div> 
+                        @error('id_usuario')
+                            <div class="form-error">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    {{-- Empresa --}}
+                    <div class="form-group">
+                        <label class="form-label" for="id_empresa">Empresa *</label>
+                        <select name="id_empresa" id="select_empresa" class="form-input" required>
+                            <option value="">Selecciona una empresa</option>
+                            @foreach($empresas as $emp)
+                                <option value="{{ $emp->id_empresa }}"
+                                    {{ old('id_empresa', $proyecto->id_empresa) == $emp->id_empresa ? 'selected' : '' }}>
+                                    {{ $emp->nombre_empresa }}
+                                </option>
+                            @endforeach
+                        </select>
+                        @error('id_empresa')
+                            <div class="form-error">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -171,6 +188,8 @@
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
 <script>
+    const clienteEmpresaMap = @json($clienteEmpresaMap);
+
     $(document).ready(function() {
         $('#select_cliente').select2({
             placeholder: "Escribe para buscar un cliente...",
@@ -178,16 +197,16 @@
             width: '100%',
             minimumInputLength: 1,
             language: {
-                inputTooShort: function () {
-                    return "Escribe al menos una letra para buscar.";
-                },
-                noResults: function () {
-                    return "No se ha encontrado ningún cliente";
-                },
-                searching: function () {
-                    return "Buscando...";
-                }
+                inputTooShort: function () { return "Escribe al menos una letra para buscar."; },
+                noResults: function ()     { return "No se ha encontrado ningún cliente"; },
+                searching: function ()     { return "Buscando..."; }
             }
+        });
+
+        // Al cambiar el cliente, auto-selecciona su empresa
+        $('#select_cliente').on('change', function() {
+            const idEmpresa = clienteEmpresaMap[$(this).val()] ?? '';
+            $('#select_empresa').val(idEmpresa);
         });
     });
 </script>

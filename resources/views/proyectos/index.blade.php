@@ -90,8 +90,8 @@
                                 <td data-cliente="{{ strtolower($proyecto->usuario->nombre . ' ' . $proyecto->usuario->apellidos) }}">
                                     {{ $proyecto->usuario->nombre }} {{ $proyecto->usuario->apellidos }}
                                 </td>
-                                <td data-empresa="{{ strtolower($proyecto->usuario->empresa ?? '') }}">
-                                    {{ $proyecto->usuario->empresa ?? '-' }}
+                                <td data-empresa="{{ strtolower($proyecto->empresa?->nombre_empresa ?? '') }}">
+                                    {{ $proyecto->empresa?->nombre_empresa ?? '-' }}
                                 </td>
                                 <td>
                                     <span class="badge 

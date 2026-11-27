@@ -23,6 +23,7 @@ class Proyecto extends Model
     // Campos que se pueden asignar masivamente
     protected $fillable = [
         'id_usuario',
+        'id_empresa',
         'nombre_proyecto',
         'descripcion',
         'tipo_proyecto',
@@ -31,6 +32,8 @@ class Proyecto extends Model
         'fecha_inicio',
         'fecha_fin_prevista',
         'fecha_fin_real',
+        'fecha_creacion',
+        'ultima_actualizacion',
         'localizacion',
         'direccion',
         'carpeta_archivos',
@@ -150,15 +153,13 @@ class Proyecto extends Model
             return $query;
         }
 
-        // Si no es admin, filtramos:
+        // Si no es admin: ve los proyectos de su empresa O los que tiene asignados
+        // directamente como responsable (id_usuario), aunque sean de otra empresa
         return $query->where(function($q) use ($usuario) {
             if ($usuario->id_empresa) {
-                // Ve los proyectos de su empresa
                 $q->where('id_empresa', $usuario->id_empresa);
-            } else {
-                // Si por algún motivo el usuario no tiene empresa, solo ve los que él haya creado
-                $q->where('id_usuario', $usuario->id_usuario);
             }
+            $q->orWhere('id_usuario', $usuario->id_usuario);
         });
     }
 
