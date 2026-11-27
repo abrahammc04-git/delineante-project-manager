@@ -286,7 +286,7 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 
 ### Estado actual de los tests
 
-**50 tests, 100 aserciones — todos pasan.**
+**52 tests, 104 aserciones — todos pasan.**
 
 | Suite | Tests |
 |---|---|
@@ -303,8 +303,9 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 | `Feature\AutorizacionTest` | 3 |
 | `Feature\PermisosTest` | 13 |
 | `Feature\EmpresaCrudTest` | 7 |
+| `Feature\EnlaceEmpresasTest` | 2 |
 
-`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST. `PermisosTest` cubre los controles de acceso sobre usuarios, archivos de proyecto, visibilidad y chat. `EmpresaCrudTest` cubre el CRUD de empresas (crear, editar, acceso denegado a clientes).
+`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST. `PermisosTest` cubre los controles de acceso sobre usuarios, archivos de proyecto, visibilidad y chat. `EmpresaCrudTest` cubre el CRUD de empresas (crear, editar, acceso denegado a clientes). `EnlaceEmpresasTest` verifica que el admin ve el enlace a Empresas en el dashboard y el cliente no lo ve.
 
 ---
 
