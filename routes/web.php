@@ -41,11 +41,6 @@ Route::middleware(['auth'])->group(function () {
 
         // --- RUTAS DE PROYECTOS ---
         Route::resource('proyectos', ProyectoController::class);
-        Route::patch('/proyectos/{id}/archivos/toggle', [ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
-        Route::post('/proyectos/{id}/archivos/programar', [ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
-        Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
-        Route::post('/proyectos/{id}/archivos/programar-publicacion', [ProyectoController::class, 'programarPublicacion'])->name('proyectos.archivos.programar_publicacion');
-        Route::patch('/proyectos/{id}/archivos/cancelar-publicacion', [ProyectoController::class, 'cancelarPublicacion'])->name('proyectos.archivos.cancelar_publicacion');
         
     });    
 
@@ -72,6 +67,13 @@ Route::middleware(['auth'])->group(function () {
 Route::middleware(['auth', 'admin'])->group(function () {
     // Chatbot (POST) - solo admin puede usar el asistente IA
     Route::post('/chatbot/consulta', [ChatbotController::class, 'consulta'])->name('chatbot.consulta');
+
+    // Visibilidad y programación de archivos - solo admin
+    Route::patch('/proyectos/{id}/archivos/toggle', [ProyectoController::class, 'toggleVisibilidad'])->name('proyectos.archivos.toggle');
+    Route::post('/proyectos/{id}/archivos/programar', [ProyectoController::class, 'programarMasivo'])->name('proyectos.archivos.programar');
+    Route::patch('/proyectos/{id}/archivos/cancelar-programacion', [ProyectoController::class, 'cancelarProgramacion'])->name('proyectos.archivos.cancelar');
+    Route::post('/proyectos/{id}/archivos/programar-publicacion', [ProyectoController::class, 'programarPublicacion'])->name('proyectos.archivos.programar_publicacion');
+    Route::patch('/proyectos/{id}/archivos/cancelar-publicacion', [ProyectoController::class, 'cancelarPublicacion'])->name('proyectos.archivos.cancelar_publicacion');
 });
 
 // Incluir rutas de autenticación

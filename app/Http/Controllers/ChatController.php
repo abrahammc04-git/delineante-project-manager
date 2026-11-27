@@ -135,6 +135,12 @@ class ChatController extends Controller
         /** @var \App\Models\User $user */
         $user = Auth::user();
 
+        // Verificar que el usuario puede escribir en esta conversación
+        $conversacion = Conversacion::findOrFail($request->id_conversacion);
+        if (!$user->isAdmin() && $conversacion->id_usuario !== $user->id_usuario) {
+            abort(403, 'No puedes escribir en esta conversación.');
+        }
+
         try {
             DB::beginTransaction();
 
