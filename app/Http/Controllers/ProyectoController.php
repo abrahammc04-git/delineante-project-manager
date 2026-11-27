@@ -102,7 +102,7 @@ class ProyectoController extends Controller
         $validated = $request->validate([
             'nombre_proyecto'    => 'required|string|max:255',
             'id_usuario'         => 'required|exists:usuarios,id_usuario',
-            'id_empresa'         => 'nullable|exists:empresas,id_empresa',
+            'id_empresa'         => 'required|exists:empresas,id_empresa',
             'tipo_proyecto'      => 'required|string',
             'estado'             => 'required|string',
             'descripcion'        => 'nullable|string',
@@ -110,17 +110,12 @@ class ProyectoController extends Controller
             'fecha_fin_prevista' => 'nullable|date|after_or_equal:fecha_inicio',
             'localizacion'       => 'nullable|string',
         ], [
-            'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
+            'id_empresa.required'                => 'Debes seleccionar una empresa.',
+            'fecha_fin_prevista.after_or_equal'  => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
         ]);
 
         $validated['fecha_creacion'] = now();
         $validated['carpeta_archivos'] = 'proj_' . uniqid();
-
-        // Si no se seleccionó empresa en el formulario, derivarla del cliente
-        if (empty($validated['id_empresa'])) {
-            $cliente = User::find($validated['id_usuario']);
-            $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
-        }
 
         // 3. Crear
         Proyecto::create($validated);
@@ -297,7 +292,7 @@ public function programarMasivo(Request $request, $id)
         $validated = $request->validate([
             'nombre_proyecto'    => 'required|string|max:255',
             'id_usuario'         => 'required|exists:usuarios,id_usuario',
-            'id_empresa'         => 'nullable|exists:empresas,id_empresa',
+            'id_empresa'         => 'required|exists:empresas,id_empresa',
             'tipo_proyecto'      => 'required|string',
             'estado'             => 'required|string',
             'descripcion'        => 'nullable|string',
@@ -306,16 +301,11 @@ public function programarMasivo(Request $request, $id)
             'fecha_fin_real'     => 'nullable|date|after_or_equal:fecha_inicio',
             'localizacion'       => 'nullable|string',
         ], [
+            'id_empresa.required'               => 'Debes seleccionar una empresa.',
             'fecha_fin_prevista.after_or_equal' => 'La fecha de fin no puede ser anterior a la fecha de inicio.',
         ]);
 
         $validated['ultima_actualizacion'] = now();
-
-        // Si no se seleccionó empresa en el formulario, derivarla del cliente
-        if (empty($validated['id_empresa'])) {
-            $cliente = User::find($validated['id_usuario']);
-            $validated['id_empresa'] = $cliente ? $cliente->id_empresa : null;
-        }
 
         $proyecto->update($validated);
 

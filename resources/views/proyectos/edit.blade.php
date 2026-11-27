@@ -66,9 +66,9 @@
 
                     {{-- Empresa --}}
                     <div class="form-group">
-                        <label class="form-label" for="id_empresa">Empresa</label>
-                        <select name="id_empresa" id="select_empresa" class="form-input">
-                            <option value="">Sin empresa</option>
+                        <label class="form-label" for="id_empresa">Empresa *</label>
+                        <select name="id_empresa" id="select_empresa" class="form-input" required>
+                            <option value="">Selecciona una empresa</option>
                             @foreach($empresas as $emp)
                                 <option value="{{ $emp->id_empresa }}"
                                     {{ old('id_empresa', $proyecto->id_empresa) == $emp->id_empresa ? 'selected' : '' }}>

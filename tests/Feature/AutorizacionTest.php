@@ -87,4 +87,49 @@ class AutorizacionTest extends TestCase
 
         $response->assertStatus(200);
     }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Test 4: cliente asignado directamente a un proyecto de otra empresa lo ve
+    // ─────────────────────────────────────────────────────────────────
+
+    public function test_cliente_asignado_directo_ve_proyecto_de_otra_empresa(): void
+    {
+        $empresaA = $this->crearEmpresa('Empresa A');
+        $empresaB = $this->crearEmpresa('Empresa B');
+
+        // Cliente de empresa A, asignado como responsable del proyecto de empresa B
+        $clienteA = User::factory()->create(['id_empresa' => $empresaA->id_empresa]);
+
+        $proyecto = new Proyecto();
+        $proyecto->id_usuario      = $clienteA->id_usuario; // asignado directamente
+        $proyecto->id_empresa      = $empresaB->id_empresa; // pero es de empresa B
+        $proyecto->nombre_proyecto = 'Proyecto inter-empresa';
+        $proyecto->estado          = 'Pendiente';
+        $proyecto->carpeta_archivos = 'proj_test_inter';
+        $proyecto->save();
+
+        $this->actingAs($clienteA)
+            ->get("/proyectos/{$proyecto->id_proyecto}")
+            ->assertStatus(200);
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Test 5: cliente de empresa A no asignado no ve proyecto de empresa B
+    // ─────────────────────────────────────────────────────────────────
+
+    public function test_cliente_no_asignado_no_ve_proyecto_de_otra_empresa(): void
+    {
+        $empresaA = $this->crearEmpresa('Empresa A');
+        $empresaB = $this->crearEmpresa('Empresa B');
+
+        $clienteA  = User::factory()->create(['id_empresa' => $empresaA->id_empresa]);
+        $usuarioB  = User::factory()->create(['id_empresa' => $empresaB->id_empresa]);
+
+        $proyecto = $this->crearProyectoEnEmpresa($usuarioB, $empresaB);
+
+        // clienteA no está asignado como id_usuario ni pertenece a empresa B
+        $this->actingAs($clienteA)
+            ->get("/proyectos/{$proyecto->id_proyecto}")
+            ->assertStatus(403);
+    }
 }

@@ -11,7 +11,7 @@
                 </div>
                 <div class="page-box-botones">
                     <a href="{{ route('dashboard') }}" class="btn-box-dashboard">← Dashboard</a>
-                    <a href="{{ route('empresas.create') }}" class="btn-box-primary">+ Nueva Empresa</a>
+                    <a href="{{ route('empresas.create') }}" class="btn-box-nuevo">+ Nueva Empresa</a>
                 </div>
             </div>
         </div>
