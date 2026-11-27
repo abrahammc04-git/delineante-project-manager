@@ -1,5 +1,7 @@
 # Delineante Project Manager
 
+Desarrollada en equipo durante las prácticas (FCT) del Grado Superior en DAW para un delineante autónomo, como cliente real.
+
 Aplicación web de gestión de proyectos para un despacho de delineación. El perfil **admin** gestiona empresas cliente, sus usuarios, proyectos y documentos técnicos. Los **clientes** acceden a los proyectos de su empresa; si no tienen empresa asignada, solo ven los proyectos asignados directamente a ellos. Incluye chat interno en tiempo real y un asistente IA solo visible para el admin.
 
 ---
@@ -7,7 +9,7 @@ Aplicación web de gestión de proyectos para un despacho de delineación. El pe
 ## Funcionalidades
 
 - **Autenticación** — login y registro público en `/register` (formulario Breeze adaptado al esquema propio: `nombre`, `apellidos`, `email`). Verificación de correo y reseteo de contraseña disponibles.
-- **Gestión de empresas** — listar y eliminar empresas funcionan; crear y editar están en el controlador pero faltan las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` [POR CONFIRMAR].
+- **Gestión de empresas** — CRUD completo: listar, crear, editar y eliminar empresas.
 - **Gestión de proyectos** — CRUD con tipo de proyecto, estado, localización y notas; los clientes solo ven los proyectos de su empresa.
 - **Gestión de documentos** — subida, descarga y eliminación de archivos por proyecto; control de visibilidad manual o programada (ocultar/publicar en fecha y hora concretas).
 - **Gestión de usuarios** — listado, edición y baja de usuarios; filtrado por empresa.
@@ -284,7 +286,7 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 
 ### Estado actual de los tests
 
-**43 tests, 84 aserciones — todos pasan.**
+**50 tests, 100 aserciones — todos pasan.**
 
 | Suite | Tests |
 |---|---|
@@ -300,8 +302,9 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 | `Feature\ProfileTest` | 5 |
 | `Feature\AutorizacionTest` | 3 |
 | `Feature\PermisosTest` | 13 |
+| `Feature\EmpresaCrudTest` | 7 |
 
-`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST. `PermisosTest` cubre los controles de acceso sobre usuarios, archivos de proyecto, visibilidad y chat.
+`AutorizacionTest` cubre la lógica de negocio propia: aislamiento entre empresas, 403 en el chatbot para clientes y acceso del admin a empresas. `RegistroSeguridadTest` verifica que el registro público siempre asigna `rol=cliente` aunque se envíe `rol=admin` por POST. `PermisosTest` cubre los controles de acceso sobre usuarios, archivos de proyecto, visibilidad y chat. `EmpresaCrudTest` cubre el CRUD de empresas (crear, editar, acceso denegado a clientes).
 
 ---
 
@@ -311,7 +314,6 @@ Los tests usan SQLite en memoria (configurado en `phpunit.xml`). Requiere la ext
 - **Cobertura de tests:** los tests de autenticación y Breeze están adaptados y pasan; la lógica de negocio propia está cubierta por `AutorizacionTest`, `RegistroSeguridadTest` y `PermisosTest`. Queda pendiente cubrir el flujo completo del chatbot y los CRUD de proyectos y empresas.
 - **Procesos adicionales en local:** el chat requiere `reverb:start` y la cola; la visibilidad programada requiere `schedule:work`. Son tres procesos extra además del servidor y Vite — `composer dev:win` facilita esto en Windows.
 - **Modelos de Groq cambian:** durante el desarrollo hubo que migrar el modelo tras la retirada de `llama-3.3-70b-versatile` (agosto 2026). Por eso el modelo se configura mediante `GROQ_MODEL` en `.env` y `config/services.php`, sin hardcodear.
-- **Vistas de empresas incompletas:** el `EmpresaController` implementa CRUD completo, pero las vistas `empresas/create.blade.php` y `empresas/edit.blade.php` están pendientes de crear [POR CONFIRMAR].
 
 ---
 
