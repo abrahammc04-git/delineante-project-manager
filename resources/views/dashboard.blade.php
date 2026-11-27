@@ -43,6 +43,9 @@
                     </a>
 
                     @if(auth()->user()->rol === 'admin')
+                    <a class="btn btn-hero-outline" href="{{ route('empresas.index') }}">
+                        Empresas
+                    </a>
                     <a class="btn btn-hero-outline" href="{{ route('usuarios.index') }}">
                         Usuarios
                     </a>
